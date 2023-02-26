@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Client", "DSx.Client\DSx.Client.csproj", "{9F86FEC5-A208-4CDD-8E7F-C37FB026BF96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Math", "DSx.Math\DSx.Math.csproj", "{A9508BC3-1889-4491-BEE8-C8B60C42EE39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Math.Tests", "DSx.Math.Tests\DSx.Math.Tests.csproj", "{15DD5613-5107-473F-A686-8180E73F7320}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F86FEC5-A208-4CDD-8E7F-C37FB026BF96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F86FEC5-A208-4CDD-8E7F-C37FB026BF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F86FEC5-A208-4CDD-8E7F-C37FB026BF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F86FEC5-A208-4CDD-8E7F-C37FB026BF96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9508BC3-1889-4491-BEE8-C8B60C42EE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9508BC3-1889-4491-BEE8-C8B60C42EE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9508BC3-1889-4491-BEE8-C8B60C42EE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9508BC3-1889-4491-BEE8-C8B60C42EE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15DD5613-5107-473F-A686-8180E73F7320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15DD5613-5107-473F-A686-8180E73F7320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15DD5613-5107-473F-A686-8180E73F7320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15DD5613-5107-473F-A686-8180E73F7320}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
