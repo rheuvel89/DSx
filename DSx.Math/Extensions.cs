@@ -157,7 +157,7 @@ namespace DSx.Math
         
         
         
-        public static Vector<float, float, float> AddAverage(this Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>> source,
+        public static Vector<float, float, float> AddAverage(this Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>>? source,
             Vector<float, float, float> value,
             int maxCount)
         {

@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Math", "DSx.Math\DSx.Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Math.Tests", "DSx.Math.Tests\DSx.Math.Tests.csproj", "{15DD5613-5107-473F-A686-8180E73F7320}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.VJoy", "DSx.VJoy\DSx.VJoy.csproj", "{60E177F8-1F3A-4F3A-906B-34DF143D2187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Mapping", "DSx.Mapping\DSx.Mapping.csproj", "{27619A23-A1D6-41F2-A8C5-DE500B967579}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{15DD5613-5107-473F-A686-8180E73F7320}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15DD5613-5107-473F-A686-8180E73F7320}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15DD5613-5107-473F-A686-8180E73F7320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E177F8-1F3A-4F3A-906B-34DF143D2187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E177F8-1F3A-4F3A-906B-34DF143D2187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E177F8-1F3A-4F3A-906B-34DF143D2187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E177F8-1F3A-4F3A-906B-34DF143D2187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27619A23-A1D6-41F2-A8C5-DE500B967579}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27619A23-A1D6-41F2-A8C5-DE500B967579}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27619A23-A1D6-41F2-A8C5-DE500B967579}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27619A23-A1D6-41F2-A8C5-DE500B967579}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

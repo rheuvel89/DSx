@@ -10,12 +10,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CoreDX.vJoy.Wrapper" Version="1.2.3" />
       <PackageReference Include="DualSenseAPI" Version="1.0.2" />
       <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DSx.Mapping\DSx.Mapping.csproj" />
       <ProjectReference Include="..\DSx.Math\DSx.Math.csproj" />
+      <ProjectReference Include="..\DSx.VJoy\DSx.VJoy.csproj" />
     </ItemGroup>
 
 </Project>

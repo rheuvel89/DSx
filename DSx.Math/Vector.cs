@@ -18,4 +18,20 @@ namespace DSx.Math
             return $"[{$"{X:n2}",7}, {$"{Y:n2}",7}, {$"{Z:n2}",7}]";
         }
     }
+    public class Vector<Tx, Ty>
+    {
+        public static Vector<Tx, Ty> Zero => new Vector<Tx, Ty>(default(Tx), default(Ty));
+        public Vector(Tx x, Ty y)
+        {
+            X = x;
+            Y = y;
+        }
+        public Tx X { get; set; }
+        public Ty Y { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{$"{X:n2}",7}, {$"{Y:n2}",7}]";
+        }
+    }
 }
