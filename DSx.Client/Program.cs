@@ -4,4 +4,4 @@
 using DSx.Client;
 
 Random rand = new Random();
-await new Client().Start();
+await new Client(10).Start();

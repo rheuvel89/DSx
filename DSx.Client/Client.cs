@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Linq;
 using CoreDX.vJoy.Wrapper;
 using DSx.Mapping;
@@ -12,10 +13,18 @@ namespace DSx.Client
 {
     public class Client
     {
-        private TiltToJoystickConverter _converter = new TiltToJoystickConverter();        
+        private uint _pollingInterval;
+        private TiltToJoystickConverter _converter;
+        private Stopwatch _timer = Stopwatch.StartNew();
+
+        public Client(uint pollingInterval)
+        {
+            _pollingInterval = pollingInterval;
+            _converter = new TiltToJoystickConverter(pollingInterval);
+        }
+        
         public async Task Start()
         {
-
             var controllers = DualSense.EnumerateControllers().ToList();
             var dsi1 = controllers.FirstOrDefault();
             dsi1?.Acquire();
@@ -36,7 +45,7 @@ namespace DSx.Client
             using var _ = Observable.Interval(TimeSpan.FromMilliseconds(333)).Subscribe(OnScreenRefresh);
 
             dsi1.OnStatePolled += s => OnStatePolled(s, output);
-            dsi1.BeginPolling(10);
+            dsi1.BeginPolling(_pollingInterval);
             
             string? input = null;
             while (true)
@@ -56,6 +65,7 @@ namespace DSx.Client
         
         private void OnStatePolled(DualSense ds, IDualShock4Controller[] output)
         {
+            var timestamp = _timer.ElapsedMilliseconds;
             foreach (var controller in output) controller.ResetReport();
             switch (ds.InputState.L1Button, ds.InputState.R1Button)
             {
@@ -72,8 +82,18 @@ namespace DSx.Client
                 ds.InputState.Accelerometer.Y,
                 ds.InputState.Accelerometer.Z
             );
-            var pitchAndRoll = _converter.Convert(rAcc, reZero, toggle, out var rumble);
-
+            var rGyr = new Vector<float, float, float>(
+                ds.InputState.Gyro.X,
+                ds.InputState.Gyro.Y,
+                ds.InputState.Gyro.Z
+            );
+            var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
+            
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine($"Pitch {pitchAndRoll.X}".PadRight(Console.WindowWidth - 1));
+            Console.WriteLine($"Roll  {pitchAndRoll.Y}".PadRight(Console.WindowWidth - 1));
+            Console.WriteLine($"Yaw   {pitchAndRoll.Z}".PadRight(Console.WindowWidth - 1));
+            
             output[1].LeftThumbX = (byte)(byte.MaxValue / 2 - pitchAndRoll.X * byte.MaxValue / 2);
             output[1].LeftThumbY = (byte)(byte.MaxValue / 2 - pitchAndRoll.Y * byte.MaxValue / 2);
             
