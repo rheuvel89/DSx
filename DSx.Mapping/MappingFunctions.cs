@@ -56,13 +56,13 @@ namespace DSx.Mapping
             if (mapSticks) output.LeftThumbY = (byte)(byte.MaxValue / 2 - input.InputState.LeftAnalogStick.Y * byte.MaxValue / 2);
             output.LeftTrigger = (byte)(input.InputState.L2 * byte.MaxValue); 
             if (mapShoulders) output.SetButtonState(DualShock4Button.ShoulderLeft, input.InputState.L1Button);
-            //output.SetButtonState(DualShock4Button.ThumbLeft, input.InputState.L3Button);
+            output.SetButtonState(DualShock4Button.ThumbLeft, input.InputState.L3Button);
             
             if (mapSticks) output.RightThumbX = (byte)(byte.MaxValue / 2 - input.InputState.RightAnalogStick.X * byte.MaxValue / 2);
             if (mapSticks) output.RightThumbY = (byte)(byte.MaxValue / 2 - input.InputState.RightAnalogStick.Y * byte.MaxValue / 2);
             output.RightTrigger = (byte)(input.InputState.R2 * byte.MaxValue);
             if (mapShoulders) output.SetButtonState(DualShock4Button.ShoulderRight, input.InputState.R1Button);
-            //output.SetButtonState(DualShock4Button.ThumbRight, input.InputState.R3Button);
+            output.SetButtonState(DualShock4Button.ThumbRight, input.InputState.R3Button);
 
             var dpadDir = (input.InputState.DPadUpButton, input.InputState.DPadRightButton,
                     input.InputState.DPadDownButton, input.InputState.DPadLeftButton) switch
@@ -84,15 +84,15 @@ namespace DSx.Mapping
                     (true, true, false, true) => DualShock4DPadDirection.North,
                     (true, true, true, true) => DualShock4DPadDirection.Southwest,
                 };
-            // output.SetDPadDirection(dpadDir);
-            //
-            // output.SetButtonState(DualShock4Button.Triangle, input.InputState.TriangleButton);
-            // output.SetButtonState(DualShock4Button.Circle, input.InputState.CircleButton);
-            // output.SetButtonState(DualShock4Button.Cross, input.InputState.CrossButton);
-            // output.SetButtonState(DualShock4Button.Square, input.InputState.SquareButton);
-            //
-            // output.SetButtonState(DualShock4Button.Share, input.InputState.CreateButton);
-            // output.SetButtonState(DualShock4Button.Options, input.InputState.MenuButton);
+            output.SetDPadDirection(dpadDir);
+            
+            output.SetButtonState(DualShock4Button.Triangle, input.InputState.TriangleButton);
+            output.SetButtonState(DualShock4Button.Circle, input.InputState.CircleButton);
+            output.SetButtonState(DualShock4Button.Cross, input.InputState.CrossButton);
+            output.SetButtonState(DualShock4Button.Square, input.InputState.SquareButton);
+            
+            output.SetButtonState(DualShock4Button.Share, input.InputState.CreateButton);
+            output.SetButtonState(DualShock4Button.Options, input.InputState.MenuButton);
         }
  
         public static void MapGyro(Vector<float, float, float> value, IVirtualGamepad output)

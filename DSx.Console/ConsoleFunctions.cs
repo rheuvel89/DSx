@@ -26,7 +26,7 @@ namespace DSx.Console
             var (left, top) = SystemConsole.GetCursorPosition();
             SystemConsole.SetCursorPosition(0, 0);
             SystemConsole.WriteLine($"Pitch {controller.LeftThumbX}".PadRight(SystemConsole.WindowWidth - 1));
-            SystemConsole.WriteLine($"Roll  {controller.LeftThumbX}".PadRight(SystemConsole.WindowWidth - 1));
+            SystemConsole.WriteLine($"Roll  {controller.LeftThumbY}".PadRight(SystemConsole.WindowWidth - 1));
             SystemConsole.SetCursorPosition(left, top);
         }
     }

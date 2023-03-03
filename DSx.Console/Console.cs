@@ -18,17 +18,19 @@ namespace DSx.Console
         
         public async Task Attach()
         {
+            SystemConsole.Clear();
+            
             using var refreshObservable = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(OnRefresh);
             
             while (true)
             {
                 lock (_lock)
                 {
-                    foreach (var index in Enumerable.Range(0, 5))
-                    {
-                        SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - index);
-                    }
-                    
+                    SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 8);
+                    SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
+                    SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 7);
+                    SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
+                    SystemConsole.WriteLine(new string(Enumerable.Repeat('=', SystemConsole.WindowWidth - 1).ToArray()));
                     SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 1);
                     SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
                     SystemConsole.SetCursorPosition(3, SystemConsole.WindowHeight - 1);
@@ -52,7 +54,10 @@ namespace DSx.Console
         {
             lock (_lock)
             {
+                var cursorVisible = SystemConsole.CursorVisible;
+                SystemConsole.CursorVisible = false;
                 ConsoleFunctions.PrintState(_output[1]);
+                SystemConsole.CursorVisible = cursorVisible;
             }
         }
     }

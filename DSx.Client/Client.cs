@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,29 +90,29 @@ namespace DSx.Client
             foreach (var controller in _output) controller.SubmitReport();
         }
 
-        private string OnCommandReceived(string command, string[] arguments)
+        private string? OnCommandReceived(string command, string[] arguments)
         {
-            return null;
-        } 
-        
-        IDictionary<string, Action<TiltToJoystickConverter, string[]>> CommandActions =
-            new Dictionary<string, Action<TiltToJoystickConverter, string[]>>
-        {
-            ["sense"] = Sense,
-            ["deadzone"] = Deadzone,
-        };
-
-
-        private static void Sense(TiltToJoystickConverter converter, string[] args)
-        {
-            if (args.Length != 1 || !float.TryParse(args[0], out var sense)) return;
-            converter.Sensitivity = sense;
+            command = command.ToLower();
+            return command switch
+            {
+                "sense" => Sense(_converter, arguments),
+                "deadzone" => Deadzone(_converter, arguments),
+                _ => $"Command {command} not recognized"
+            };
         }
 
-        private static void Deadzone(TiltToJoystickConverter converter, string[] args)
+        private static string? Sense(TiltToJoystickConverter converter, string[] args)
         {
-            if (args.Length != 1 || !float.TryParse(args[0], out var deadzone)) return;
+            if (args.Length != 1 || !float.TryParse(args[0], out var sense)) return "Command 'sense' accepts 1 argument (decimal)";
+            converter.Sensitivity = sense;
+            return null;
+        }
+
+        private static string? Deadzone(TiltToJoystickConverter converter, string[] args)
+        {
+            if (args.Length != 1 || !float.TryParse(args[0], out var deadzone)) return "Command 'deadzone' accepts 1 argument (decimal)";
             converter.Deadzone = deadzone;
+            return null;
         }
 
     }
