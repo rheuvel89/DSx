@@ -8,10 +8,12 @@ namespace DSx.Console
     {
         private readonly object _lock = new object();
         private readonly IList<IVirtualGamepad> _output;
+        private readonly bool _noConsole;
 
-        public Console(IList<IVirtualGamepad> output)
+        public Console(IList<IVirtualGamepad> output, bool noConsole)
         {
             _output = output;
+            _noConsole = noConsole;
         }
         
         public event CommandReceivedHandler? OnCommandReceived;
@@ -19,12 +21,22 @@ namespace DSx.Console
         public async Task Attach()
         {
             SystemConsole.Clear();
-            
+
+            if (_noConsole)
+            {
+                await AwaitInput();
+                return;
+            } 
+                
             using var refreshObservable = Observable.Interval(TimeSpan.FromMilliseconds(100)).Subscribe(OnRefresh);
-            
+            await AwaitInput();
+        }
+
+        private async Task AwaitInput()
+        {
             while (true)
             {
-                lock (_lock)
+                if (_noConsole) lock (_lock)
                 {
                     SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 8);
                     SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
@@ -35,6 +47,7 @@ namespace DSx.Console
                     SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
                     SystemConsole.SetCursorPosition(3, SystemConsole.WindowHeight - 1);
                 }
+                else SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
                 var line = SystemConsole.ReadLine();
                 
                 if (line == "exit") return;

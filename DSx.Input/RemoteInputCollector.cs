@@ -17,5 +17,6 @@
         }
 
         public override event InputReceivedHandler? OnInputReceived;
+        public override event ButtonChangedHandler? OnButtonChanged;
     }
 }

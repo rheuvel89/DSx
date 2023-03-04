@@ -1,4 +1,5 @@
 using DualSenseAPI;
+using DualSenseAPI.State;
 
 namespace DSx.Input
 {
@@ -20,6 +21,7 @@ namespace DSx.Input
             
             _input.Acquire();
             _input.OnStatePolled += DelegateInputReceived;
+            _input.OnButtonStateChanged += DelegateButtonChanged; 
             _input.BeginPolling(_pollingInterval);
         }
 
@@ -27,7 +29,12 @@ namespace DSx.Input
         {
             OnInputReceived?.Invoke(s);
         }
+        private void DelegateButtonChanged(DualSense s, DualSenseInputStateButtonDelta d)
+        {
+            OnButtonChanged?.Invoke(s, d);
+        }
 
         public override event InputReceivedHandler? OnInputReceived;
+        public override event ButtonChangedHandler? OnButtonChanged;
     }
 }

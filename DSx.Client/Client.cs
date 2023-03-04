@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using DSx.Input;
 using DSx.Mapping;
 using DSx.Math;
 using DualSenseAPI;
+using DualSenseAPI.State;
 using DXs.Common;
 using Nefarius.ViGEm.Client;
 
@@ -19,6 +21,7 @@ namespace DSx.Client
         private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
+        private readonly byte _count;
 
         public Client(ClientOptions options)
         {
@@ -28,20 +31,23 @@ namespace DSx.Client
                 : new LocalInputCollector(options.PollingInterval);
             _converter = new TiltToJoystickConverter();
             _output = new List<IVirtualGamepad>();
-            _console = new Console.Console(_output);
+            _console = new Console.Console(_output, options.NoConsole);
+            _count = options.Count;
+            if (_count < 1 || _count > 4) throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
             _timer = new Stopwatch();
         }
 
         public async Task Initialize(object mapping)
         {
-            foreach(var controller in  Enumerable.Range(0, 4)
-                .Select(_ => _manager.CreateDualShock4Controller()))
+            foreach(var controller in  Enumerable.Range(0, _count)
+                .Select(i => _manager.CreateDualShock4Controller((ushort)i, (ushort)i)))
             {
                 _output.Add(controller);
                 controller.Connect();
             }
             
             _inputCollector.OnInputReceived += OnInputReceived;
+            _inputCollector.OnButtonChanged += OnButtonChanged;
 
             _console.OnCommandReceived += OnCommandReceived;
         }
@@ -59,14 +65,15 @@ namespace DSx.Client
         private void OnInputReceived(DualSense ds)
         {
             var timestamp = _timer.ElapsedMilliseconds;
-            foreach (var controller in _output) controller.ResetReport();
-            switch (ds.InputState.L1Button, ds.InputState.R1Button)
+            var activeId = (ds.InputState.L1Button, ds.InputState.R1Button) switch
             {
-                case (false, false): MappingFunctions.CopyState(ds, _output[0], false, true); break;
-                case (true, false): MappingFunctions.CopyState(ds, _output[1], false, false); break;
-                case (false, true): MappingFunctions.CopyState(ds, _output[2], false, false); break;
-                case (true, true): MappingFunctions.CopyState(ds, _output[3], false, false); break;
-            }
+                (false, false) when _count >= 1 => 0,
+                (true, false) when _count >= 2 => 1,
+                (false, true) when _count >= 3 => 2,
+                (true, true) when _count >= 4 => 3,
+            };
+            MappingFunctions.CopyState(ds, _output[activeId], false, activeId == 0);
+            for (int id = 0 ; id < _output.Count ; id++) if (id != activeId) _output[id].ResetReport();
 
             var reZero = ds.InputState.Touchpad1.IsDown && !ds.InputState.Touchpad2.IsDown && ds.InputState.TouchpadButton;
             var toggle = ds.InputState.Touchpad1.IsDown && ds.InputState.Touchpad2.IsDown && ds.InputState.TouchpadButton;
@@ -81,15 +88,23 @@ namespace DSx.Client
                 ds.InputState.Gyro.Z
             );
             var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
-            
-            MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
-            
-            ds.OutputState.LeftRumble = rumble.X;
-            ds.OutputState.RightRumble = rumble.Y;
 
+            if (_count >= 2)
+            {
+                MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
+                ds.OutputState.LeftRumble = rumble.X;
+                ds.OutputState.RightRumble = rumble.Y;
+
+            }
+            
             foreach (var controller in _output) controller.SubmitReport();
         }
 
+        private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)
+        {
+            
+        }
+        
         private string? OnCommandReceived(string command, string[] arguments)
         {
             command = command.ToLower();

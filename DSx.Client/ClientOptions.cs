@@ -11,7 +11,13 @@ namespace DSx.Client
         [Option(longName: "Server", Default = null, HelpText = "Server address for controller input. Defaults to input from local controller.")]
         public string Server { get; set; }
         
-        [Option(longName: "PollingInterval", Default = 10u, HelpText = "Polling interval for controller input")]
+        [Option(longName: "PollingInterval", Default = 10u, Required = false, HelpText = "Polling interval for controller input")]
         public uint PollingInterval { get; set; }
+        
+        [Option(longName: "Count", Default = 4, Required = false, HelpText = "Number of emulated controllers to connect (max 4)")]
+        public byte Count { get; set; }
+        
+        [Option(longName: "NoConsole", Default = false, Required = false, HelpText = "Do not render console")]
+        public bool NoConsole { get; set; }
     }
 }
