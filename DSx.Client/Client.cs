@@ -71,6 +71,7 @@ namespace DSx.Client
                 (true, false) when _count >= 2 => 1,
                 (false, true) when _count >= 3 => 2,
                 (true, true) when _count >= 4 => 3,
+                _ => 0,
             };
             MappingFunctions.CopyState(ds, _output[activeId], false, activeId == 0);
             for (int id = 0 ; id < _output.Count ; id++) if (id != activeId) _output[id].ResetReport();
