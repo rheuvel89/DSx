@@ -42,11 +42,11 @@ namespace DXs.Common
             _outGoingSocket.BeginSend(data, 0, data.Length, SocketFlags.None, x =>
             {
                 var bytes = _outGoingSocket.EndSend(x);
-                Console.WriteLine("SEND: {0}", bytes);
+                //Console.WriteLine("SEND: {0}", bytes);
             }, null);
         }
 
-        public async Task Receive()
+        public async Task BeginReceiving()
         {
             while (true)
             {
@@ -59,7 +59,7 @@ namespace DXs.Common
                     {
                         int bytes = _incomingSocket.EndReceiveFrom(x, ref endPoint);
                         if (!_outGoingSocket.Connected) _outGoingSocket.Connect(new IPEndPoint((endPoint as IPEndPoint).Address, _port + 1));
-                        Console.WriteLine("RECV: {0}: {1}, {2}", endPoint, bytes, Encoding.ASCII.GetString(buffer, 0, bytes));
+                        //Console.WriteLine("RECV: {0}: {1}, {2}", endPoint, bytes, Encoding.ASCII.GetString(buffer, 0, bytes));
                         OnPacketReceived?.Invoke(endPoint, buffer, bytes);
                     }
                     finally

@@ -26,8 +26,8 @@ namespace DSx.Client
         public Client(ClientOptions options)
         {
              _manager = new ViGEmClient();
-             _inputCollector = !string.IsNullOrWhiteSpace(options.Server) && options.Port != null
-                ? new RemoteInputCollector(options.Server, options.Port.Value)
+             _inputCollector = options.Port != null
+                ? new RemoteInputCollector(options.Port.Value)
                 : new LocalInputCollector(options.PollingInterval);
             _converter = new TiltToJoystickConverter();
             _output = new List<IVirtualGamepad>();

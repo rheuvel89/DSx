@@ -16,20 +16,17 @@ namespace DSx.Host
 {
     public class Host : IApplication
     {
-        private readonly ushort _serverPort;
         private readonly InputCollector _inputCollector;
-        private readonly IList<IVirtualGamepad> _output;
+        private readonly ConnectionManager _connectionManager;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
-        private TcpClient _tcpClient = null;
-        private UdpClient _udpClient = null;
+        private Task _receiveTask;
 
         public Host(HostOptions options)
         {
-            _serverPort = options.Port;
             _inputCollector = new LocalInputCollector(options.PollingInterval);
-            _output = new List<IVirtualGamepad>();
-            _console = new Console.Console(_output, options.NoConsole);
+            _connectionManager = new ConnectionManager(options.Server, options.Port);
+            _console = new Console.Console(null, options.NoConsole);
             _timer = new Stopwatch();
         }
 
@@ -49,32 +46,15 @@ namespace DSx.Host
 
             await _inputCollector.Start();
 
-            var listener = TcpListener.Create(_serverPort);
-            listener.Start();
-            while (true)
-            {
-                System.Console.WriteLine($"Waiting for connection on port {_serverPort}");
-                _tcpClient = await listener.AcceptTcpClientAsync();
-
-                // var udpSocket = new UDPSocket();
-                // udpSocket.Client((_tcpClient.Client.RemoteEndPoint as IPEndPoint).Address.MapToIPv4().ToString(), _serverPort + 1);
-                // udpSocket.Send("Succes!!!1");
-                // await Task.Delay(1000);
-                // udpSocket.Send("Succes!!!2");
-                // await Task.Delay(1000);
-                // udpSocket.Send("Succes!!!3");
-                // await Task.Delay(1000);
-                // udpSocket.Send("Succes!!!4");
-                // await Task.Delay(1000);
-                // udpSocket.Send("Succes!!!5");
-                // await _console.Attach();
-            }
+            _connectionManager.OnPacketReceived += (sender, buffer, length) => System.Console.WriteLine($"{sender as IPEndPoint}: {length}");
+            _receiveTask = _connectionManager.BeginReceiving();
             
+            await _console.Attach();
         }
 
         private void OnInputReceived(DualSense ds)
         {
-            var send = _udpClient?.Send(new byte[] { 1 });
+            var send = _connectionManager.Send(new byte[] { 1 });
         }
 
         private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)

@@ -8,7 +8,7 @@ namespace DSx.UdpClientTest
         public static async Task Main()
         {
             var socket = new ConnectionManager("127.0.0.1", 10801);
-            var recvTask = socket.Receive();
+            var recvTask = socket.BeginReceiving();
             
             var sendTask = Task.Run(async () =>
             {

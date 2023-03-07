@@ -7,10 +7,10 @@ namespace DSx.Console
     public class Console
     {
         private readonly object _lock = new object();
-        private readonly IList<IVirtualGamepad> _output;
+        private readonly IList<IVirtualGamepad>? _output;
         private readonly bool _noConsole;
 
-        public Console(IList<IVirtualGamepad> output, bool noConsole)
+        public Console(IList<IVirtualGamepad>? output, bool noConsole)
         {
             _output = output;
             _noConsole = noConsole;
@@ -69,7 +69,7 @@ namespace DSx.Console
             {
                 var cursorVisible = SystemConsole.CursorVisible;
                 SystemConsole.CursorVisible = false;
-                ConsoleFunctions.PrintState(_output[1]);
+                if (_output != null) ConsoleFunctions.PrintState(_output[1]);
                 SystemConsole.CursorVisible = cursorVisible;
             }
         }

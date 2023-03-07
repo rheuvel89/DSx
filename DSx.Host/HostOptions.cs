@@ -5,6 +5,9 @@ namespace DSx.Host
     [Verb("Host")]
     public class HostOptions
     {
+        [Option(longName: "Server", Required = true, HelpText = "Server address for the input receiver.")]
+        public string Server { get; set; }
+        
         [Option(longName: "Port", Required = true, HelpText = "Network port N (TCP) and N+1 (UDP) to listen for incoming connecitons.")]
         public ushort Port { get; set; }
         
