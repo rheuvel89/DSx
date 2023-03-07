@@ -15,7 +15,7 @@ try
 }
 catch (Exception e)
 {
-    Console.Error.WriteLine($"Error: {e.Message}");
+    Console.Error.WriteLine($"Error: {e.Message}{Environment.NewLine}{e.StackTrace}");
     return 1;
 }
 return 0;

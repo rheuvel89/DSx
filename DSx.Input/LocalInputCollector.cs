@@ -5,10 +5,10 @@ namespace DSx.Input
 {
     public class LocalInputCollector : InputCollector
     {
-        private readonly uint _pollingInterval;
+        private readonly ushort _pollingInterval;
         private DualSense _input;
 
-        public LocalInputCollector(uint pollingInterval)
+        public LocalInputCollector(ushort pollingInterval)
         {
             _pollingInterval = pollingInterval;
         }

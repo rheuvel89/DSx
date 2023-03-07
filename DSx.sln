@@ -20,6 +20,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Input", "DSx.Input\DSx.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Console", "DSx.Console\DSx.Console.csproj", "{C6D52E9F-3720-41BA-825C-EEC0E2F2714B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.UdpClientTest", "DSx.UdpClientTest\DSx.UdpClientTest.csproj", "{DBAF00C6-D05C-416C-A1B2-E248C064864E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.UdpHostTest", "DSx.UdpHostTest\DSx.UdpHostTest.csproj", "{06E97E4E-A303-494C-885E-0759B335741F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +70,13 @@ Global
 		{C6D52E9F-3720-41BA-825C-EEC0E2F2714B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6D52E9F-3720-41BA-825C-EEC0E2F2714B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6D52E9F-3720-41BA-825C-EEC0E2F2714B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBAF00C6-D05C-416C-A1B2-E248C064864E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBAF00C6-D05C-416C-A1B2-E248C064864E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBAF00C6-D05C-416C-A1B2-E248C064864E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBAF00C6-D05C-416C-A1B2-E248C064864E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06E97E4E-A303-494C-885E-0759B335741F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06E97E4E-A303-494C-885E-0759B335741F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06E97E4E-A303-494C-885E-0759B335741F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06E97E4E-A303-494C-885E-0759B335741F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

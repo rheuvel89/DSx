@@ -175,5 +175,42 @@ namespace DSx.Math
             if (reverse) return new Vector<float, float, float>(source.X.Reverse().ToArray()[index], source.Y.Reverse().ToArray()[index], source.Z.Reverse().ToArray()[index]);
             else return new Vector<float, float, float>(source.X.ToArray()[index], source.Y.ToArray()[index], source.Z.ToArray()[index]);
         }
+        
+        public static float Length(this Vector<float, float> source)
+        {
+            return (float)System.Math.Sqrt(source.X * source.X + source.Y * source.Y);
+        }
+        
+        public static Vector<float, float> Multiply(this Vector<float, float> source, float factor)
+        {
+            return new Vector<float, float>(source.X * factor, source.Y * factor);
+        }
+        public static Vector<float, float> Add(this Vector<float, float> source,
+            Vector<float, float> value)
+        {
+            return new Vector<float, float>(source.X + value.X, source.Y + value.Y);
+        }
+        public static Vector<U, U> Apply<T, U>(this Vector<T, T> source, Func<T, U> func)
+        {
+            return new Vector<U, U>(func(source.X), func(source.Y));
+        }
+        
+        public static Vector<float, float> Subtract(this Vector<float, float> source,
+            Vector<float, float> value)
+        {
+            return new Vector<float, float>(source.X - value.X, source.Y - value.Y);
+        }
+
+        public static Vector<float, float> Negate(this Vector<float, float> source)
+        {
+            return new Vector<float, float>(-source.X, -source.Y);
+        }
+        
+        
+        public static Vector<float, float> Normalize(this Vector<float, float> source)
+        {
+            var length = source.Length();
+            return new Vector<float, float>(source.X / length, source.Y / length);
+        }
     }
 }

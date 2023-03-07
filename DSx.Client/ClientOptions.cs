@@ -12,7 +12,7 @@ namespace DSx.Client
         public string Server { get; set; }
         
         [Option(longName: "PollingInterval", Default = 10u, Required = false, HelpText = "Polling interval for controller input")]
-        public uint PollingInterval { get; set; }
+        public ushort PollingInterval { get; set; }
         
         [Option(longName: "Count", Default = 4, Required = false, HelpText = "Number of emulated controllers to connect (max 4)")]
         public byte Count { get; set; }

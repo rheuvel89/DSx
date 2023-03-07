@@ -6,7 +6,7 @@ namespace DSx.Mapping
 {
     public class CombinedAHRS : IAHRS
     {
-        private Vector<float, float, float> _reading = Vector<float, float, float>.Zero;
+        private Vector<float, float> _reading = Vector<float, float>.Zero;
         private Vector<float, float, float> _zAcc = new Vector<float, float, float>(0, 1, 0);
         private Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>> _aZero =
             new Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>>(
@@ -36,7 +36,7 @@ namespace DSx.Mapping
             var delta = timestamp - _previousTimestamp;
             _previousTimestamp = timestamp;
             _zAcc = TryZero(rAcc, _aZero, reZero) ?? _zAcc;
-            if (reZero) _reading = Vector<float, float, float>.Zero; 
+            if (reZero) _reading = Vector<float, float>.Zero; 
 
             var zRoll = System.Math.Atan2(_zAcc.Y, _zAcc.Z);
             var zPitch = System.Math.Atan2(-_zAcc.X, System.Math.Sqrt(_zAcc.Y * _zAcc.Y + _zAcc.Z * _zAcc.Z));
@@ -55,18 +55,14 @@ namespace DSx.Mapping
 
             _reading.X *= sensitivity;
             _reading.Y *= sensitivity;
-            if (_reading.X > -deadzone && _reading.X < deadzone) _reading.X = 0;
-            else if (_reading.X < 0) _reading.X += deadzone;
-            else if (_reading.X > 0) _reading.X -= deadzone;
-            if (_reading.Y > -deadzone && _reading.Y < deadzone) _reading.Y = 0;
-            else if (_reading.Y < 0) _reading.Y += deadzone;
-            else if (_reading.Y > 0) _reading.Y -= deadzone;
+            if (_reading.Length() < deadzone) _reading.X = _reading.Y = 0;
+            else _reading = _reading.Subtract(_reading.Normalize().Multiply(deadzone));
             if (_reading.X > 1) _reading.X = 1;
             if (_reading.X < -1) _reading.X = -1;
             if (_reading.Y > 1) _reading.Y = 1;
             if (_reading.Y < -1) _reading.Y = -1;
 
-            return _reading;
+            return new Vector<float, float, float>(_reading.X, _reading.Y, 0);
         }
 
         private Vector<float, float, float> TryZero(Vector<float, float, float> r,
