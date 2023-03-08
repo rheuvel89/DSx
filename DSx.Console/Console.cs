@@ -36,7 +36,7 @@ namespace DSx.Console
         {
             while (true)
             {
-                if (_noConsole) lock (_lock)
+                if (!_noConsole) lock (_lock)
                 {
                     SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 8);
                     SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
