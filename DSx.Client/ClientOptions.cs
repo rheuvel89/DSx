@@ -5,7 +5,7 @@ namespace DSx.Client
     [Verb("Client")]
     public class ClientOptions
     {
-        [Option(longName: "Port", Default = null, HelpText = "Network port N (TCP) and N+1 (UDP) for controller input. Defaults to input from local controller.")]
+        [Option(longName: "Port", Default = null, HelpText = "Network port N and N+1 (UDP) for controller input. Defaults to input from local controller.")]
         public ushort? Port { get; set; }
         
         [Option(longName: "PollingInterval", Default = (ushort)10,  HelpText = "Polling interval for controller input")]
