@@ -38,17 +38,17 @@ namespace DSx.Mapping
             _zAcc = TryZero(rAcc, _aZero, reZero) ?? _zAcc;
             if (reZero) _reading = Vector<float, float>.Zero; 
 
-            var zRoll = System.Math.Atan2(_zAcc.Y, _zAcc.Z);
-            var zPitch = System.Math.Atan2(-_zAcc.X, System.Math.Sqrt(_zAcc.Y * _zAcc.Y + _zAcc.Z * _zAcc.Z));
-            var aRoll = System.Math.Atan2(rAcc.Y, rAcc.Z);
-            var aPitch = System.Math.Atan2(-rAcc.X, System.Math.Sqrt(rAcc.Y * rAcc.Y + rAcc.Z * rAcc.Z));
+            var zPitch = System.Math.Atan2(_zAcc.Y, _zAcc.Z);
+            var zRoll = System.Math.Atan2(-_zAcc.X, System.Math.Sqrt(_zAcc.Y * _zAcc.Y + _zAcc.Z * _zAcc.Z));
+            var aPitch = System.Math.Atan2(rAcc.Y, rAcc.Z);
+            var aRoll = System.Math.Atan2(-rAcc.X, System.Math.Sqrt(rAcc.Y * rAcc.Y + rAcc.Z * rAcc.Z));
 
             var gPitch = _reading.X + rGyr.X * _epsilon * delta;
             var gRoll = _reading.Y + rGyr.Y * _gamma * delta;
 
             var beta = 1 - _alpha;
-            _reading.X = (float)(_alpha * gPitch + beta * (aPitch - zPitch));  
-            _reading.Y = (float)(_alpha * gRoll + beta * (aRoll - zRoll));  
+            _reading.X = (float)(_alpha * gPitch + beta * aRoll);  
+            _reading.Y = (float)(_alpha * gRoll + beta * (aPitch - zPitch));  
 
             rumble = Vector<float, float>.Zero;
             if (_reading.X > 0.9 || _reading.X < -0.9 || _reading.Y > 0.9 || _reading.Y < -0.9) rumble.X = rumble.Y = 0.01f;
@@ -65,7 +65,7 @@ namespace DSx.Mapping
             return new Vector<float, float, float>(_reading.X, _reading.Y, 0);
         }
 
-        private Vector<float, float, float> TryZero(Vector<float, float, float> r,
+        private Vector<float, float, float>? TryZero(Vector<float, float, float> r,
             Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>> z, bool reZero)
         {
             Vector<float, float, float> zero = null;
