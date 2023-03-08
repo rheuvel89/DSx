@@ -1,7 +1,10 @@
 using System.Diagnostics;
+using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using DSx.Input;
+using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
@@ -15,6 +18,7 @@ namespace DSx.Host
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
         private Task _receiveTask;
+        private long _ordering = 0;
 
         public Host(HostOptions options)
         {
@@ -40,10 +44,21 @@ namespace DSx.Host
 
             await _inputCollector.Start();
 
-            _connectionManager.OnPacketReceived += (sender, buffer, length) => System.Console.WriteLine($"{sender as IPEndPoint}: {length}");
+            _connectionManager.OnPacketReceived += OnPacketReceived;
             _receiveTask = _connectionManager.BeginReceiving();
             
             await _console.Attach();
+        }
+
+        private void OnPacketReceived(EndPoint sender, byte[] buffer, int length)
+        {
+            using var stream = new MemoryStream(buffer, 0, length);
+            var reader = new BinaryReader(stream);
+            var order = reader.ReadInt64();
+            if (order < _ordering) return;
+            Interlocked.Exchange(ref _ordering, order);
+            var state = reader.Deserialize<Vector<float, float>>();
+            _inputCollector.OnStateChanged(state);
         }
 
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)

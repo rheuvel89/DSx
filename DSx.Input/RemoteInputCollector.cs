@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
+using DSx.Math;
 using DualSenseAPI.State;
 using DXs.Common;
 
@@ -7,17 +9,20 @@ namespace DSx.Input
     public class RemoteInputCollector : InputCollector
     {
         private readonly ConnectionManager _connectionManager;
+        private readonly Stopwatch _timer;
         private Task? _receiveTask;
         private long _ordering = 0;
 
         public RemoteInputCollector(ushort port)
         {
             _connectionManager = new ConnectionManager(port);
+            _timer = new Stopwatch();
         }
         
         public override async Task Start()
         {
             _connectionManager.OnPacketReceived += OnPackedReceived;
+            _timer.Start();
             _receiveTask = _connectionManager.BeginReceiving();
         }
 
@@ -34,5 +39,9 @@ namespace DSx.Input
 
         public override event InputReceivedHandler? OnInputReceived;
         public override event ButtonChangedHandler? OnButtonChanged;
+        public override void OnStateChanged(Vector<float, float> rumble)
+        {
+            _connectionManager.Send(rumble.Serialize(_timer.ElapsedMilliseconds));
+        }
     }
 }

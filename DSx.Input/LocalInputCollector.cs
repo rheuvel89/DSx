@@ -1,3 +1,4 @@
+using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
 
@@ -36,5 +37,10 @@ namespace DSx.Input
 
         public override event InputReceivedHandler? OnInputReceived;
         public override event ButtonChangedHandler? OnButtonChanged;
+        public override void OnStateChanged(Vector<float, float> rumble)
+        {
+            _input.OutputState.LeftRumble = rumble.X;
+            _input.OutputState.LeftRumble = rumble.Y;
+        }
     }
 }

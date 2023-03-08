@@ -91,12 +91,7 @@ namespace DSx.Client
             var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
 
             MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
-            if (_count >= 2 && ds != null)
-            {
-                ds.OutputState.LeftRumble = rumble.X;
-                ds.OutputState.RightRumble = rumble.Y;
-
-            }
+            _inputCollector.OnStateChanged(rumble);
             
             foreach (var controller in _output) controller.SubmitReport();
         }

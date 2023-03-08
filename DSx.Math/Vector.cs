@@ -1,8 +1,13 @@
+using System;
+
 namespace DSx.Math
 {
     public class Vector<Tx, Ty, Tz>
     {
         public static Vector<Tx, Ty, Tz> Zero => new Vector<Tx, Ty, Tz>(default(Tx), default(Ty), default(Tz));
+
+        [Obsolete("Serialization only")]
+        private Vector() { }
         public Vector(Tx x, Ty y, Tz z)
         {
             X = x;
@@ -21,6 +26,9 @@ namespace DSx.Math
     public class Vector<Tx, Ty>
     {
         public static Vector<Tx, Ty> Zero => new Vector<Tx, Ty>(default(Tx), default(Ty));
+        
+        [Obsolete("Serialization only")]
+        private Vector() { }
         public Vector(Tx x, Ty y)
         {
             X = x;
