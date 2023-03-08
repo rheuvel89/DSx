@@ -62,10 +62,10 @@ namespace DSx.Client
             await _console.Attach();
         }
         
-        private void OnInputReceived(DualSense ds)
+        private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
             var timestamp = _timer.ElapsedMilliseconds;
-            var activeId = (ds.InputState.L1Button, ds.InputState.R1Button) switch
+            var activeId = (inputState.L1Button, inputState.R1Button) switch
             {
                 (false, false) when _count >= 1 => 0,
                 (true, false) when _count >= 2 => 1,
@@ -73,26 +73,26 @@ namespace DSx.Client
                 (true, true) when _count >= 4 => 3,
                 _ => 0,
             };
-            MappingFunctions.CopyState(ds, _output[activeId], false, activeId == 0);
+            MappingFunctions.CopyState(inputState, _output[activeId], false, activeId == 0);
             for (int id = 0 ; id < _output.Count ; id++) if (id != activeId) _output[id].ResetReport();
 
-            var reZero = ds.InputState.Touchpad1.IsDown && !ds.InputState.Touchpad2.IsDown && ds.InputState.TouchpadButton;
-            var toggle = ds.InputState.Touchpad1.IsDown && ds.InputState.Touchpad2.IsDown && ds.InputState.TouchpadButton;
+            var reZero = inputState.Touchpad1.IsDown && !inputState.Touchpad2.IsDown && inputState.TouchpadButton;
+            var toggle = inputState.Touchpad1.IsDown && inputState.Touchpad2.IsDown && inputState.TouchpadButton;
             var rAcc = new Vector<float, float, float>(
-                ds.InputState.Accelerometer.X,
-                ds.InputState.Accelerometer.Y,
-                ds.InputState.Accelerometer.Z
+                inputState.Accelerometer.X,
+                inputState.Accelerometer.Y,
+                inputState.Accelerometer.Z
             );
             var rGyr = new Vector<float, float, float>(
-                ds.InputState.Gyro.X,
-                ds.InputState.Gyro.Y,
-                ds.InputState.Gyro.Z
+                inputState.Gyro.X,
+                inputState.Gyro.Y,
+                inputState.Gyro.Z
             );
             var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
 
-            if (_count >= 2)
+            MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
+            if (_count >= 2 && ds != null)
             {
-                MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
                 ds.OutputState.LeftRumble = rumble.X;
                 ds.OutputState.RightRumble = rumble.Y;
 

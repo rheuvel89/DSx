@@ -1,16 +1,10 @@
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading.Tasks;
 using DSx.Input;
 using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
-using Nefarius.ViGEm.Client;
 
 namespace DSx.Host
 {
@@ -52,9 +46,9 @@ namespace DSx.Host
             await _console.Attach();
         }
 
-        private void OnInputReceived(DualSense ds)
+        private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
-            var send = _connectionManager.Send(new byte[] { 1 });
+            _ = _connectionManager.Send(inputState.Serialize(_timer.ElapsedMilliseconds));
         }
 
         private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)

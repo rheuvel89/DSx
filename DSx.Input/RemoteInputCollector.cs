@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using DualSenseAPI.State;
 using DXs.Common;
 
 namespace DSx.Input
@@ -7,6 +8,7 @@ namespace DSx.Input
     {
         private readonly ConnectionManager _connectionManager;
         private Task? _receiveTask;
+        private long _ordering = 0;
 
         public RemoteInputCollector(ushort port)
         {
@@ -15,8 +17,19 @@ namespace DSx.Input
         
         public override async Task Start()
         {
-            _connectionManager.OnPacketReceived += (sender, buffer, length) => Console.WriteLine($"{sender as IPEndPoint}: {length}");
+            _connectionManager.OnPacketReceived += OnPackedReceived;
             _receiveTask = _connectionManager.BeginReceiving();
+        }
+
+        private void OnPackedReceived(EndPoint sender, byte[] buffer, int length)
+        {
+            using var stream = new MemoryStream(buffer, 0, length);
+            var reader = new BinaryReader(stream);
+            var order = reader.ReadInt64();
+            if (order < _ordering) return;
+            Interlocked.Exchange(ref _ordering, order);
+            var state = reader.Deserialize<DualSenseInputState>();
+            OnInputReceived?.Invoke(null, state);
         }
 
         public override event InputReceivedHandler? OnInputReceived;

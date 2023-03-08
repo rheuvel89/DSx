@@ -27,7 +27,7 @@ namespace DSx.Input
 
         private void DelegateInputReceived(DualSense s)
         {
-            OnInputReceived?.Invoke(s);
+            OnInputReceived?.Invoke(s, s.InputState);
         }
         private void DelegateButtonChanged(DualSense s, DualSenseInputStateButtonDelta d)
         {
