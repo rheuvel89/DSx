@@ -16,5 +16,8 @@ namespace DSx.Client
         
         [Option(longName: "NoConsole", Default = false, HelpText = "Do not render console")]
         public bool NoConsole { get; set; }
+        
+        [Option(longName: "MappingPath", Default = null, HelpText = "Path to mapping file")]
+        public string MappingPath { get; set; }
     }
 }

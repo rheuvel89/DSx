@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DSx.Input;
@@ -10,48 +11,54 @@ using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
 using Nefarius.ViGEm.Client;
+using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
 
 namespace DSx.Client
 {
     public class Client : IApplication
     {
         private readonly ViGEmClient _manager;
-        private readonly InputCollector _inputCollector; 
+        private readonly InputCollector _inputCollector;
         private readonly TiltToJoystickConverter _converter;
         private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
         private readonly byte _count;
+        private object _mapping;
 
         public Client(ClientOptions options)
         {
-             _manager = new ViGEmClient();
-             _inputCollector = options.Port != null
+            _manager = new ViGEmClient();
+            _inputCollector = options.Port != null
                 ? new RemoteInputCollector(options.Port.Value)
                 : new LocalInputCollector(options.PollingInterval);
             _converter = new TiltToJoystickConverter();
             _output = new List<IVirtualGamepad>();
             _console = new Console.Console(_output, options.NoConsole);
             _count = options.Count;
-            if (_count < 1 || _count > 4) throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
+            if (_count < 1 || _count > 4)
+                throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
             _timer = new Stopwatch();
+
+            _mapping = LoadMapping(options.MappingPath ?? "config.yaml");
         }
 
         public async Task Initialize(object mapping)
         {
-            foreach(var controller in  Enumerable.Range(0, _count)
-                .Select(i => _manager.CreateDualShock4Controller((ushort)i, (ushort)i)))
+            foreach (var controller in Enumerable.Range(0, _count)
+                         .Select(i => _manager.CreateDualShock4Controller((ushort)i, (ushort)i)))
             {
                 _output.Add(controller);
                 controller.Connect();
             }
-            
+
             _inputCollector.OnInputReceived += OnInputReceived;
             _inputCollector.OnButtonChanged += OnButtonChanged;
 
             _console.OnCommandReceived += OnCommandReceived;
         }
-        
+
         public async Task Start()
         {
             await Initialize(null);
@@ -61,7 +68,7 @@ namespace DSx.Client
             await _inputCollector.Start();
             await _console.Attach();
         }
-        
+
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
             var timestamp = _timer.ElapsedMilliseconds;
@@ -74,7 +81,9 @@ namespace DSx.Client
                 _ => 0,
             };
             MappingFunctions.CopyState(inputState, _output[activeId], false, activeId == 0);
-            for (int id = 0 ; id < _output.Count ; id++) if (id != activeId) _output[id].ResetReport();
+            for (int id = 0; id < _output.Count; id++)
+                if (id != activeId)
+                    _output[id].ResetReport();
 
             var reZero = inputState.Touchpad1.IsDown && !inputState.Touchpad2.IsDown && inputState.TouchpadButton;
             var toggle = inputState.Touchpad1.IsDown && inputState.Touchpad2.IsDown && inputState.TouchpadButton;
@@ -92,15 +101,15 @@ namespace DSx.Client
 
             MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
             _inputCollector.OnStateChanged(rumble);
-            
+
             foreach (var controller in _output) controller.SubmitReport();
         }
 
         private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)
         {
-            
+
         }
-        
+
         private string? OnCommandReceived(string command, string[] arguments)
         {
             command = command.ToLower();
@@ -114,17 +123,81 @@ namespace DSx.Client
 
         private static string? Sense(TiltToJoystickConverter converter, string[] args)
         {
-            if (args.Length != 1 || !float.TryParse(args[0], out var sense)) return "Command 'sense' accepts 1 argument (decimal)";
+            if (args.Length != 1 || !float.TryParse(args[0], out var sense))
+                return "Command 'sense' accepts 1 argument (decimal)";
             converter.Sensitivity = sense;
             return null;
         }
 
         private static string? Deadzone(TiltToJoystickConverter converter, string[] args)
         {
-            if (args.Length != 1 || !float.TryParse(args[0], out var deadzone)) return "Command 'deadzone' accepts 1 argument (decimal)";
+            if (args.Length != 1 || !float.TryParse(args[0], out var deadzone))
+                return "Command 'deadzone' accepts 1 argument (decimal)";
             converter.Deadzone = deadzone;
             return null;
         }
 
+        private object LoadMapping(string mappingPath)
+        {
+            var yaml = File.ReadAllText(mappingPath);
+            var mapping = new DeserializerBuilder()
+                .WithTagMapping("!DualShock", typeof(DualShockControlConfiguration))
+                .WithTagMapping("!XBox360", typeof(Xbox360ControlConfiguration))
+                .Build()
+                .Deserialize<MappingConfiguration>(yaml);
+
+            // var mapping = new MappingConfiguration
+            // {
+            //     Controllers = new List<ControllerConfiguration>
+            //     {
+            //         new ControllerConfiguration
+            //         {
+            //             Id = 0,
+            //             ConrtollerType = ControllerType.DualShock,
+            //             Modifier = null,
+            //             Mapping = new List<ControlConfiguration>
+            //             {
+            //                 new DualShockControlConfiguration
+            //                 {
+            //                     Input = InputControl.CircleButton,
+            //                     Converter = Converter.ButtonToButtonConverter,
+            //                     ConverterArguments = null,
+            //                     Output = DualShockControl.CircleButton
+            //                 },
+            //                 new DualShockControlConfiguration
+            //                 {
+            //                     Input = InputControl.SquareButton,
+            //                     Converter = Converter.ButtonToButtonConverter,
+            //                     ConverterArguments = null,
+            //                     Output = DualShockControl.CrossButton
+            //                 },
+            //             }
+            //         }
+            //     }
+            // };
+            //
+            // var yaml = new SerializerBuilder()
+            //     .WithTagMapping("!DualShock", typeof(DualShockControlConfiguration))
+            //     .WithTagMapping("!XBox360", typeof(Xbox360ControlConfiguration))
+            // .Build().Serialize(mapping);
+
+            return null;
+        }
+
+
+        public class PopulationNodeResolver : INodeTypeResolver
+        {
+            public bool Resolve(NodeEvent? nodeEvent, ref Type currentType)
+            {
+                if (nodeEvent.Tag.IsEmpty) return false;
+                var returnValue =  currentType != (currentType = nodeEvent.Tag.Value switch
+                {
+                    "!DualShock" => typeof(DualShockControlConfiguration),
+                    "!XBox360" => typeof(Xbox360ControlConfiguration),
+                    _ => currentType
+                });
+                return returnValue;
+            }
+        }
     }
 }

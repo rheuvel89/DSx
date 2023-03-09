@@ -3,7 +3,7 @@ using DSx.Math;
 
 namespace DSx.Mapping
 {
-    public class TiltToJoystickConverter
+    public class TiltToJoystickConverter : IMappingConveter
     {
         private bool _active = true;
         private bool _toggled = false;
