@@ -20,7 +20,7 @@ namespace DSx.Client
     {
         private readonly ViGEmClient _manager;
         private readonly InputCollector _inputCollector;
-        private readonly TiltToJoystickConverter _converter;
+        private readonly TiltToStickConverter _converter;
         private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
@@ -33,7 +33,7 @@ namespace DSx.Client
             _inputCollector = options.Port != null
                 ? new RemoteInputCollector(options.Port.Value)
                 : new LocalInputCollector(options.PollingInterval);
-            _converter = new TiltToJoystickConverter();
+            _converter = new TiltToStickConverter();
             _output = new List<IVirtualGamepad>();
             _console = new Console.Console(_output, options.NoConsole);
             _count = options.Count;
@@ -121,7 +121,7 @@ namespace DSx.Client
             };
         }
 
-        private static string? Sense(TiltToJoystickConverter converter, string[] args)
+        private static string? Sense(TiltToStickConverter converter, string[] args)
         {
             if (args.Length != 1 || !float.TryParse(args[0], out var sense))
                 return "Command 'sense' accepts 1 argument (decimal)";
@@ -129,7 +129,7 @@ namespace DSx.Client
             return null;
         }
 
-        private static string? Deadzone(TiltToJoystickConverter converter, string[] args)
+        private static string? Deadzone(TiltToStickConverter converter, string[] args)
         {
             if (args.Length != 1 || !float.TryParse(args[0], out var deadzone))
                 return "Command 'deadzone' accepts 1 argument (decimal)";

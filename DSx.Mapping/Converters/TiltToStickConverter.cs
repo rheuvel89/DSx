@@ -3,7 +3,7 @@ using DSx.Math;
 
 namespace DSx.Mapping
 {
-    public class TiltToJoystickConverter : IMappingConveter
+    public class TiltToStickConverter : IMappingConveter
     {
         private bool _active = true;
         private bool _toggled = false;
@@ -11,7 +11,7 @@ namespace DSx.Mapping
         private float _deadzone = 0f;
         private IAHRS? _algorithm = null;
 
-        public TiltToJoystickConverter()
+        public TiltToStickConverter()
         {
             //_algorithm = new SimpleAHRS();
             _algorithm = new CombinedAHRS(0.4f, 0.001f, 0.01f);

@@ -40,29 +40,101 @@ namespace DSx.Mapping
 
     public enum XBox360Control
     {
-        XButton,
+        LeftStick,
+        LeftTrigger,
+        LeftShoulder,
+        LeftStickButton,
+
+        RightStick,
+        RightTrigger,
+        RightShoulder,
+        RightStickButton,
+        
+        DPadNorth,
+        DPadNorthEast,
+        DPadEast,
+        DPadSouthEast,
+        DPadSouth,
+        DPadSouthWest,
+        DPadWest,
+        DPadNorthWest,
+        
         YButton,
-        AButton,
         BButton,
+        XButton,
+        AButton,
+
+        BackButton,
+        GuideButton,
+        StartButton,
     }
 
     public enum DualShockControl
     {
-        TriangleButton,
-        CircleButton,
-        SquareButton,
-        CrossButton
-    }
-    
-    public enum InputControl
-    {
+        LeftStick,
+        LeftTrigger,
+        LeftShoulder,
+        LeftStickButton,
+
+        RightStick,
+        RightTrigger,
+        RightShoulder,
+        RightStickButton,
+        
+        DPadNorth,
+        DPadNorthEast,
+        DPadEast,
+        DPadSouthEast,
+        DPadSouth,
+        DPadSouthWest,
+        DPadWest,
+        DPadNorthWest,
+        
         TriangleButton,
         CircleButton,
         SquareButton,
         CrossButton,
-        LeftShoulder,
-        RightShoulder,
 
+        ShareButton,
+        OptionButton,
+    }
+    
+    public enum InputControl
+    {
+        LeftStick,
+        LeftTrigger,
+        LeftShoulder,
+        LeftStickButton,
+
+        RightStick,
+        RightTrigger,
+        RightShoulder,
+        RightStickButton,
+        
+        DPadNorth,
+        DPadNorthEast,
+        DPadEast,
+        DPadSouthEast,
+        DPadSouth,
+        DPadSouthWest,
+        DPadWest,
+        DPadNorthWest,
+        
+        TriangleButton,
+        CircleButton,
+        SquareButton,
+        CrossButton,
+
+        LogoButton,
+        CreateButton,
+        MenuButton,
+        MicButton,
+        
+        Touch1,
+        Touch2,
+        TouchButton,
+        
+        Tilt
     }
     
     public enum MappingConverter

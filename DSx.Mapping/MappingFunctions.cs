@@ -1,6 +1,5 @@
 using System;
 using DSx.Math;
-using DualSenseAPI;
 using DualSenseAPI.State;
 using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Targets;
