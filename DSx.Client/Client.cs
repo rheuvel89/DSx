@@ -25,7 +25,7 @@ namespace DSx.Client
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
         private readonly byte _count;
-        private object _mapping;
+        private Mapping.Mapping _mapping;
 
         public Client(ClientOptions options)
         {
@@ -44,7 +44,7 @@ namespace DSx.Client
             _mapping = LoadMapping(options.MappingPath ?? "config.yaml");
         }
 
-        public async Task Initialize(object mapping)
+        public async Task Initialize()
         {
             foreach (var controller in Enumerable.Range(0, _count)
                          .Select(i => _manager.CreateDualShock4Controller((ushort)i, (ushort)i)))
@@ -61,7 +61,7 @@ namespace DSx.Client
 
         public async Task Start()
         {
-            await Initialize(null);
+            await Initialize();
 
             _timer.Start();
 
@@ -71,36 +71,38 @@ namespace DSx.Client
 
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
-            var timestamp = _timer.ElapsedMilliseconds;
-            var activeId = (inputState.L1Button, inputState.R1Button) switch
-            {
-                (false, false) when _count >= 1 => 0,
-                (true, false) when _count >= 2 => 1,
-                (false, true) when _count >= 3 => 2,
-                (true, true) when _count >= 4 => 3,
-                _ => 0,
-            };
-            MappingFunctions.CopyState(inputState, _output[activeId], false, activeId == 0);
-            for (int id = 0; id < _output.Count; id++)
-                if (id != activeId)
-                    _output[id].ResetReport();
-
-            var reZero = inputState.Touchpad1.IsDown && !inputState.Touchpad2.IsDown && inputState.TouchpadButton;
-            var toggle = inputState.Touchpad1.IsDown && inputState.Touchpad2.IsDown && inputState.TouchpadButton;
-            var rAcc = new Vector<float, float, float>(
-                inputState.Accelerometer.X,
-                inputState.Accelerometer.Y,
-                inputState.Accelerometer.Z
-            );
-            var rGyr = new Vector<float, float, float>(
-                inputState.Gyro.X,
-                inputState.Gyro.Y,
-                inputState.Gyro.Z
-            );
-            var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
-
-            MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
-            _inputCollector.OnStateChanged(rumble);
+            // var timestamp = _timer.ElapsedMilliseconds;
+            // var activeId = (inputState.L1Button, inputState.R1Button) switch
+            // {
+            //     (false, false) when _count >= 1 => 0,
+            //     (true, false) when _count >= 2 => 1,
+            //     (false, true) when _count >= 3 => 2,
+            //     (true, true) when _count >= 4 => 3,
+            //     _ => 0,
+            // };
+            // MappingFunctions.CopyState(inputState, _output[activeId], false, activeId == 0);
+            // for (int id = 0; id < _output.Count; id++)
+            //     if (id != activeId)
+            //         _output[id].ResetReport();
+            //
+            // var reZero = inputState.Touchpad1.IsDown && !inputState.Touchpad2.IsDown && inputState.TouchpadButton;
+            // var toggle = inputState.Touchpad1.IsDown && inputState.Touchpad2.IsDown && inputState.TouchpadButton;
+            // var rAcc = new Vector<float, float, float>(
+            //     inputState.Accelerometer.X,
+            //     inputState.Accelerometer.Y,
+            //     inputState.Accelerometer.Z
+            // );
+            // var rGyr = new Vector<float, float, float>(
+            //     inputState.Gyro.X,
+            //     inputState.Gyro.Y,
+            //     inputState.Gyro.Z
+            // );
+            // var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
+            //
+            // MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
+            // _inputCollector.OnStateChanged(rumble);
+            
+            _mapping.Map(ds, _output);
 
             foreach (var controller in _output) controller.SubmitReport();
         }
@@ -137,51 +139,17 @@ namespace DSx.Client
             return null;
         }
 
-        private object LoadMapping(string mappingPath)
+        private Mapping.Mapping LoadMapping(string mappingPath)
         {
             var yaml = File.ReadAllText(mappingPath);
-            var mapping = new DeserializerBuilder()
+            var mappingConfiguration =  new DeserializerBuilder()
                 .WithTagMapping("!DualShock", typeof(DualShockControlConfiguration))
                 .WithTagMapping("!XBox360", typeof(Xbox360ControlConfiguration))
                 .Build()
                 .Deserialize<MappingConfiguration>(yaml);
 
-            // var mapping = new MappingConfiguration
-            // {
-            //     Controllers = new List<ControllerConfiguration>
-            //     {
-            //         new ControllerConfiguration
-            //         {
-            //             Id = 0,
-            //             ConrtollerType = ControllerType.DualShock,
-            //             Modifier = null,
-            //             Mapping = new List<ControlConfiguration>
-            //             {
-            //                 new DualShockControlConfiguration
-            //                 {
-            //                     Input = InputControl.CircleButton,
-            //                     Converter = Converter.ButtonToButtonConverter,
-            //                     ConverterArguments = null,
-            //                     Output = DualShockControl.CircleButton
-            //                 },
-            //                 new DualShockControlConfiguration
-            //                 {
-            //                     Input = InputControl.SquareButton,
-            //                     Converter = Converter.ButtonToButtonConverter,
-            //                     ConverterArguments = null,
-            //                     Output = DualShockControl.CrossButton
-            //                 },
-            //             }
-            //         }
-            //     }
-            // };
-            //
-            // var yaml = new SerializerBuilder()
-            //     .WithTagMapping("!DualShock", typeof(DualShockControlConfiguration))
-            //     .WithTagMapping("!XBox360", typeof(Xbox360ControlConfiguration))
-            // .Build().Serialize(mapping);
-
-            return null;
+            var mapping = new Mapping.Mapping(mappingConfiguration);
+            return mapping;
         }
 
 

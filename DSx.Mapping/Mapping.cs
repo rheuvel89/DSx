@@ -10,11 +10,14 @@ namespace DSx.Mapping
     public class Mapping
     {
         private readonly IDictionary<byte, IDictionary<InputControl,IMappingAction>> _mapping;
+        private readonly IDictionary<byte, Func<DualSense, bool>> _controllerSelectors;
 
         public Mapping(MappingConfiguration configuration)
         {
             _mapping = new Dictionary<byte, IDictionary<InputControl, IMappingAction>>();
+            _controllerSelectors = new Dictionary<byte, Func<DualSense, bool>>();
 
+            byte index = 0;
             foreach (var controller in configuration.Controllers.OrderBy(x => x.Id))
             {
                 var baseConfiguration = controller.ConrtollerType switch
@@ -22,17 +25,45 @@ namespace DSx.Mapping
                     ControllerType.DualShock => BasicDualShockMapping,
                     ControllerType.XBox360 => BasicXBox360Mapping
                 };
-                var controllerMapping = baseConfiguration
-                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                var controllerMapping = new Dictionary<InputControl, IMappingAction>(baseConfiguration);
+                
+                foreach (var controlConfiguration in controller.Mapping)
+                {
+                    IMappingAction config = controlConfiguration switch
+                    {
+                        DualShockControlConfiguration d => MapDualShockAction(d.Input, d.Output, d.Converter, d.ConverterArguments),
+                        Xbox360ControlConfiguration x => MapXBox360Action(x.Input, x.Output, x.Converter, x.ConverterArguments)
+                    };
+                    controllerMapping[controlConfiguration.Input] = config;
+                }
+
+                if (controller.Modifier != null) foreach (var modifier in controller.Modifier) controllerMapping.Remove(modifier);
+                
+                _mapping.Add(index, controllerMapping);
+
+                Func<DualSense, bool> controllerSelector = i =>
+                    controller.Modifier != null &&
+                    controller.Modifier.All(m => (bool)MappingConstants.InputSelector[m](i)) &&
+                    !configuration.Controllers.Any(c =>
+                        c.Modifier != null &&
+                        c.Modifier.All(m => (bool)MappingConstants.InputSelector[m](i)));
+                _controllerSelectors.Add(index, controllerSelector);
+
+                index += 1;
             }
+            
             
         }
         
-        public void Map(DualSense input, IVirtualGamepad[] output)
+        public void Map(DualSense input, IList<IVirtualGamepad> output)
         {
-            byte modifierSelection = 0;
-            var mapping = _mapping[modifierSelection];
-            foreach (var action in mapping) action.Value.Map(input, output[modifierSelection]);
+            var id = _controllerSelectors.FirstOrDefault(kvp => kvp.Value?.Invoke(input) ?? false).Key;
+            var mapping = _mapping[id];
+            for (byte i = 0; i < output.Count; i++)
+            {
+                if (i == id) foreach (var action in mapping) action.Value.Map(input, output[id]);
+                else output[i].ResetReport();
+            }
         }
         
         private static DualShockMappingAction MapDualShockAction(

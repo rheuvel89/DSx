@@ -8,11 +8,6 @@ Controllers:
         Input: CircleButton
         Converter: ButtonToButtonConverter
         ConverterArguments:
-      - !DualShock
-        Output: CrossButton
-        Input: SquareButton
-        Converter: ButtonToButtonConverter
-        ConverterArguments: 
   - Id: 1
     ConrtollerType: XBox360
     Modifier:
@@ -24,7 +19,7 @@ Controllers:
         Converter: ButtonToButtonConverter
         ConverterArguments:
       - !XBox360
-        Output: AButton
-        Input: SquareButton
+        Output: YButton
+        Input: TriangleButton
         Converter: ButtonToButtonConverter
         ConverterArguments: 

@@ -38,7 +38,7 @@ namespace DSx.Mapping
             [InputControl.TriangleButton] = i => i.InputState.TriangleButton,
             [InputControl.CircleButton] = i => i.InputState.CircleButton,
             [InputControl.SquareButton] = i => i.InputState.SquareButton,
-            [InputControl.CrossButton] = i => i.InputState.CreateButton,
+            [InputControl.CrossButton] = i => i.InputState.CrossButton,
             [InputControl.LogoButton] = i => i.InputState.LogoButton,
             [InputControl.CreateButton] = i => i.InputState.CreateButton,
             [InputControl.MenuButton] = i => i.InputState.MenuButton,
@@ -57,8 +57,8 @@ namespace DSx.Mapping
             [DualShockControl.LeftStickButton] = (o, v) => o.SetButtonState(DualShock4Button.ThumbLeft, (bool)v),
             [DualShockControl.RightStick] = (o, v) => 
             {
-                o.LeftThumbX = (byte)(byte.MaxValue / 2 - ((Vec2)v).X * byte.MaxValue / 2);
-                o.LeftThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * byte.MaxValue / 2);
+                o.RightThumbX = (byte)(byte.MaxValue / 2 - ((Vec2)v).X * byte.MaxValue / 2);
+                o.RightThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * byte.MaxValue / 2);
             },
             [DualShockControl.RightTrigger] = (o, v) => o.RightTrigger = (byte)((float)v * byte.MaxValue),
             [DualShockControl.RightShoulder] = (o, v) => o.SetButtonState(DualShock4Button.ShoulderRight, (bool)v),

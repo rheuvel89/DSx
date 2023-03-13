@@ -41,5 +41,10 @@ namespace DSx.Mapping
 
             return _algorithm.Calculate(timestamp, rAcc.Normalize(), rGyr.Normalize(), _sensitivity, _deadzone, reZero, out rumble);
         }
+
+        public object Convert(object input, params string[] args)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

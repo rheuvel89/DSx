@@ -2,9 +2,9 @@ using DualSenseAPI;
 
 namespace DSx.Mapping
 {
-    public class StickToStickConverter : IMappingConveter<Vec2, Vec2>
+    public class StickToStickConverter : IMappingConveter
     {
-        public Vec2 Convert(Vec2 input, params object[] args)
+        public object Convert(object input, params string[] args)
         {
             return input;
         }
