@@ -14,7 +14,7 @@ namespace DSx.Mapping
             {
                 [MappingConverter.ButtonToButtonConverter] = new ButtonToButtonConverter(),
                 [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
-                [MappingConverter.TiltToJoystickConverter] = new TiltToStickConverter(),
+                [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
             };
         
         public static readonly IDictionary<InputControl, Func<DualSense, object>> InputSelector = new Dictionary<InputControl, Func<DualSense, object>>
@@ -43,7 +43,8 @@ namespace DSx.Mapping
             [InputControl.LogoButton] = i => i.InputState.LogoButton,
             [InputControl.CreateButton] = i => i.InputState.CreateButton,
             [InputControl.MenuButton] = i => i.InputState.MenuButton,
-            [InputControl.MicButton] = i => i.InputState.MicButton   
+            [InputControl.MicButton] = i => i.InputState.MicButton,
+            [InputControl.Tilt] = i => (i.InputState.Accelerometer, i.InputState.Gyro),
         };
         
         public static readonly IDictionary<DualShockControl, Action<IDualShock4Controller, object>> DualShockAsigner = new Dictionary<DualShockControl, Action<IDualShock4Controller, object>>

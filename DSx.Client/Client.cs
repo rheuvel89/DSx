@@ -51,8 +51,8 @@ namespace DSx.Client
                          {
                              return _mapping[(byte)i] switch
                              {
-                                 ControllerType.DualShock => _manager.CreateDualShock4Controller((ushort)i, (ushort)i),
-                                 ControllerType.XBox360 => _manager.CreateXbox360Controller((ushort)i, (ushort)i),
+                                 ControllerType.DualShock => _manager.CreateDualShock4Controller(),
+                                 ControllerType.XBox360 => _manager.CreateXbox360Controller(),
                              };
                          }))
             {
@@ -111,14 +111,14 @@ namespace DSx.Client
             // MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
             // _inputCollector.OnStateChanged(rumble);
 
-            var ms = _timer.ElapsedMilliseconds;
+            // var ms = _timer.ElapsedMilliseconds;
             _mapping.Map(ds, _output);
 
             foreach (var controller in _output) controller.SubmitReport();
-            var elapsed = _timer.ElapsedMilliseconds - ms;
-            _elapsed = elapsed > _elapsed ? elapsed : _elapsed;
-            _average = (_average*900 + elapsed*1000*100) / 1000;
-            System.Console.WriteLine($"{_elapsed} | {_average/1000} | {elapsed}");
+            // var elapsed = _timer.ElapsedMilliseconds - ms;
+            // _elapsed = elapsed > _elapsed ? elapsed : _elapsed;
+            // _average = (_average*900 + elapsed*1000*100) / 1000;
+            // System.Console.WriteLine($"{_elapsed} | {_average/1000} | {elapsed}");
         }
 
         private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)

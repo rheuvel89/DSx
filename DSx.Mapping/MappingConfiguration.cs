@@ -20,16 +20,17 @@ namespace DSx.Mapping
         public InputControl Input { get; set; } //private set; }
         public MappingConverter Converter { get; set; } //private set; }
         public IList<string>? ConverterArguments { get; set; } //private set; }
+        public bool? Global { get; set; }
     }
 
     public class Xbox360ControlConfiguration : ControlConfiguration
     {
-        public XBox360Control Output { get; set; } //private set; }
+        public XBox360Control? Output { get; set; } //private set; }
     }
 
     public class DualShockControlConfiguration : ControlConfiguration
     {
-        public DualShockControl Output { get; set; } //private set; }
+        public DualShockControl? Output { get; set; } //private set; }
     }
 
     public enum ControllerType
@@ -144,6 +145,6 @@ namespace DSx.Mapping
     {
         ButtonToButtonConverter,
         InverseButtonToButtonConverter,
-        TiltToJoystickConverter,
+        TiltToStickConverter,
     }
 }

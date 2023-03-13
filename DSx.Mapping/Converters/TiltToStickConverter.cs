@@ -1,18 +1,23 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using DSx.Math;
+using DualSenseAPI;
 
 namespace DSx.Mapping
 {
     public class TiltToStickConverter : IMappingConveter
     {
+        private Stopwatch _timer;
         private bool _active = true;
         private bool _toggled = false;
         private float _sensitivity = 1f;
         private float _deadzone = 0f;
         private IAHRS? _algorithm = null;
+        
 
         public TiltToStickConverter()
         {
+            _timer = Stopwatch.StartNew();
             //_algorithm = new SimpleAHRS();
             _algorithm = new CombinedAHRS(0.4f, 0.001f, 0.01f);
             //_algorithm = new MahonyAHRS((float)pollingInterval/1000 , 1f, 0f);
@@ -44,7 +49,12 @@ namespace DSx.Mapping
 
         public object Convert(object input, params string[] args)
         {
-            throw new System.NotImplementedException();
+            var (acc, gyro) = ((Vec3, Vec3))input;
+            var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
+            var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
+         
+            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), _sensitivity, _deadzone, false, out var _);
+            return new Vec2 { X = -result.X, Y = result.Y };
         }
     }
 }

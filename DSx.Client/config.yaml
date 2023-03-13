@@ -1,20 +1,25 @@
 Controllers:
   - Id: 0
+    ConrtollerType: DualShock
+    Modifier:
+    Mapping:
+      - !DualShock
+        Output: LeftStick
+        Input: LeftStick
+        ConverterArguments:
+  - Id: 1
     ConrtollerType: XBox360
     Modifier:
+      - LeftShoulder
     Mapping:
       - !XBox360
         Output: YButton
         Input: TriangleButton
         Converter: ButtonToButtonConverter
         ConverterArguments:
-  - Id: 1
-    ConrtollerType: DualShock
-    Modifier:
-      - LeftShoulder
-    Mapping:
-      - !DualShock
-        Output: CircleButton
-        Input: CircleButton
-        Converter: ButtonToButtonConverter
+      - !XBox360
+        Global: true
+        Output: LeftStick
+        Input: Tilt
+        Converter: TiltToStickConverter
         ConverterArguments:
