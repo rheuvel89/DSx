@@ -35,6 +35,7 @@ namespace DSx.Mapping
             [InputControl.DPadSouthWest] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
             [InputControl.DPadWest] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
             [InputControl.DPadNorthWest] = i => i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
+            [InputControl.DPadNone] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
             [InputControl.TriangleButton] = i => i.InputState.TriangleButton,
             [InputControl.CircleButton] = i => i.InputState.CircleButton,
             [InputControl.SquareButton] = i => i.InputState.SquareButton,
@@ -49,8 +50,8 @@ namespace DSx.Mapping
         {
             [DualShockControl.LeftStick] = (o, v) =>
             {
-                o.LeftThumbX = (byte)(byte.MaxValue / 2 - ((Vec2)v).X * byte.MaxValue / 2);
-                o.LeftThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * byte.MaxValue / 2);
+                o.LeftThumbX = (byte)(-byte.MaxValue / 2 + ((Vec2)v).X * (byte.MaxValue / 2 - 1));
+                o.LeftThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * (byte.MaxValue / 2 - 1));
             },
             [DualShockControl.LeftTrigger] = (o, v) => o.LeftTrigger = (byte)((float)v * byte.MaxValue),
             [DualShockControl.LeftShoulder] = (o, v) => o.SetButtonState(DualShock4Button.ShoulderLeft, (bool)v),
@@ -63,14 +64,42 @@ namespace DSx.Mapping
             [DualShockControl.RightTrigger] = (o, v) => o.RightTrigger = (byte)((float)v * byte.MaxValue),
             [DualShockControl.RightShoulder] = (o, v) => o.SetButtonState(DualShock4Button.ShoulderRight, (bool)v),
             [DualShockControl.RightStickButton] = (o, v) => o.SetButtonState(DualShock4Button.ThumbRight, (bool)v),
-            [DualShockControl.DPadNorth] = (o, v) => o.SetDPadDirection(DualShock4DPadDirection.North),
-            [DualShockControl.DPadNorthEast] = (o, v) => o.SetDPadDirection(DualShock4DPadDirection.Northeast),
-            [DualShockControl.DPadEast] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.East),
-            [DualShockControl.DPadSouthEast] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.Southeast),
-            [DualShockControl.DPadSouth] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.South),
-            [DualShockControl.DPadSouthWest] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.Southwest),
-            [DualShockControl.DPadWest] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.West),
-            [DualShockControl.DPadNorthWest] = (o, v) =>  o.SetDPadDirection(DualShock4DPadDirection.Northwest),
+            [DualShockControl.DPadNorth] = (o, v) =>
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.North);
+            },
+            [DualShockControl.DPadNorthEast] = (o, v) =>
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.Northeast);
+            },
+            [DualShockControl.DPadEast] = (o, v) =>
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.East);
+            },
+            [DualShockControl.DPadSouthEast] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.Southeast);
+            },
+            [DualShockControl.DPadSouth] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.South);
+            },
+            [DualShockControl.DPadSouthWest] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.Southwest);
+            },
+            [DualShockControl.DPadWest] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.West);
+            },
+            [DualShockControl.DPadNorthWest] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.Northwest);
+            },
+            [DualShockControl.DPadNone] = (o, v) => 
+            {
+                if ((bool)v) o.SetDPadDirection(DualShock4DPadDirection.None);
+            },
             [DualShockControl.TriangleButton] = (o, v) => o.SetButtonState(DualShock4Button.Triangle, (bool)v),
             [DualShockControl.CircleButton] = (o, v) => o.SetButtonState(DualShock4Button.Circle, (bool)v),
             [DualShockControl.SquareButton] = (o, v) => o.SetButtonState(DualShock4Button.Square, (bool)v),
@@ -97,29 +126,68 @@ namespace DSx.Mapping
             [XBox360Control.RightTrigger] = (o, v) => o.RightTrigger = (byte)((float)v * byte.MaxValue),
             [XBox360Control.RightShoulder] = (o, v) => o.SetButtonState(Xbox360Button.RightShoulder, (bool)v),
             [XBox360Control.RightStickButton] = (o, v) => o.SetButtonState(Xbox360Button.RightThumb, (bool)v),
-            [XBox360Control.DPadNorth] = (o, v) => o.SetButtonState(Xbox360Button.Up, (bool)v),
+            [XBox360Control.DPadNorth] = (o, v) =>
+            {
+                o.SetButtonState(Xbox360Button.Up, (bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
+            },
             [XBox360Control.DPadNorthEast] = (o, v) =>
             {
                 o.SetButtonState(Xbox360Button.Up, (bool)v);
                 o.SetButtonState(Xbox360Button.Right, (bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
             },
-            [XBox360Control.DPadEast] = (o, v) => o.SetButtonState(Xbox360Button.Right, (bool)v),
+            [XBox360Control.DPadEast] = (o, v) =>
+            {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
+                o.SetButtonState(Xbox360Button.Right, (bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
+            },
             [XBox360Control.DPadSouthEast] = (o, v) =>
             {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, (bool)v);
                 o.SetButtonState(Xbox360Button.Down, (bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
             },
-            [XBox360Control.DPadSouth] = (o, v) => o.SetButtonState(Xbox360Button.Down, (bool)v),
+            [XBox360Control.DPadSouth] = (o, v) =>
+            {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
+                o.SetButtonState(Xbox360Button.Down, (bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
+            },
             [XBox360Control.DPadSouthWest] = (o, v) =>
             {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, (bool)v);
                 o.SetButtonState(Xbox360Button.Left, (bool)v);
             },
-            [XBox360Control.DPadWest] = (o, v) => o.SetButtonState(Xbox360Button.Left, (bool)v),
+            [XBox360Control.DPadWest] = (o, v) =>
+            {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, (bool)v);
+            },
             [XBox360Control.DPadNorthWest] = (o, v) =>
             {
-                o.SetButtonState(Xbox360Button.Left, (bool)v);
                 o.SetButtonState(Xbox360Button.Up, (bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, (bool)v);
+            },
+            [XBox360Control.DPadNone] = (o, v) =>
+            {
+                o.SetButtonState(Xbox360Button.Up, !(bool)v);
+                o.SetButtonState(Xbox360Button.Right, !(bool)v);
+                o.SetButtonState(Xbox360Button.Down, !(bool)v);
+                o.SetButtonState(Xbox360Button.Left, !(bool)v);
             },
             [XBox360Control.YButton] = (o, v) => o.SetButtonState(Xbox360Button.Y, (bool)v),
             [XBox360Control.BButton] = (o, v) => o.SetButtonState(Xbox360Button.B, (bool)v),

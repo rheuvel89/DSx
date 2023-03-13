@@ -58,6 +58,7 @@ namespace DSx.Mapping
         DPadSouthWest,
         DPadWest,
         DPadNorthWest,
+        DPadNone,
         
         YButton,
         BButton,
@@ -89,6 +90,7 @@ namespace DSx.Mapping
         DPadSouthWest,
         DPadWest,
         DPadNorthWest,
+        DPadNone,
         
         TriangleButton,
         CircleButton,
@@ -119,6 +121,7 @@ namespace DSx.Mapping
         DPadSouthWest,
         DPadWest,
         DPadNorthWest,
+        DPadNone,
         
         TriangleButton,
         CircleButton,

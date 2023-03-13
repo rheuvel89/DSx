@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using DualSenseAPI;
 using Nefarius.ViGEm.Client;
@@ -120,6 +119,7 @@ namespace DSx.Mapping
             [InputControl.DPadSouthWest] = MapDualShockAction(InputControl.DPadSouthWest, DualShockControl.DPadSouthWest, null, null), 
             [InputControl.DPadWest] = MapDualShockAction(InputControl.DPadWest, DualShockControl.DPadWest, null, null), 
             [InputControl.DPadNorthWest] = MapDualShockAction(InputControl.DPadNorthWest, DualShockControl.DPadNorthWest, null, null), 
+            [InputControl.DPadNone] = MapDualShockAction(InputControl.DPadNone, DualShockControl.DPadNone, null, null), 
             [InputControl.TriangleButton] = MapDualShockAction(InputControl.TriangleButton, DualShockControl.TriangleButton, null, null), 
             [InputControl.CircleButton] = MapDualShockAction(InputControl.CircleButton, DualShockControl.CircleButton, null, null), 
             [InputControl.SquareButton] = MapDualShockAction(InputControl.SquareButton, DualShockControl.SquareButton, null, null), 
@@ -146,6 +146,7 @@ namespace DSx.Mapping
             [InputControl.DPadSouthWest] = MapXBox360Action(InputControl.DPadSouthWest, XBox360Control.DPadSouthWest, null, null), 
             [InputControl.DPadWest] = MapXBox360Action(InputControl.DPadWest, XBox360Control.DPadWest, null, null), 
             [InputControl.DPadNorthWest] = MapXBox360Action(InputControl.DPadNorthWest, XBox360Control.DPadNorthWest, null, null), 
+            [InputControl.DPadNone] = MapXBox360Action(InputControl.DPadNone, XBox360Control.DPadNone, null, null), 
             [InputControl.TriangleButton] = MapXBox360Action(InputControl.TriangleButton, XBox360Control.YButton, null, null), 
             [InputControl.CircleButton] = MapXBox360Action(InputControl.CircleButton, XBox360Control.BButton, null, null), 
             [InputControl.SquareButton] = MapXBox360Action(InputControl.SquareButton, XBox360Control.XButton, null, null), 
