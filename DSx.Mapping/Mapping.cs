@@ -8,17 +8,21 @@ namespace DSx.Mapping
 {
     public class Mapping
     {
+        private readonly IDictionary<byte, ControllerType> _controllerTypes;
         private readonly IDictionary<byte, IDictionary<InputControl,IMappingAction>> _mapping;
         private readonly IDictionary<byte, Func<DualSense, bool>> _controllerSelectors;
 
         public Mapping(MappingConfiguration configuration)
         {
+            _controllerTypes = new Dictionary<byte, ControllerType>();
             _mapping = new Dictionary<byte, IDictionary<InputControl, IMappingAction>>();
             _controllerSelectors = new Dictionary<byte, Func<DualSense, bool>>();
 
             byte index = 0;
             foreach (var controller in configuration.Controllers.OrderBy(x => x.Id))
             {
+                _controllerTypes.Add(index, controller.ConrtollerType);
+                
                 var baseConfiguration = controller.ConrtollerType switch
                 {
                     ControllerType.DualShock => BasicDualShockMapping,
@@ -50,8 +54,6 @@ namespace DSx.Mapping
 
                 index += 1;
             }
-            
-            
         }
         
         public void Map(DualSense input, IList<IVirtualGamepad> output)
@@ -155,5 +157,9 @@ namespace DSx.Mapping
             [InputControl.LogoButton] = MapXBox360Action(InputControl.MenuButton, XBox360Control.GuideButton, null, null), 
             [InputControl.MenuButton] = MapXBox360Action(InputControl.MenuButton, XBox360Control.StartButton, null, null), 
         };
+
+        public int Count => _mapping.Count;
+
+        public ControllerType this[byte index] => _controllerTypes[index];
     }
 }

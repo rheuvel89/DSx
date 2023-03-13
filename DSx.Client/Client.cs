@@ -46,8 +46,15 @@ namespace DSx.Client
 
         public async Task Initialize()
         {
-            foreach (var controller in Enumerable.Range(0, _count)
-                         .Select(i => _manager.CreateDualShock4Controller((ushort)i, (ushort)i)))
+            foreach (var controller in Enumerable.Range(0, _mapping.Count)
+                         .Select<int, IVirtualGamepad>(i =>
+                         {
+                             return _mapping[(byte)i] switch
+                             {
+                                 ControllerType.DualShock => _manager.CreateDualShock4Controller((ushort)i, (ushort)i),
+                                 ControllerType.XBox360 => _manager.CreateXbox360Controller((ushort)i, (ushort)i),
+                             };
+                         }))
             {
                 _output.Add(controller);
                 controller.Connect();
@@ -69,6 +76,8 @@ namespace DSx.Client
             await _console.Attach();
         }
 
+        private long _elapsed = 0;
+        private long _average = 1000;
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
             // var timestamp = _timer.ElapsedMilliseconds;
@@ -101,10 +110,15 @@ namespace DSx.Client
             //
             // MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
             // _inputCollector.OnStateChanged(rumble);
-            
+
+            var ms = _timer.ElapsedMilliseconds;
             _mapping.Map(ds, _output);
 
             foreach (var controller in _output) controller.SubmitReport();
+            var elapsed = _timer.ElapsedMilliseconds - ms;
+            _elapsed = elapsed > _elapsed ? elapsed : _elapsed;
+            _average = (_average*900 + elapsed*1000*100) / 1000;
+            System.Console.WriteLine($"{_elapsed} | {_average/1000} | {elapsed}");
         }
 
         private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)
@@ -150,22 +164,6 @@ namespace DSx.Client
 
             var mapping = new Mapping.Mapping(mappingConfiguration);
             return mapping;
-        }
-
-
-        public class PopulationNodeResolver : INodeTypeResolver
-        {
-            public bool Resolve(NodeEvent? nodeEvent, ref Type currentType)
-            {
-                if (nodeEvent.Tag.IsEmpty) return false;
-                var returnValue =  currentType != (currentType = nodeEvent.Tag.Value switch
-                {
-                    "!DualShock" => typeof(DualShockControlConfiguration),
-                    "!XBox360" => typeof(Xbox360ControlConfiguration),
-                    _ => currentType
-                });
-                return returnValue;
-            }
         }
     }
 }

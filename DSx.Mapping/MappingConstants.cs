@@ -128,6 +128,7 @@ namespace DSx.Mapping
             [XBox360Control.RightStickButton] = (o, v) => o.SetButtonState(Xbox360Button.RightThumb, (bool)v),
             [XBox360Control.DPadNorth] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, (bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
@@ -135,6 +136,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadNorthEast] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, (bool)v);
                 o.SetButtonState(Xbox360Button.Right, (bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
@@ -142,6 +144,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadEast] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, (bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
@@ -149,6 +152,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadSouthEast] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, (bool)v);
                 o.SetButtonState(Xbox360Button.Down, (bool)v);
@@ -156,6 +160,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadSouth] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, (bool)v);
@@ -163,6 +168,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadSouthWest] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, (bool)v);
@@ -170,6 +176,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadWest] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
@@ -177,6 +184,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadNorthWest] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, (bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
@@ -184,6 +192,7 @@ namespace DSx.Mapping
             },
             [XBox360Control.DPadNone] = (o, v) =>
             {
+                if (!(bool)v) return;
                 o.SetButtonState(Xbox360Button.Up, !(bool)v);
                 o.SetButtonState(Xbox360Button.Right, !(bool)v);
                 o.SetButtonState(Xbox360Button.Down, !(bool)v);
