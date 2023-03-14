@@ -170,10 +170,10 @@ namespace DSx.Client
             switch (controllerType)
             {
                 case ControllerType.DualShock when Enum.TryParse<DualShockControl>(args[2], out var dualShockOutput):
-                    mapping.AddOrReplaceMapping(id, input, dualShockOutput, converter, arguments);
+                    mapping.AddOrReplaceMapping(id, input, dualShockOutput, converter, arguments, global);
                     return null;
                 case ControllerType.XBox360 when Enum.TryParse<XBox360Control>(args[2], out var xBox360Output):
-                    mapping.AddOrReplaceMapping(id, input, xBox360Output, converter, arguments);
+                    mapping.AddOrReplaceMapping(id, input, xBox360Output, converter, arguments, global);
                     return null;
                 default:
                     return $"Could not execute command 'map' with the given arguments: {string.Join(" | ", args)}";
