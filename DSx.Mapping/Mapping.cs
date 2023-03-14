@@ -72,6 +72,18 @@ namespace DSx.Mapping
                 foreach (var action in _globalMapping[i]) action.Value.Map(input, output[i]);
             }
         }
+
+        public void AddOrReplaceMapping(byte controllerId, InputControl input, DualShockControl output, MappingConverter? converter, IList<string> arguments, bool global = false)
+        {
+            var mapping = global ? _globalMapping : _controllerMapping;
+            mapping[controllerId][input] = MapDualShockAction(input, output, converter, arguments);
+        }
+
+        public void AddOrReplaceMapping(byte controllerId, InputControl input, XBox360Control output, MappingConverter? converter, IList<string> arguments, bool global = false)
+        {
+            var mapping = global ? _globalMapping : _controllerMapping;
+            mapping[controllerId][input] = MapXBox360Action(input, output, converter, arguments);
+        }
         
         private static DualShockMappingAction MapDualShockAction(
             InputControl input,
@@ -169,5 +181,10 @@ namespace DSx.Mapping
         public int Count => _controllerMapping.Count;
 
         public ControllerType this[byte index] => _controllerTypes[index];
+
+        public bool TryGetValue(byte id, out ControllerType controllerType)
+        {
+            return _controllerTypes.TryGetValue(id, out controllerType);
+        }
     }
 }

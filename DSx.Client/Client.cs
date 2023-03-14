@@ -131,8 +131,9 @@ namespace DSx.Client
             command = command.ToLower();
             return command switch
             {
-                "sense" => Sense(_converter, arguments),
-                "deadzone" => Deadzone(_converter, arguments),
+                // "sense" => Sense(_converter, arguments),
+                // "deadzone" => Deadzone(_converter, arguments),
+                "map" => Map(_mapping, arguments),
                 _ => $"Command {command} not recognized"
             };
         }
@@ -151,6 +152,32 @@ namespace DSx.Client
                 return "Command 'deadzone' accepts 1 argument (decimal)";
             converter.Deadzone = deadzone;
             return null;
+        }
+
+        private static string? Map(Mapping.Mapping mapping, string[] args)
+        {
+            if (args.Length < 4) return "Command 'map' accepts at least 4 arguments [id, input, output, global]";
+            
+            if (!byte.TryParse(args[0], out var id)) return $"Could not convert {args[0]} to id";
+            if (!mapping.TryGetValue(id, out var controllerType)) return $"Id {id} is out of range";
+            if (!Enum.TryParse<InputControl>(args[1], out var input)) return $"Could not convert {args[1]} to input";
+            if (!bool.TryParse(args[3], out var global)) return $"Could not convert {args[3]} to global";
+            
+            var converter = args.Length >= 5 && Enum.TryParse<MappingConverter>(args[3], out var c) ? c : (MappingConverter?)null;
+
+            var arguments = args.Skip(converter == null ? 4 : 5).ToList();
+
+            switch (controllerType)
+            {
+                case ControllerType.DualShock when Enum.TryParse<DualShockControl>(args[2], out var dualShockOutput):
+                    mapping.AddOrReplaceMapping(id, input, dualShockOutput, converter, arguments);
+                    return null;
+                case ControllerType.XBox360 when Enum.TryParse<XBox360Control>(args[2], out var xBox360Output):
+                    mapping.AddOrReplaceMapping(id, input, xBox360Output, converter, arguments);
+                    return null;
+                default:
+                    return $"Could not execute command 'map' with the given arguments: {string.Join(" | ", args)}";
+            }
         }
 
         private Mapping.Mapping LoadMapping(string mappingPath)
