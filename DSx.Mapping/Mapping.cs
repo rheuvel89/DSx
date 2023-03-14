@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DualSenseAPI;
+using DualSenseAPI.State;
 using Nefarius.ViGEm.Client;
 
 namespace DSx.Mapping
@@ -11,14 +12,14 @@ namespace DSx.Mapping
         private readonly IDictionary<byte, ControllerType> _controllerTypes;
         private readonly IDictionary<byte, IDictionary<InputControl,IMappingAction>> _globalMapping;
         private readonly IDictionary<byte, IDictionary<InputControl,IMappingAction>> _controllerMapping;
-        private readonly IDictionary<byte, Func<DualSense, bool>> _controllerSelectors;
+        private readonly IDictionary<byte, Func<DualSenseInputState, bool>> _controllerSelectors;
 
         public Mapping(MappingConfiguration configuration)
         {
             _controllerTypes = new Dictionary<byte, ControllerType>();
             _globalMapping = new Dictionary<byte, IDictionary<InputControl, IMappingAction>>();
             _controllerMapping = new Dictionary<byte, IDictionary<InputControl, IMappingAction>>();
-            _controllerSelectors = new Dictionary<byte, Func<DualSense, bool>>();
+            _controllerSelectors = new Dictionary<byte, Func<DualSenseInputState, bool>>();
 
             byte index = 0;
             foreach (var controller in configuration.Controllers.OrderBy(x => x.Id))
@@ -50,19 +51,26 @@ namespace DSx.Mapping
                 _globalMapping.Add(index, globalMapping);
                 _controllerMapping.Add(index, controllerMapping);
 
-                Func<DualSense, bool> controllerSelector = i =>
+                Func<DualSenseInputState, bool> controllerSelector = i =>
                     controller.Modifier != null &&
                     controller.Modifier.All(m => (bool)MappingConstants.InputSelector[m](i)) &&
                     !configuration.Controllers.Any(c =>
+                        c.Id != controller.Id &&
                         c.Modifier != null &&
                         c.Modifier.All(m => (bool)MappingConstants.InputSelector[m](i)));
                 _controllerSelectors.Add(index, controllerSelector);
 
                 index += 1;
             }
+
+            foreach (var input in configuration.Controllers.SelectMany(x => x.Modifier ?? new List<InputControl>()))
+            {
+                foreach (var kvp in _globalMapping) if (kvp.Value.ContainsKey(input)) kvp.Value.Remove(input); 
+                foreach (var kvp in _controllerMapping) if (kvp.Value.ContainsKey(input)) kvp.Value.Remove(input); 
+            }
         }
         
-        public void Map(DualSense input, IList<IVirtualGamepad> output)
+        public void Map(DualSenseInputState input, IList<IVirtualGamepad> output)
         {
             var id = _controllerSelectors.FirstOrDefault(kvp => kvp.Value?.Invoke(input) ?? false).Key;
             for (byte i = 0; i < output.Count; i++)
@@ -128,7 +136,6 @@ namespace DSx.Mapping
                 var value = selector(i);
                 var argumentValues = inputArgumentArray?.Select(x => x(i)).ToArray();
                 var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out feedback) : value;
-                if (feedback != null && feedback is Vec2 v) { i.OutputState.LeftRumble = v.X; i.OutputState.RightRumble = v.Y; }
                 asigner(o, result);
             });
         }

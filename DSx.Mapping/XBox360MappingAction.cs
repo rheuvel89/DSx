@@ -1,5 +1,6 @@
 using System;
 using DualSenseAPI;
+using DualSenseAPI.State;
 using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Targets;
 
@@ -7,14 +8,14 @@ namespace DSx.Mapping
 {
     public class XBox360MappingAction : IMappingAction
     {
-        private readonly Action<DualSense, IXbox360Controller> _mappingAction;
+        private readonly Action<DualSenseInputState, IXbox360Controller> _mappingAction;
 
-        public XBox360MappingAction(Action<DualSense, IXbox360Controller> mappingAction)
+        public XBox360MappingAction(Action<DualSenseInputState, IXbox360Controller> mappingAction)
         {
             _mappingAction = mappingAction;
         }
 
-        public void Map(DualSense input, IVirtualGamepad output)
+        public void Map(DualSenseInputState input, IVirtualGamepad output)
         {
             _mappingAction(input, (IXbox360Controller)output);
         }

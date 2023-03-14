@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DualSenseAPI;
+using DualSenseAPI.State;
 using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
@@ -17,37 +18,37 @@ namespace DSx.Mapping
                 [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
             };
         
-        public static readonly IDictionary<InputControl, Func<DualSense, object>> InputSelector = new Dictionary<InputControl, Func<DualSense, object>>
+        public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>
         {
-            [InputControl.LeftStick] = i => i.InputState.LeftAnalogStick,
-            [InputControl.LeftTrigger] = i => i.InputState.L2,
-            [InputControl.LeftShoulder] = i => i.InputState.L1Button,
-            [InputControl.LeftStickButton] = i => i.InputState.L3Button,
-            [InputControl.RightStick] = i => i.InputState.RightAnalogStick,
-            [InputControl.RightTrigger] = i => i.InputState.R2,
-            [InputControl.RightShoulder] = i => i.InputState.R1Button,
-            [InputControl.RightStickButton] = i => i.InputState.R3Button,
-            [InputControl.DPadNorth] = i => i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.DPadNorthEast] = i => i.InputState.DPadUpButton && i.InputState.DPadRightButton && !i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.DPadEast] = i => !i.InputState.DPadUpButton && i.InputState.DPadRightButton && !i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.DPadSouthEast] = i => !i.InputState.DPadUpButton && i.InputState.DPadRightButton && i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.DPadSouth] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.DPadSouthWest] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
-            [InputControl.DPadWest] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
-            [InputControl.DPadNorthWest] = i => i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && i.InputState.DPadLeftButton,
-            [InputControl.DPadNone] = i => !i.InputState.DPadUpButton && !i.InputState.DPadRightButton && !i.InputState.DPadDownButton && !i.InputState.DPadLeftButton,
-            [InputControl.TriangleButton] = i => i.InputState.TriangleButton,
-            [InputControl.CircleButton] = i => i.InputState.CircleButton,
-            [InputControl.SquareButton] = i => i.InputState.SquareButton,
-            [InputControl.CrossButton] = i => i.InputState.CrossButton,
-            [InputControl.LogoButton] = i => i.InputState.LogoButton,
-            [InputControl.CreateButton] = i => i.InputState.CreateButton,
-            [InputControl.MenuButton] = i => i.InputState.MenuButton,
-            [InputControl.MicButton] = i => i.InputState.MicButton,
-            [InputControl.TouchButton] = i => i.InputState.TouchpadButton,
-            [InputControl.Touch1] = i => i.InputState.Touchpad1,
-            [InputControl.Touch1] = i => i.InputState.Touchpad2,
-            [InputControl.Tilt] = i => (i.InputState.Accelerometer, i.InputState.Gyro),
+            [InputControl.LeftStick] = i => i.LeftAnalogStick,
+            [InputControl.LeftTrigger] = i => i.L2,
+            [InputControl.LeftShoulder] = i => i.L1Button,
+            [InputControl.LeftStickButton] = i => i.L3Button,
+            [InputControl.RightStick] = i => i.RightAnalogStick,
+            [InputControl.RightTrigger] = i => i.R2,
+            [InputControl.RightShoulder] = i => i.R1Button,
+            [InputControl.RightStickButton] = i => i.R3Button,
+            [InputControl.DPadNorth] = i => i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.DPadNorthEast] = i => i.DPadUpButton && i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.DPadEast] = i => !i.DPadUpButton && i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.DPadSouthEast] = i => !i.DPadUpButton && i.DPadRightButton && i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.DPadSouth] = i => !i.DPadUpButton && !i.DPadRightButton && i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.DPadSouthWest] = i => !i.DPadUpButton && !i.DPadRightButton && i.DPadDownButton && i.DPadLeftButton,
+            [InputControl.DPadWest] = i => !i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && i.DPadLeftButton,
+            [InputControl.DPadNorthWest] = i => i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && i.DPadLeftButton,
+            [InputControl.DPadNone] = i => !i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
+            [InputControl.TriangleButton] = i => i.TriangleButton,
+            [InputControl.CircleButton] = i => i.CircleButton,
+            [InputControl.SquareButton] = i => i.SquareButton,
+            [InputControl.CrossButton] = i => i.CrossButton,
+            [InputControl.LogoButton] = i => i.LogoButton,
+            [InputControl.CreateButton] = i => i.CreateButton,
+            [InputControl.MenuButton] = i => i.MenuButton,
+            [InputControl.MicButton] = i => i.MicButton,
+            [InputControl.TouchButton] = i => i.TouchpadButton,
+            [InputControl.Touch1] = i => i.Touchpad1,
+            [InputControl.Touch1] = i => i.Touchpad2,
+            [InputControl.Tilt] = i => (i.Accelerometer, i.Gyro),
         };
         
         public static readonly IDictionary<DualShockControl, Action<IDualShock4Controller, object>> DualShockAsigner = new Dictionary<DualShockControl, Action<IDualShock4Controller, object>>

@@ -80,39 +80,8 @@ namespace DSx.Client
         private long _average = 1000;
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
-            // var timestamp = _timer.ElapsedMilliseconds;
-            // var activeId = (inputState.L1Button, inputState.R1Button) switch
-            // {
-            //     (false, false) when _count >= 1 => 0,
-            //     (true, false) when _count >= 2 => 1,
-            //     (false, true) when _count >= 3 => 2,
-            //     (true, true) when _count >= 4 => 3,
-            //     _ => 0,
-            // };
-            // MappingFunctions.CopyState(inputState, _output[activeId], false, activeId == 0);
-            // for (int id = 0; id < _output.Count; id++)
-            //     if (id != activeId)
-            //         _output[id].ResetReport();
-            //
-            // var reZero = inputState.Touchpad1.IsDown && !inputState.Touchpad2.IsDown && inputState.TouchpadButton;
-            // var toggle = inputState.Touchpad1.IsDown && inputState.Touchpad2.IsDown && inputState.TouchpadButton;
-            // var rAcc = new Vector<float, float, float>(
-            //     inputState.Accelerometer.X,
-            //     inputState.Accelerometer.Y,
-            //     inputState.Accelerometer.Z
-            // );
-            // var rGyr = new Vector<float, float, float>(
-            //     inputState.Gyro.X,
-            //     inputState.Gyro.Y,
-            //     inputState.Gyro.Z
-            // );
-            // var pitchAndRoll = _converter.Convert(timestamp, rAcc, rGyr, reZero, toggle, out var rumble);
-            //
-            // MappingFunctions.MapGyro(pitchAndRoll, _output[1]);
-            // _inputCollector.OnStateChanged(rumble);
-
             // var ms = _timer.ElapsedMilliseconds;
-            _mapping.Map(ds, _output);
+            _mapping.Map(inputState, _output);
 
             foreach (var controller in _output) controller.SubmitReport();
             // var elapsed = _timer.ElapsedMilliseconds - ms;
