@@ -104,7 +104,7 @@ namespace DSx.Mapping
             {
                 var value = selector(i);
                 var argumentValues = inputArgumentArray?.Select(x => x(i)).ToArray();
-                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentArray) : value;
+                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out var feedback) : value;
                 asigner(o, result);
             });
         }
@@ -124,9 +124,11 @@ namespace DSx.Mapping
             var argumentArray = auxilliaryArguments?.ToArray() ?? Array.Empty<string>();
             return new XBox360MappingAction((i, o) =>
             {
+                object feedback = null;
                 var value = selector(i);
                 var argumentValues = inputArgumentArray?.Select(x => x(i)).ToArray();
-                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray) : value;
+                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out feedback) : value;
+                if (feedback != null && feedback is Vec2 v) { i.OutputState.LeftRumble = v.X; i.OutputState.RightRumble = v.Y; }
                 asigner(o, result);
             });
         }

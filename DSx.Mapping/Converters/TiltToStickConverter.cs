@@ -47,8 +47,10 @@ namespace DSx.Mapping
             return _algorithm.Calculate(timestamp, rAcc.Normalize(), rGyr.Normalize(), _sensitivity, _deadzone, reZero, out rumble);
         }
 
-        public object Convert(object input, object[] inputArgs, params string[] args)
+        public object Convert(object input, object[] inputArgs, string[] args, out object? feedback)
         {
+            feedback = null;
+            
             var rezero = inputArgs.Length >= 1 && (bool)inputArgs[0];
             var toggle = inputArgs.Length >= 2 && (bool)inputArgs[1];
             
@@ -63,7 +65,9 @@ namespace DSx.Mapping
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
          
-            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), sense, dead, rezero, out var _);
+            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), sense, dead, rezero, out var rumble);
+            feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
+            
             return new Vec2 { X = -result.X, Y = result.Y };
         }
     }
