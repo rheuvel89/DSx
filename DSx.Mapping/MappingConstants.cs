@@ -44,6 +44,9 @@ namespace DSx.Mapping
             [InputControl.CreateButton] = i => i.InputState.CreateButton,
             [InputControl.MenuButton] = i => i.InputState.MenuButton,
             [InputControl.MicButton] = i => i.InputState.MicButton,
+            [InputControl.TouchButton] = i => i.InputState.TouchpadButton,
+            [InputControl.Touch1] = i => i.InputState.Touchpad1,
+            [InputControl.Touch1] = i => i.InputState.Touchpad2,
             [InputControl.Tilt] = i => (i.InputState.Accelerometer, i.InputState.Gyro),
         };
         

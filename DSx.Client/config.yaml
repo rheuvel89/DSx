@@ -22,4 +22,9 @@ Controllers:
         Output: LeftStick
         Input: Tilt
         Converter: TiltToStickConverter
+        InputArguments:
+          - TouchButton
+          - MicButton
         ConverterArguments:
+          - 1,5 
+          - 0,2

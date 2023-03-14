@@ -165,15 +165,21 @@ namespace DSx.Client
             
             var converter = args.Length >= 5 && Enum.TryParse<MappingConverter>(args[3], out var c) ? c : (MappingConverter?)null;
 
-            var arguments = args.Skip(converter == null ? 4 : 5).ToList();
+            var argumentCount = converter == null ? 4 : 5;
+            var inputArguments = args.Skip(argumentCount)
+                .TakeWhile(x => Enum.TryParse<InputControl>(x, out _))
+                .Select(Enum.Parse<InputControl>)
+                .ToList();
+            argumentCount += inputArguments.Count;
+            var arguments = args.Skip(argumentCount).ToList();
 
             switch (controllerType)
             {
                 case ControllerType.DualShock when Enum.TryParse<DualShockControl>(args[2], out var dualShockOutput):
-                    mapping.AddOrReplaceMapping(id, input, dualShockOutput, converter, arguments, global);
+                    mapping.AddOrReplaceMapping(id, input, dualShockOutput, converter, inputArguments, arguments, global);
                     return null;
                 case ControllerType.XBox360 when Enum.TryParse<XBox360Control>(args[2], out var xBox360Output):
-                    mapping.AddOrReplaceMapping(id, input, xBox360Output, converter, arguments, global);
+                    mapping.AddOrReplaceMapping(id, input, xBox360Output, converter, inputArguments, arguments, global);
                     return null;
                 default:
                     return $"Could not execute command 'map' with the given arguments: {string.Join(" | ", args)}";

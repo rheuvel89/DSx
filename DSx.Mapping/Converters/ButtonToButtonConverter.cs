@@ -2,7 +2,7 @@ namespace DSx.Mapping
 {
     public class ButtonToButtonConverter : IMappingConveter
     {
-        public object Convert(object input, params string[] args)
+        public object Convert(object input, object[] inputArgs, params string[] args)
         {
             return input;
         }
@@ -10,7 +10,7 @@ namespace DSx.Mapping
     
     public class InverseButtonToButtonConverter : IMappingConveter
     {
-        public object Convert(object input, params string[] args)
+        public object Convert(object input, object[] inputArgs, params string[] args)
         {
             return !(bool)input;
         }
@@ -18,6 +18,6 @@ namespace DSx.Mapping
 
     public interface IMappingConveter
     {
-        public object Convert(object input, params string[] args);
+        public object Convert(object input, object[] inputArgs, params string[] args);
     }
 }
