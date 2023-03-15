@@ -1,5 +1,7 @@
 # DSx: DualSense controller (re)mapping
 
+!Warning! This is a work in progress. Not yet intended for actual release.
+
 # Id
 Accepts incrementing *Byte* (0-255) values starting from 0.
 
