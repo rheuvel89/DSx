@@ -8,16 +8,16 @@ namespace DSx.Mapping
 {
     public class XBox360MappingAction : IMappingAction
     {
-        private readonly Action<DualSenseInputState, IXbox360Controller> _mappingAction;
+        private readonly Func<DualSenseInputState, IXbox360Controller, object> _mappingAction;
 
-        public XBox360MappingAction(Action<DualSenseInputState, IXbox360Controller> mappingAction)
+        public XBox360MappingAction(Func<DualSenseInputState, IXbox360Controller, object> mappingAction)
         {
             _mappingAction = mappingAction;
         }
 
-        public void Map(DualSenseInputState input, IVirtualGamepad output)
+        public object Map(DualSenseInputState input, IVirtualGamepad output)
         {
-            _mappingAction(input, (IXbox360Controller)output);
+            return _mappingAction(input, (IXbox360Controller)output);
         }
     }
 }

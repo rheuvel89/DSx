@@ -76,12 +76,13 @@ namespace DSx.Client
             await _console.Attach();
         }
 
-        private long _elapsed = 0;
-        private long _average = 1000;
+        // private long _elapsed = 0;
+        // private long _average = 1000;
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
-            _mapping.Map(inputState, _output);
+            var feedback = (Vec2)(_mapping.Map(inputState, _output) ?? new Vec2());
+            _inputCollector.OnStateChanged(new Vector<float, float>(feedback.X, feedback.Y));
 
             foreach (var controller in _output) controller.SubmitReport();
             // var elapsed = _timer.ElapsedMilliseconds - ms;

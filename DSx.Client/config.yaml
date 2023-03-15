@@ -18,6 +18,9 @@ Controllers:
         Converter: ButtonToButtonConverter
         ConverterArguments:
       - !XBox360
+        Output: 
+        Input: LeftStick
+      - !XBox360
         Global: true
         Output: LeftStick
         Input: Tilt
@@ -26,5 +29,5 @@ Controllers:
           - TouchButton
           - MicButton
         ConverterArguments:
-          - 1,5 
-          - 0,2
+          - 1,7
+          - 0,1

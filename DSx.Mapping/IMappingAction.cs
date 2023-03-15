@@ -6,6 +6,6 @@ namespace DSx.Mapping
 {
     public interface IMappingAction
     {
-        void Map(DualSenseInputState input, IVirtualGamepad output);
+        object Map(DualSenseInputState input, IVirtualGamepad output);
     }
 }

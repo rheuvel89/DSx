@@ -70,15 +70,19 @@ namespace DSx.Mapping
             }
         }
         
-        public void Map(DualSenseInputState input, IList<IVirtualGamepad> output)
+        public object? Map(DualSenseInputState input, IList<IVirtualGamepad> output)
         {
+            object? feedback = null; 
+            
             var id = _controllerSelectors.FirstOrDefault(kvp => kvp.Value?.Invoke(input) ?? false).Key;
             for (byte i = 0; i < output.Count; i++)
             {
-                if (i == id) foreach (var action in _controllerMapping[i]) action.Value.Map(input, output[i]);
+                if (i == id) foreach (var action in _controllerMapping[i]) feedback = action.Value.Map(input, output[i]) ?? feedback;
                 else output[i].ResetReport();
-                foreach (var action in _globalMapping[i]) action.Value.Map(input, output[i]);
+                foreach (var action in _globalMapping[i]) feedback = action.Value.Map(input, output[i]) ?? feedback;
             }
+
+            return feedback;
         }
 
         public void AddOrReplaceMapping(byte controllerId, InputControl input, DualShockControl output,
@@ -110,10 +114,12 @@ namespace DSx.Mapping
             var argumentArray = arguments?.ToArray() ?? Array.Empty<string>();
             return new DualShockMappingAction((i, o) =>
             {
+                object? feedback = null;
                 var value = selector(i);
                 var argumentValues = inputArgumentArray?.Select(x => x(i)).ToArray();
-                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out var feedback) : value;
+                var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out feedback) : value;
                 asigner(o, result);
+                return feedback;
             });
         }
         
@@ -132,11 +138,12 @@ namespace DSx.Mapping
             var argumentArray = auxilliaryArguments?.ToArray() ?? Array.Empty<string>();
             return new XBox360MappingAction((i, o) =>
             {
-                object feedback = null;
+                object? feedback = null;
                 var value = selector(i);
                 var argumentValues = inputArgumentArray?.Select(x => x(i)).ToArray();
                 var result = selectedConverter != null ? selectedConverter.Convert(value, argumentValues, argumentArray, out feedback) : value;
                 asigner(o, result);
+                return feedback;
             });
         }
         

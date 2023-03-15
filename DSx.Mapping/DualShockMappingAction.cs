@@ -8,16 +8,16 @@ namespace DSx.Mapping
 {
     public class DualShockMappingAction : IMappingAction
     {
-        private readonly Action<DualSenseInputState, IDualShock4Controller> _mappingAction;
+        private readonly Func<DualSenseInputState, IDualShock4Controller, object> _mappingAction;
 
-        public DualShockMappingAction(Action<DualSenseInputState, IDualShock4Controller> mappingAction)
+        public DualShockMappingAction(Func<DualSenseInputState, IDualShock4Controller, object> mappingAction)
         {
             _mappingAction = mappingAction;
         }
 
-        public void Map(DualSenseInputState input, IVirtualGamepad output)
+        public object Map(DualSenseInputState input, IVirtualGamepad output)
         {
-            _mappingAction(input, (IDualShock4Controller)output);
+            return _mappingAction(input, (IDualShock4Controller)output);
         }
     }
 }
