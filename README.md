@@ -7,9 +7,11 @@ Default and example mapping can be found in the application folder ('[config.yam
 # Id
 Accepts incrementing *Byte* (0-255) values starting from 0.
 ```yaml
+# Start of the file
 Controllers:
   - Id: 0      # <--
     ConrtollerType: DualShock
+#...
 ```
 
 # Controller types
