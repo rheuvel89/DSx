@@ -2,7 +2,7 @@
 
 !Warning! This is a work in progress. Not yet intended for actual release.
 
-Default and example mapping can be found in the application folder ('config.yaml') and on [GitHub](https://github.com/rheuvel89/DSx/blob/main/DSx.Client/config.yaml). An explanation of the different components of the mapping file can be found below.
+Default and example mapping can be found in the application folder ('[config.yaml](https://github.com/rheuvel89/DSx/blob/main/DSx.Client/config.yaml)') and on [GitHub](https://github.com/rheuvel89/DSx/blob/main/DSx.Client/config.yaml). An explanation of the different components of the mapping file can be found below.
 
 # Id
 Accepts incrementing *Byte* (0-255) values starting from 0.
