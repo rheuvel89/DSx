@@ -10,12 +10,15 @@ namespace DSx.Mapping
 {
     public static class MappingConstants
     {
-        public static readonly IDictionary<MappingConverter, IMappingConveter> MappingConveters =
-            new Dictionary<MappingConverter, IMappingConveter>()
+        public static readonly IDictionary<MappingConverter, IMappingConverter> MappingConveters =
+            new Dictionary<MappingConverter, IMappingConverter>()
             {
                 [MappingConverter.ButtonToButtonConverter] = new ButtonToButtonConverter(),
+                [MappingConverter.StickToStickConverter] = new StickToStickConverter(),
+                [MappingConverter.TriggerToTriggerConverter] = new TriggerToTriggerConverter(),
                 [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
                 [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
+                [MappingConverter.TiltAndStickToStickConverter] = new TiltAndStickToStickConverter(),
             };
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>

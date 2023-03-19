@@ -5,7 +5,7 @@ using DualSenseAPI;
 
 namespace DSx.Mapping
 {
-    public class TiltToStickConverter : IMappingConverter
+    public class TiltAndStickToStickConverter : IMappingConverter
     {
         private Stopwatch _timer;
         private bool _active = true;
@@ -15,7 +15,7 @@ namespace DSx.Mapping
         private IAHRS? _algorithm = null;
         
 
-        public TiltToStickConverter()
+        public TiltAndStickToStickConverter()
         {
             _timer = Stopwatch.StartNew();
             //_algorithm = new SimpleAHRS();
@@ -52,23 +52,30 @@ namespace DSx.Mapping
             feedback = null;
 
             var (acc, gyro) = ((Vec3, Vec3))inputs[0];
-            var rezero = (bool)inputs[1];
-            var toggle = (bool)inputs[2];
+            var stick = (Vec2)inputs[1];
+            var rezero = (bool)inputs[2];
+            var toggle = (bool)inputs[3];
             
             if (!_toggled && toggle) _active = !_active;
             _toggled = toggle;
             if (!_active) return new Vec2 { X = 0f, Y = 0f };
                 
-            var sense = args.Length >= 1 && float.TryParse(args[0], out var s) ? s : 1f;
-            var dead = args.Length >= 2 && float.TryParse(args[1], out var d) ? d : 0f;
+            var alpha = args.Length >= 1 && float.TryParse(args[0], out var a) ? a : 1f;
+            var beta = args.Length >= 2 && float.TryParse(args[1], out var b) ? b : 1f;
+            var sense = args.Length >= 3 && float.TryParse(args[2], out var s) ? s : 1f;
+            var dead = args.Length >= 4 && float.TryParse(args[3], out var d) ? d : 0f;
             
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
          
             var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), sense, dead, rezero, out var rumble);
             feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
-            
-            return new Vec2 { X = -result.X, Y = result.Y };
+
+            var x = -result.X * alpha + stick.X * beta;
+            var y = result.Y * alpha + stick.Y * beta;
+            if (x < -1) x = -1; if (x > 1) x = 1;
+            if (y < -1) y = -1; if (y > 1) y = 1;
+            return new Vec2 { X = x, Y = y};
         }
     }
 }
