@@ -8,5 +8,6 @@ namespace DSx.Mapping
         InverseButtonToButtonConverter,
         TiltToStickConverter,
         TiltAndStickToStickConverter,
+        GyroAndStickToStickConverter,
     }
 }

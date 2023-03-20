@@ -111,8 +111,10 @@ Controllers:
           - TouchButton
           - MicButton
         Output: LeftStick
-        Converter: TiltAndStickToStickConverter
+        Converter: GyroAndStickToStickConverter
         ConverterArguments:
+          - 1
+          - 1
           - 1
           - 1
           - 1,7

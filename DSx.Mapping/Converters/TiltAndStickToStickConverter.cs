@@ -58,12 +58,14 @@ namespace DSx.Mapping
             
             if (!_toggled && toggle) _active = !_active;
             _toggled = toggle;
-            if (!_active) return new Vec2 { X = 0f, Y = 0f };
+            if (!_active) return new Vec2 { X = stick.X, Y = stick.Y };
                 
-            var alpha = args.Length >= 1 && float.TryParse(args[0], out var a) ? a : 1f;
-            var beta = args.Length >= 2 && float.TryParse(args[1], out var b) ? b : 1f;
-            var sense = args.Length >= 3 && float.TryParse(args[2], out var s) ? s : 1f;
-            var dead = args.Length >= 4 && float.TryParse(args[3], out var d) ? d : 0f;
+            var alphaX = args.Length >= 1 && float.TryParse(args[0], out var ax) ? ax : 1f;
+            var alphaY = args.Length >= 2 && float.TryParse(args[1], out var ay) ? ay : 1f;
+            var betaX = args.Length >= 3 && float.TryParse(args[2], out var bx) ? bx : 1f;
+            var betaY = args.Length >= 4 && float.TryParse(args[3], out var by) ? by : 1f;
+            var sense = args.Length >= 5 && float.TryParse(args[4], out var s) ? s : 1f;
+            var dead = args.Length >= 6 && float.TryParse(args[5], out var d) ? d : 0f;
             
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
@@ -71,8 +73,8 @@ namespace DSx.Mapping
             var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), sense, dead, rezero, out var rumble);
             feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
 
-            var x = -result.X * alpha + stick.X * beta;
-            var y = result.Y * alpha + stick.Y * beta;
+            var x = -result.X * alphaX + stick.X * betaX;
+            var y = result.Y * alphaY + stick.Y * betaY;
             if (x < -1) x = -1; if (x > 1) x = 1;
             if (y < -1) y = -1; if (y > 1) y = 1;
             return new Vec2 { X = x, Y = y};

@@ -19,6 +19,7 @@ namespace DSx.Mapping
                 [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
                 [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
                 [MappingConverter.TiltAndStickToStickConverter] = new TiltAndStickToStickConverter(),
+                [MappingConverter.GyroAndStickToStickConverter] = new GyroAndStickToStickConverter(),
             };
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>
