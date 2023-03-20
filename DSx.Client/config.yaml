@@ -4,30 +4,118 @@ Controllers:
     Modifier:
     Mapping:
       - !DualShock
+        Inputs:
+          - LeftStick
         Output: LeftStick
-        Input: LeftStick
-        ConverterArguments:
+        Converter: StickToStickConverter
+      - !DualShock
+        Inputs:
+          - LeftTrigger
+        Output: LeftTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - LeftStickButton
+        Output: LeftStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - RightStick
+        Output: RightStick
+        Converter: StickToStickConverter
+      - !DualShock
+        Inputs:
+          - RightTrigger
+        Output: RightTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - RightStickButton
+        Output: RightStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - TriangleButton
+        Output: TriangleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CircleButton
+        Output: CircleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CrossButton
+        Output: CrossButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - SquareButton
+        Output: SquareButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorth
+        Output: DPadNorth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthEast
+        Output: DPadNorthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadEast
+        Output: DPadEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthEast
+        Output: DPadSouthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouth
+        Output: DPadSouth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthWest
+        Output: DPadSouthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadWest
+        Output: DPadWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthWest
+        Output: DPadNorthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNone
+        Output: DPadNone
+        Converter: ButtonToButtonConverter
   - Id: 1
-    ConrtollerType: XBox360
+    ConrtollerType: DualShock
     Modifier:
       - LeftShoulder
     Mapping:
-      - !XBox360
-        Output: YButton
-        Input: TriangleButton
-        Converter: ButtonToButtonConverter
-        ConverterArguments:
-      - !XBox360
-        Output: 
-        Input: LeftStick
-      - !XBox360
+      - !DualShock
         Global: true
-        Output: LeftStick
-        Input: Tilt
-        Converter: TiltToStickConverter
-        InputArguments:
+        Inputs:
+          - Tilt
+          - RightStick
           - TouchButton
           - MicButton
+        Output: LeftStick
+        Converter: GyroAndStickToStickConverter
         ConverterArguments:
+          - 1
+          - 1
+          - 1
+          - 1
           - 1,7
           - 0,1

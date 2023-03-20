@@ -15,7 +15,17 @@ try
 }
 catch (Exception e)
 {
-    Console.Error.WriteLine($"Error: {e.Message}{Environment.NewLine}{e.StackTrace}");
+    var messages = GetExeptions(e);
+    Console.Error.WriteLine($"Error: {Environment.NewLine}{string.Join(Environment.NewLine, messages)}");
     return 1;
 }
 return 0;
+
+static IList<string> GetExeptions(Exception e, IList<string>? list = null)
+{
+    list ??= new List<string>();
+    list.Add(e.Message);
+    if (e is AggregateException a) foreach (var ie in a.InnerExceptions) GetExeptions(ie, list);
+    else if (e.InnerException != null) GetExeptions(e.InnerException, list);
+    return list;
+}

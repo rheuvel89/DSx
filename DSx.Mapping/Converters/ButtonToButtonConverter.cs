@@ -1,12 +1,12 @@
 namespace DSx.Mapping
 {
-    public class ButtonToButtonConverter : IMappingConveter
+    public class ButtonToButtonConverter : IMappingConverter
     {
-        public object Convert(object input, object[] inputArgs, string[] args, out object? feedback)
+        public object Convert(object[] input, string[] args, out object? feedback)
         {
             feedback = null;
 
-            return input;
+            return input[0];
         }
     }
 }
