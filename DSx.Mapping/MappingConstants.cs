@@ -10,17 +10,17 @@ namespace DSx.Mapping
 {
     public static class MappingConstants
     {
-        public static readonly IDictionary<MappingConverter, IMappingConverter> MappingConveters =
-            new Dictionary<MappingConverter, IMappingConverter>()
+        public static readonly IDictionary<MappingConverter, Func<IMappingConverter>> MappingConveters =
+            new Dictionary<MappingConverter, Func<IMappingConverter>>()
             {
-                [MappingConverter.ButtonToButtonConverter] = new ButtonToButtonConverter(),
-                [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
-                [MappingConverter.StickToStickConverter] = new StickToStickConverter(),
-                [MappingConverter.TriggerToTriggerConverter] = new TriggerToTriggerConverter(),
-                [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
-                [MappingConverter.TiltAndStickToStickConverter] = new TiltAndStickToStickConverter(),
-                [MappingConverter.GyroToStickConverter] = new GyroToStickConverter(),
-                [MappingConverter.GyroAndStickToStickConverter] = new GyroAndStickToStickConverter(),
+                [MappingConverter.ButtonToButtonConverter] = () => new ButtonToButtonConverter(),
+                [MappingConverter.InverseButtonToButtonConverter] = () => new InverseButtonToButtonConverter(),
+                [MappingConverter.StickToStickConverter] = () => new StickToStickConverter(),
+                [MappingConverter.TriggerToTriggerConverter] = () => new TriggerToTriggerConverter(),
+                [MappingConverter.TiltToStickConverter] = () => new TiltToStickConverter(),
+                [MappingConverter.TiltAndStickToStickConverter] = () => new TiltAndStickToStickConverter(),
+                [MappingConverter.GyroToStickConverter] = () => new GyroToStickConverter(),
+                [MappingConverter.GyroAndStickToStickConverter] = () => new GyroAndStickToStickConverter(),
             };
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>

@@ -9,6 +9,8 @@ namespace DSx.Mapping
         private long _timestamp = 0;
         private bool _active = true;
         private bool _toggled = false;
+        private float? _factorX;
+        private float? _factorY;
 
         public GyroToStickConverter()
         {
@@ -26,8 +28,8 @@ namespace DSx.Mapping
             _toggled = toggle;
             if (!_active) return new Vec2 { X = 0f, Y = 0f };
             
-            var factorX = args.Length >= 1 && float.TryParse(args[0], out var fx) ? fx : 1f;
-            var factorY = args.Length >= 2 && float.TryParse(args[1], out var fy) ? fy : 1f;
+            _factorX ??= args.Length >= 1 && float.TryParse(args[0], out var fx) ? fx : 1f;
+            _factorY ??= args.Length >= 2 && float.TryParse(args[1], out var fy) ? fy : 1f;
 
             var elapsed = -_timestamp + (_timestamp = _timer.ElapsedMilliseconds);
             var x = (float)System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)elapsed / 1000);  
@@ -35,7 +37,7 @@ namespace DSx.Mapping
             
             _timestamp = _timer.ElapsedMilliseconds;
             
-            return new Vec2 { X = x * factorX, Y = y * factorY };
+            return new Vec2 { X = x * _factorX.Value, Y = y * _factorY.Value };
         }
     }
 }

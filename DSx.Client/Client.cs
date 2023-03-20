@@ -108,22 +108,6 @@ namespace DSx.Client
             };
         }
 
-        private static string? Sense(TiltToStickConverter converter, string[] args)
-        {
-            if (args.Length != 1 || !float.TryParse(args[0], out var sense))
-                return "Command 'sense' accepts 1 argument (decimal)";
-            converter.Sensitivity = sense;
-            return null;
-        }
-
-        private static string? Deadzone(TiltToStickConverter converter, string[] args)
-        {
-            if (args.Length != 1 || !float.TryParse(args[0], out var deadzone))
-                return "Command 'deadzone' accepts 1 argument (decimal)";
-            converter.Deadzone = deadzone;
-            return null;
-        }
-
         private static string? Map(Mapping.Mapping mapping, string[] args)
         {
             if (args.Length < 4) return "Command 'map' accepts at least 4 arguments [id, input, output, global]";

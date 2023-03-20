@@ -94,7 +94,7 @@ namespace DSx.Mapping
         {
             var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
             var asigner = MappingConstants.DualShockAsigner[output];
-            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter] : null;
+            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
             var argumentArray = arguments?.ToArray() ?? Array.Empty<string>();
             return new DualShockMappingAction(inputs, output, converter, (i, o) =>
             {
@@ -114,7 +114,7 @@ namespace DSx.Mapping
         {
             var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
             var asigner = MappingConstants.XBox360Asigner[output];
-            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter] : null;
+            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
             var argumentArray = arguments?.ToArray() ?? Array.Empty<string>();
             return new XBox360MappingAction(inputs, output, converter, (i, o) =>
             {
