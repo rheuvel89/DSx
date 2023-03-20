@@ -1,8 +1,6 @@
-using DualSenseAPI;
-
 namespace DSx.Mapping
 {
-    public class StickToStickConverter : IMappingConverter
+    public class TriggerToTriggerConverter : IMappingConverter
     {
         public object Convert(object[] inputs, string[] args, out object? feedback)
         {

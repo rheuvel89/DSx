@@ -14,11 +14,12 @@ namespace DSx.Mapping
             new Dictionary<MappingConverter, IMappingConverter>()
             {
                 [MappingConverter.ButtonToButtonConverter] = new ButtonToButtonConverter(),
+                [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
                 [MappingConverter.StickToStickConverter] = new StickToStickConverter(),
                 [MappingConverter.TriggerToTriggerConverter] = new TriggerToTriggerConverter(),
-                [MappingConverter.InverseButtonToButtonConverter] = new InverseButtonToButtonConverter(),
                 [MappingConverter.TiltToStickConverter] = new TiltToStickConverter(),
                 [MappingConverter.TiltAndStickToStickConverter] = new TiltAndStickToStickConverter(),
+                [MappingConverter.GyroToStickConverter] = new GyroToStickConverter(),
                 [MappingConverter.GyroAndStickToStickConverter] = new GyroAndStickToStickConverter(),
             };
         

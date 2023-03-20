@@ -3,11 +3,12 @@ namespace DSx.Mapping
     public enum MappingConverter
     {
         ButtonToButtonConverter,
+        InverseButtonToButtonConverter,
         StickToStickConverter,
         TriggerToTriggerConverter,
-        InverseButtonToButtonConverter,
         TiltToStickConverter,
         TiltAndStickToStickConverter,
+        GyroToStickConverter,
         GyroAndStickToStickConverter,
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DSx.Math;
 using DualSenseAPI;
 
@@ -34,19 +33,6 @@ namespace DSx.Mapping
             set => _deadzone = value;
         }
         
-        public Vector<float, float, float> Convert(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, bool reZero, bool toggle, out Vector<float, float> rumble)
-        {
-            if (!_toggled && toggle) _active = !_active;
-            _toggled = toggle;
-            if (!_active)
-            {
-                rumble = Vector<float, float>.Zero;
-                return Vector<float, float, float>.Zero;
-            }
-
-            return _algorithm.Calculate(timestamp, rAcc.Normalize(), rGyr.Normalize(), _sensitivity, _deadzone, reZero, out rumble);
-        }
-
         public object Convert(object[] inputs, string[] args, out object? feedback)
         {
             feedback = null;
