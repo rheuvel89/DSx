@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Linq;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -12,9 +14,14 @@ namespace DSx.Mapping
         private float? _factorX;
         private float? _factorY;
 
+        private ConcurrentQueue<float> _xQueue;
+        private ConcurrentQueue<float> _yQueue;
+
         public GyroToStickConverter()
         {
             _timer = Stopwatch.StartNew();
+            _xQueue = new ConcurrentQueue<float>();
+            _yQueue = new ConcurrentQueue<float>();
         }
         
         public object Convert(object[] inputs, string[] args, out object? feedback)
@@ -32,12 +39,18 @@ namespace DSx.Mapping
             _factorY ??= args.Length >= 2 && float.TryParse(args[1], out var fy) ? fy : 1f;
 
             var elapsed = -_timestamp + (_timestamp = _timer.ElapsedMilliseconds);
-            var x = (float)System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)elapsed / 1000);  
-            var y = gyro.X * ((float)elapsed / 1000);
+            _xQueue.Enqueue( (float)(System.Math.Sign(gyro.Y+ gyro.Z) * System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)elapsed / 1000)));
+            _yQueue.Enqueue(gyro.X * ((float)elapsed / 1000));
             
             _timestamp = _timer.ElapsedMilliseconds;
+
+            if (_xQueue.Count > 10) _xQueue.TryDequeue(out _);
+            if (_yQueue.Count > 10) _yQueue.TryDequeue(out _);
+
+            var x = (float)System.Math.Tanh(_xQueue.ToArray().Average() * _factorX.Value);
+            var y = (float)System.Math.Tanh(_yQueue.ToArray().Average() * _factorY.Value);
             
-            return new Vec2 { X = x * _factorX.Value, Y = y * _factorY.Value };
+            return new Vec2 { X = x, Y = y };
         }
     }
 }

@@ -107,15 +107,9 @@ Controllers:
         Global: true
         Inputs:
           - Tilt
-          - RightStick
-          - TouchButton
           - MicButton
-        Output: LeftStick
-        Converter: GyroAndStickToStickConverter
+        Output: RightStick
+        Converter: GyroToStickConverter
         ConverterArguments:
-          - 1
-          - 1
-          - 1
-          - 1
-          - 1,7
-          - 0,1
+          - 0,01
+          - 0,01
