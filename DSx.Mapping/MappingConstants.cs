@@ -27,10 +27,12 @@ namespace DSx.Mapping
         {
             [InputControl.LeftStick] = i => i.LeftAnalogStick,
             [InputControl.LeftTrigger] = i => i.L2,
+            [InputControl.LeftTriggerButton] = i => i.L2Button,
             [InputControl.LeftShoulder] = i => i.L1Button,
             [InputControl.LeftStickButton] = i => i.L3Button,
             [InputControl.RightStick] = i => i.RightAnalogStick,
             [InputControl.RightTrigger] = i => i.R2,
+            [InputControl.RightTriggerButton] = i => i.R2Button,
             [InputControl.RightShoulder] = i => i.R1Button,
             [InputControl.RightStickButton] = i => i.R3Button,
             [InputControl.DPadNorth] = i => i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
@@ -64,6 +66,7 @@ namespace DSx.Mapping
                 o.LeftThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * (byte.MaxValue / 2 - 1));
             },
             [DualShockControl.LeftTrigger] = (o, v) => o.LeftTrigger = (byte)((float)v * byte.MaxValue),
+            [DualShockControl.LeftTriggerButton] = (o, v) => o.SetButtonState(DualShock4Button.TriggerLeft, (bool)v),
             [DualShockControl.LeftShoulder] = (o, v) => o.SetButtonState(DualShock4Button.ShoulderLeft, (bool)v),
             [DualShockControl.LeftStickButton] = (o, v) => o.SetButtonState(DualShock4Button.ThumbLeft, (bool)v),
             [DualShockControl.RightStick] = (o, v) => 
@@ -72,6 +75,7 @@ namespace DSx.Mapping
                 o.RightThumbY = (byte)(byte.MaxValue / 2 - ((Vec2)v).Y * byte.MaxValue / 2);
             },
             [DualShockControl.RightTrigger] = (o, v) => o.RightTrigger = (byte)((float)v * byte.MaxValue),
+            [DualShockControl.RightTriggerButton] = (o, v) => o.SetButtonState(DualShock4Button.TriggerRight, (bool)v),
             [DualShockControl.RightShoulder] = (o, v) => o.SetButtonState(DualShock4Button.ShoulderRight, (bool)v),
             [DualShockControl.RightStickButton] = (o, v) => o.SetButtonState(DualShock4Button.ThumbRight, (bool)v),
             [DualShockControl.DPadNorth] = (o, v) =>

@@ -8,11 +8,18 @@ Controllers:
           - LeftStick
         Output: LeftStick
         Converter: StickToStickConverter
+        ConverterArguments:
+          Deadzone: 0,5
       - !DualShock
         Inputs:
           - LeftTrigger
         Output: LeftTrigger
         Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - LeftTriggerButton
+        Output: LeftTriggerButton
+        Converter: ButtonToButtonConverter
       - !DualShock
         Inputs:
           - LeftStickButton
@@ -28,6 +35,11 @@ Controllers:
           - RightTrigger
         Output: RightTrigger
         Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - RightTriggerButton
+        Output: RightTriggerButton
+        Converter: ButtonToButtonConverter
       - !DualShock
         Inputs:
           - RightStickButton
@@ -119,10 +131,110 @@ Controllers:
           BetaY: 1,0
           Sensitivity: 1,7
           Deadzone: 0,1
+      - !DualShock
+        Inputs:
+          - LeftStick
+        Output: LeftStick
+        Converter: StickToStickConverter
+      - !DualShock
+        Inputs:
+          - LeftTrigger
+        Output: LeftTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - LeftTriggerButton
+        Output: LeftTriggerButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - LeftStickButton
+        Output: LeftStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - RightTrigger
+        Output: RightTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - RightTriggerButton
+        Output: RightTriggerButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - RightStickButton
+        Output: RightStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - TriangleButton
+        Output: TriangleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CircleButton
+        Output: CircleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CrossButton
+        Output: CrossButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - SquareButton
+        Output: SquareButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorth
+        Output: DPadNorth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthEast
+        Output: DPadNorthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadEast
+        Output: DPadEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthEast
+        Output: DPadSouthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouth
+        Output: DPadSouth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthWest
+        Output: DPadSouthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadWest
+        Output: DPadWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthWest
+        Output: DPadNorthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNone
+        Output: DPadNone
+        Converter: ButtonToButtonConverter  
   - Id: 2
     ConrtollerType: DualShock
     Modifier:
-      - LeftShoulder
+      - RightShoulder
     Mapping:
       - !DualShock
         Global: true
@@ -139,3 +251,105 @@ Controllers:
           BetaY: 1,0
           GammaX: 0,05
           GammaY: 0,05
+          EpsilonX: 2,0
+          EpsilonY: 2,0
+      - !DualShock
+        Inputs:
+          - LeftStick
+        Output: LeftStick
+        Converter: StickToStickConverter
+      - !DualShock
+        Inputs:
+          - LeftTrigger
+        Output: LeftTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - LeftTriggerButton
+        Output: LeftTriggerButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - LeftStickButton
+        Output: LeftStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - RightTrigger
+        Output: RightTrigger
+        Converter: TriggerToTriggerConverter
+      - !DualShock
+        Inputs:
+          - RightTriggerButton
+        Output: RightTriggerButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - RightStickButton
+        Output: RightStickButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - TriangleButton
+        Output: TriangleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CircleButton
+        Output: CircleButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - CrossButton
+        Output: CrossButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - SquareButton
+        Output: SquareButton
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorth
+        Output: DPadNorth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthEast
+        Output: DPadNorthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadEast
+        Output: DPadEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthEast
+        Output: DPadSouthEast
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouth
+        Output: DPadSouth
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadSouthWest
+        Output: DPadSouthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadWest
+        Output: DPadWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNorthWest
+        Output: DPadNorthWest
+        Converter: ButtonToButtonConverter
+      - !DualShock
+        Inputs:
+          - DPadNone
+        Output: DPadNone
+        Converter: ButtonToButtonConverter

@@ -4,11 +4,13 @@ namespace DSx.Mapping
     {
         LeftStick,
         LeftTrigger,
+        LeftTriggerButton,
         LeftShoulder,
         LeftStickButton,
 
         RightStick,
         RightTrigger,
+        RightTriggerButton,
         RightShoulder,
         RightStickButton,
         

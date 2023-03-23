@@ -12,8 +12,10 @@ namespace DSx.Mapping
         private long _timestamp = 0;
         private bool _active = true;
         private bool _toggled = false;
-        private float? _factorX;
-        private float? _factorY;
+        private float? _gammaX;
+        private float? _gammaY;
+        private float? _epsilonX;
+        private float? _epsilonY;
 
         private ConcurrentQueue<float> _xQueue;
         private ConcurrentQueue<float> _yQueue;
@@ -36,8 +38,10 @@ namespace DSx.Mapping
             _toggled = toggle;
             if (!_active) return new Vec2 { X = 0f, Y = 0f };
             
-            _factorX ??= args.TryGetValue("GammaX", out var sgx) && float.TryParse(sgx, out var gx) ? gx : 1f;
-            _factorY ??= args.TryGetValue("GammaY", out var sgy) && float.TryParse(sgy, out var gy) ? gy : 1f;
+            _gammaX ??= args.TryGetValue("GammaX", out var sgx) && float.TryParse(sgx, out var gx) ? gx : 1f;
+            _gammaY ??= args.TryGetValue("GammaY", out var sgy) && float.TryParse(sgy, out var gy) ? gy : 1f;
+            _epsilonX ??= args.TryGetValue("EpsilonX", out var sex) && float.TryParse(sex, out var ex) ? ex : 1f;
+            _epsilonY ??= args.TryGetValue("EpsilonY", out var sey) && float.TryParse(sey, out var ey) ? ey : 1f;
 
             var delta = -_timestamp + (_timestamp = _timer.ElapsedMilliseconds);
             _xQueue.Enqueue( (float)(System.Math.Sign(gyro.Y+ gyro.Z) * System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)delta / 1000)));
@@ -48,8 +52,8 @@ namespace DSx.Mapping
             if (_xQueue.Count > 10) _xQueue.TryDequeue(out _);
             if (_yQueue.Count > 10) _yQueue.TryDequeue(out _);
 
-            var x = (float)System.Math.Tanh(_xQueue.ToArray().Average() * _factorX.Value);
-            var y = (float)System.Math.Tanh(_yQueue.ToArray().Average() * _factorY.Value);
+            var x = (_xQueue.ToArray().Average() * _gammaX.Value).Limit1(_epsilonX.Value);
+            var y = (_yQueue.ToArray().Average() * _gammaY.Value).Limit1(_epsilonY.Value);
             
             return new Vec2 { X = x, Y = y };
         }

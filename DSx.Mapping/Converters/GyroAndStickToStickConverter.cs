@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -35,10 +34,8 @@ namespace DSx.Mapping
             
             output.X = output.X * _alphaX.Value + stick.X * _betaX.Value;
             output.Y = output.Y * _alphaY.Value + stick.Y * _betaX.Value;
-            if (output.X < -1) output.X = -1; if (output.X > 1) output.X = 1;
-            if (output.Y < -1) output.Y = -1; if (output.Y > 1) output.Y = 1;
 
-            return output;
+            return output.Limit1();
         }
     }
 }

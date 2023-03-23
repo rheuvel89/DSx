@@ -9,7 +9,10 @@ namespace DSx.Mapping
         {
             feedback = null;
 
-            return inputs[0];
+            var deadzone = args.TryGetValue("Deadzone", out var sd) && float.TryParse(sd, out var d) ? d : 0f;
+            var input = (Vec2)inputs[0];
+
+            return input.Deadzone(deadzone, DeadzoneMode.Center);
         }
     }
 }

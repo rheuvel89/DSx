@@ -10,9 +10,9 @@ namespace DSx.Mapping
         private Stopwatch _timer;
         private bool _active = true;
         private bool _toggled = false;
-        private float? _sensitivity = 1f;
-        private float? _deadzone = 0f;
-        private IAHRS? _algorithm = null;
+        private float? _sensitivity;
+        private float? _deadzone;
+        private IAHRS? _algorithm;
         
 
         public TiltToStickConverter()
@@ -44,7 +44,7 @@ namespace DSx.Mapping
             var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), _sensitivity.Value, _deadzone.Value, rezero, out var rumble);
             feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
             
-            return new Vec2 { X = -result.X, Y = result.Y };
+            return new Vec2 { X = -result.X, Y = result.Y }.Limit1();
         }
     }
 }
