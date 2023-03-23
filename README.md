@@ -22,8 +22,9 @@ Accepts one of two types: **DualShock** or **XBox360**. Controller types should 
     Modifier:
     Mapping:
       - !DualShock              # <-- (tag)
+        Inputs:
+        - LeftStick       
         Output: LeftStick
-        Input: LeftStick
 #...
 ```
 
@@ -32,91 +33,17 @@ Accepts a list of input controls of type *Bool* e.g.:
 ```yaml
 #...
 - Id: 3
-    ConrtollerType: XBox360
-    Modifier:           # <--
-      - LeftShoulder    # <--
-      - RightShoulder   # <--
-    Mapping:
-      - !XBox360
-        Output: YButton
+  ConrtollerType: XBox360
+  Modifier:           # <--
+    - LeftShoulder    # <--
+    - RightShoulder   # <--
+  Mapping:
+    - !XBox360
 #...
 ```
-
-## Controls
-Input, types and their corresponding (default) mapping to DualShock or XBox360 controllers. Default maps will be replaced by mapping with the same input control for a given controller id. Be carefull to match input and output types or use a converter. Mapping multiple input controls to the same output for a given controller can lead to unexpected results.
-
-| Input            | Type          | DualShock        | XBox360          |
-| ---------------- | ------------- | ---------------- | ---------------- |
-| LeftStick        | Bool          | LeftStick        | LeftStick        |    
-| LeftTrigger      | Float         | LeftTrigger      | LeftTrigger      |    
-| LeftShoulder     | Bool          | LeftShoulder     | LeftShoulder     |
-| LeftStickButton  | Bool          | LeftStickButton  | LeftStickButton  |
-| RightStick       | Vec2          | RightStick       | RightStick       |
-| RightTrigger     | Float         | RightTrigger     | RightTrigger     |
-| RightShoulder    | Bool          | RightShoulder    | RightShoulder    |
-| RightStickButton | Bool          | RightStickButton | RightStickButton |
-| DPadNorth        | Bool          | DPadNorth        | DPadNorth        |
-| DPadNorthEast    | Bool          | DPadNorthEast    | DPadNorthEast    |
-| DPadEast         | Bool          | DPadEast         | DPadEast         |
-| DPadSouthEast    | Bool          | DPadSouthEast    | DPadSouthEast    |
-| DPadSouth        | Bool          | DPadSouth        | DPadSouth        |
-| DPadSouthWest    | Bool          | DPadSouthWest    | DPadSouthWest    |
-| DPadWest         | Bool          | DPadWest         | DPadWest         |
-| DPadNorthWest    | Bool          | DPadNorthWest    | DPadNorthWest    |
-| DPadNone         | Bool          | DPadNone         | DPadNone         |
-| TriangleButton   | Bool          | TriangleButton   | YButton          |
-| CircleButton     | Bool          | CircleButton     | BButton          |
-| SquareButton     | Bool          | SquareButton     | XButton          |
-| CrossButton      | Bool          | CrossButton      | AButton          |
-| LogoButton       | Bool          |                  | GuideButton      | 
-| CreateButton     | Bool          | ShareButton      | BackButton       |
-| MenuButton       | Bool          | OptionButton     | StartButton      |
-| MicButton        | Bool          |                  |                  |
-| Touch1           | Vec2          |                  |                  |
-| Touch2           | Vec2          |                  |                  |
-| TouchButton      | Bool          |                  |                  |
-| Tilt             | (Vec3, Vec3)  |                  |                  |
-
-The following mapping snippet will change nothing:
-```yaml
-#...
-    Mapping:
-      - !XBox360
-        Input: TriangleButton
-        Output: YButton
-#...
-```
-
-To swap the left and right stick use the following:
-```yaml
-#...
-    Mapping:
-      - !DualShock
-        Input: RightStick
-        Output: LeftStick
-    Mapping:
-      - !DualShock
-        Input: LeftStick
-        Output: RightStick
-#...
-```
-
-To unmap a specific input from it's default mapping (in case the input is used for something else) do not specify the output control:
-```yaml
-#...
-    Mapping:
-      - !DualShock
-        Input: RightStick
-                            # <-- Leave out or specify: 'Output: '
-    Mapping:                # Next mapping
-#...
-```
-
-## Global
-Use the global property to indicate whether a specific mapping should be active only when the provider modifiers have been pressed (**false** or absent) or should always be active (**true**). A good usecase is mapping tilt input to one of stick of a second or other controller without losing the ability to map the other controls use a modifier. See Converters for an example.
 
 ## Converters
-Use converters to map an input to an output with a non similar type (e.g. tilt to stick) or change input values before mapping to the output. Be carefull tot supply arguments in the right format. Arguments that are provided to converters that don't require arguments (or require less arguments than are provided), are silently omitted.
+Converters are required to indicate how to map an input to an output. Converters exists to straight map on input to an output and converters exist to map non similar types (e.g. tilt to stick), combine (tilt and stick to stick) or change (inverse button) input values before mapping to the output. All converters except a list of input controls a single output control and a dictionary of input arguments. Be careful tot supply input arguments in the right format and under the appropriate name. Arguments with incorrect names are silently omitted.
 
 | Converter                      | Type in      | Type out | Input arguments                           | Additional arguments                     | Description                                                                        |
 | ------------------------------ | ------------ | -------- | ----------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -156,3 +83,80 @@ The following mapping snippet will change nothing:
           - 0,1                           # <-- Deadzone (default 0,0) in decimal (0,0 or 0.0 depending on system settings)
 #...
 ```
+
+
+
+## Controls
+Input, types and their corresponding (default) mapping to DualShock or XBox360 controllers. Mapping multiple input controls to the same output for a given controller can lead to unexpected results. Use the provided converters to achieve combined mappings.
+
+| Input              | Type         | DualShock          | XBox360          |
+|--------------------|--------------|--------------------|------------------|
+| LeftStick          | Bool         | LeftStick          | LeftStick        |    
+| LeftTrigger        | Float        | LeftTrigger        | LeftTrigger      |    
+| LeftTriggerButton  | Bool         | LeftTriggerButton  |                  |    
+| LeftShoulder       | Bool         | LeftShoulder       | LeftShoulder     |
+| LeftStickButton    | Bool         | LeftStickButton    | LeftStickButton  |
+| RightStick         | Vec2         | RightStick         | RightStick       |
+| RightTrigger       | Float        | RightTrigger       | RightTrigger     |
+| RightTriggerButton | Bool         | RightTriggerButton |                  |
+| RightShoulder      | Bool         | RightShoulder      | RightShoulder    |
+| RightStickButton   | Bool         | RightStickButton   | RightStickButton |
+| DPadNorth          | Bool         | DPadNorth          | DPadNorth        |
+| DPadNorthEast      | Bool         | DPadNorthEast      | DPadNorthEast    |
+| DPadEast           | Bool         | DPadEast           | DPadEast         |
+| DPadSouthEast      | Bool         | DPadSouthEast      | DPadSouthEast    |
+| DPadSouth          | Bool         | DPadSouth          | DPadSouth        |
+| DPadSouthWest      | Bool         | DPadSouthWest      | DPadSouthWest    |
+| DPadWest           | Bool         | DPadWest           | DPadWest         |
+| DPadNorthWest      | Bool         | DPadNorthWest      | DPadNorthWest    |
+| DPadNone           | Bool         | DPadNone           | DPadNone         |
+| TriangleButton     | Bool         | TriangleButton     | YButton          |
+| CircleButton       | Bool         | CircleButton       | BButton          |
+| SquareButton       | Bool         | SquareButton       | XButton          |
+| CrossButton        | Bool         | CrossButton        | AButton          |
+| LogoButton         | Bool         |                    | GuideButton      | 
+| CreateButton       | Bool         | ShareButton        | BackButton       |
+| MenuButton         | Bool         | OptionButton       | StartButton      |
+| MicButton          | Bool         |                    |                  |
+| Touch1             | Vec2         |                    |                  |
+| Touch2             | Vec2         |                    |                  |
+| TouchButton        | Bool         |                    |                  |
+| Tilt               | (Vec3, Vec3) |                    |                  |
+
+The following mapping snippet will change nothing:
+```yaml
+#...
+    Mapping:
+      - !XBox360
+        Inpust:
+        - TriangleButton
+        Output: YButton
+#...
+```
+
+To swap the left and right stick use the following:
+```yaml
+#...
+    Mapping:
+      - !DualShock
+        Input: RightStick
+        Output: LeftStick
+      - !DualShock
+        Input: LeftStick
+        Output: RightStick
+#...
+```
+
+To unmap a specific input from it's default mapping (in case the input is used for something else) do not specify the output control:
+```yaml
+#...
+    Mapping:
+      - !DualShock
+        Input: RightStick
+                            # <-- Leave out or specify: 'Output: '
+    Mapping:                # Next mapping
+#...
+```
+
+## Global
+Use the global property to indicate whether a specific mapping should be active only when the provider modifiers have been pressed (**false** or absent) or should always be active (**true**). A good usecase is mapping tilt input to one of stick of a second or other controller without losing the ability to map the other controls use a modifier. See Converters for an example.

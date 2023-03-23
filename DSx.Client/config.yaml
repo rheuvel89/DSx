@@ -121,7 +121,7 @@ Controllers:
           - Tilt
           - RightStick
           - TouchButton
-          - MicButton
+          - CreateButton
         Output: RightStick
         Converter: TiltAndStickToStickConverter
         ConverterArguments:
@@ -241,7 +241,7 @@ Controllers:
         Inputs:
           - Tilt
           - RightStick
-          - MicButton
+          - MenuButton
         Output: RightStick
         Converter: GyroAndStickToStickConverter
         ConverterArguments:
