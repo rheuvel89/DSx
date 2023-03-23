@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -16,7 +17,7 @@ namespace DSx.Mapping
             _innerConverter = new GyroToStickConverter();
         }
         
-        public object Convert(object[] inputs, string[] args, out object? feedback)
+        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
             
@@ -24,13 +25,12 @@ namespace DSx.Mapping
             var stick = (Vec2)inputs[1];
             var toggle = inputs[2];
 
-            _alphaX ??= args.Length >= 1 && float.TryParse(args[0], out var ax) ? ax : 1f;
-            _alphaY ??= args.Length >= 2 && float.TryParse(args[1], out var ay) ? ay : 1f;
-            _betaX ??= args.Length >= 3 && float.TryParse(args[2], out var bx) ? bx : 1f;
-            _betaY ??= args.Length >= 4 && float.TryParse(args[3], out var by) ? by : 1f;
+            _alphaX ??= args.TryGetValue("AlphaX", out var sax) && float.TryParse(sax, out var ax) ? ax : 1f;
+            _alphaY ??= args.TryGetValue("AlphaY", out var say) && float.TryParse(say, out var ay) ? ay : 1f;
+            _betaX ??= args.TryGetValue("BetaX", out var sbx) && float.TryParse(sbx, out var bx) ? bx : 1f;
+            _betaY ??= args.TryGetValue("BetaY", out var sby) && float.TryParse(sby, out var by) ? by : 1f;
 
             inputs = new[] { tilt, toggle };
-            args = args.Skip(4).ToArray(); 
             var output = (Vec2)_innerConverter.Convert(inputs, args, out feedback);
             
             output.X = output.X * _alphaX.Value + stick.X * _betaX.Value;

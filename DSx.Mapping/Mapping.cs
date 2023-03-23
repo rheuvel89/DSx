@@ -90,12 +90,12 @@ namespace DSx.Mapping
             IList<InputControl> inputs,
             DualShockControl output,
             MappingConverter converter,
-            IList<string>? arguments)
+            IDictionary<string, string>? arguments)
         {
             var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
             var asigner = MappingConstants.DualShockAsigner[output];
-            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
-            var argumentArray = arguments?.ToArray() ?? Array.Empty<string>();
+            var selectedConverter = MappingConstants.MappingConveters[converter]();
+            var argumentArray = arguments ?? new Dictionary<string, string>();
             return new DualShockMappingAction(inputs, output, converter, (i, o) =>
             {
                 object? feedback = null;
@@ -110,12 +110,12 @@ namespace DSx.Mapping
             IList<InputControl> inputs,
             XBox360Control output,
             MappingConverter converter,
-            IList<string>? arguments)
+            IDictionary<string, string>? arguments)
         {
             var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
             var asigner = MappingConstants.XBox360Asigner[output];
             var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
-            var argumentArray = arguments?.ToArray() ?? Array.Empty<string>();
+            var argumentArray = arguments ?? new Dictionary<string, string>();
             return new XBox360MappingAction(inputs, output, converter, (i, o) =>
             {
                 object? feedback = null;

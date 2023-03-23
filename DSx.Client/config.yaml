@@ -107,9 +107,35 @@ Controllers:
         Global: true
         Inputs:
           - Tilt
+          - RightStick
+          - TouchButton
           - MicButton
         Output: RightStick
-        Converter: GyroToStickConverter
+        Converter: TiltAndStickToStickConverter
         ConverterArguments:
-          - 0,01
-          - 0,01
+          AlphaX: 1,0
+          AlphaY: 1,0
+          BetaX: 1,0
+          BetaY: 1,0
+          Sensitivity: 1,7
+          Deadzone: 0,1
+  - Id: 2
+    ConrtollerType: DualShock
+    Modifier:
+      - LeftShoulder
+    Mapping:
+      - !DualShock
+        Global: true
+        Inputs:
+          - Tilt
+          - RightStick
+          - MicButton
+        Output: RightStick
+        Converter: GyroAndStickToStickConverter
+        ConverterArguments:
+          AlphaX: 1,0
+          AlphaY: 1,0
+          BetaX: 1,0
+          BetaY: 1,0
+          GammaX: 0,05
+          GammaY: 0,05

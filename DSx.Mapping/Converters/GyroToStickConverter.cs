@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using DualSenseAPI;
@@ -24,7 +25,7 @@ namespace DSx.Mapping
             _yQueue = new ConcurrentQueue<float>();
         }
         
-        public object Convert(object[] inputs, string[] args, out object? feedback)
+        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
 
@@ -35,12 +36,12 @@ namespace DSx.Mapping
             _toggled = toggle;
             if (!_active) return new Vec2 { X = 0f, Y = 0f };
             
-            _factorX ??= args.Length >= 1 && float.TryParse(args[0], out var fx) ? fx : 1f;
-            _factorY ??= args.Length >= 2 && float.TryParse(args[1], out var fy) ? fy : 1f;
+            _factorX ??= args.TryGetValue("GammaX", out var sgx) && float.TryParse(sgx, out var gx) ? gx : 1f;
+            _factorY ??= args.TryGetValue("GammaY", out var sgy) && float.TryParse(sgy, out var gy) ? gy : 1f;
 
-            var elapsed = -_timestamp + (_timestamp = _timer.ElapsedMilliseconds);
-            _xQueue.Enqueue( (float)(System.Math.Sign(gyro.Y+ gyro.Z) * System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)elapsed / 1000)));
-            _yQueue.Enqueue(gyro.X * ((float)elapsed / 1000));
+            var delta = -_timestamp + (_timestamp = _timer.ElapsedMilliseconds);
+            _xQueue.Enqueue( (float)(System.Math.Sign(gyro.Y+ gyro.Z) * System.Math.Sqrt(gyro.Y * gyro.Y + gyro.Z * gyro.Z) * ((float)delta / 1000)));
+            _yQueue.Enqueue(gyro.X * ((float)delta / 1000));
             
             _timestamp = _timer.ElapsedMilliseconds;
 

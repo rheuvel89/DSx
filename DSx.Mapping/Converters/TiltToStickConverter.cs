@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using DSx.Math;
 using DualSenseAPI;
 
@@ -22,7 +23,7 @@ namespace DSx.Mapping
             //_algorithm = new MahonyAHRS((float)pollingInterval/1000 , 1f, 0f);
         }
         
-        public object Convert(object[] inputs, string[] args, out object? feedback)
+        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
 
@@ -34,8 +35,8 @@ namespace DSx.Mapping
             _toggled = toggle;
             if (!_active) return new Vec2 { X = 0f, Y = 0f };
                 
-            _sensitivity ??= args.Length >= 1 && float.TryParse(args[0], out var s) ? s : 1f;
-            _deadzone ??= args.Length >= 2 && float.TryParse(args[1], out var d) ? d : 0f;
+            _sensitivity ??= args.TryGetValue("Sensitivity", out var ss) && float.TryParse(ss, out var s) ? s : 1f;
+            _deadzone ??= args.TryGetValue("Deadzone", out var sd) && float.TryParse(sd, out var d) ? d : 0f;
             
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);

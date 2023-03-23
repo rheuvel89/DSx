@@ -6,7 +6,7 @@ namespace DSx.Mapping
     {
         public IList<InputControl> Inputs { get; set; } //private set; }
         public MappingConverter Converter { get; set; } //private set; }
-        public IList<string>? ConverterArguments { get; set; } //private set; }
+        public IDictionary<string, string>? ConverterArguments { get; set; } //private set; }
         public bool? Global { get; set; }
     }
 }
