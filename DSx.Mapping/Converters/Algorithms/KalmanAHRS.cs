@@ -47,13 +47,10 @@ namespace DSx.Mapping
             var kalmanPitch = _pitch.GetAngle((float)pitch, (float)(rateX-_driftX), dt)/45;
             var kalmanRoll = _roll.GetAngle((float)roll, (float)(rateY-_driftY), dt)/45;
 
-            if (reZero)
-            {
-                _zero = _zero * 0.9f + kalmanPitch * 0.1f;
-            }
+            if (reZero) _zero = _zero * 0.9f + kalmanPitch * 0.1f;
 
-            Console.SetCursorPosition(0,0);
-            Console.WriteLine($"{kalmanRoll} \t {kalmanPitch - _zero}");
+            // Console.SetCursorPosition(0,0);
+            // Console.WriteLine($"{kalmanRoll} \t {kalmanPitch - _zero}");
 
             var x = kalmanRoll.Limit1();
             var y = (kalmanPitch - _zero).Limit1();
