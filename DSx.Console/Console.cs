@@ -36,18 +36,24 @@ namespace DSx.Console
         {
             while (true)
             {
-                if (!_noConsole && SystemConsole.WindowWidth > 10 && SystemConsole.WindowHeight > 10) lock (_lock)
+                lock (_lock)
                 {
-                    SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 8);
-                    SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
-                    SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 7);
-                    SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
-                    SystemConsole.WriteLine(new string(Enumerable.Repeat('=', SystemConsole.WindowWidth - 1).ToArray()));
-                    SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 1);
-                    SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
-                    SystemConsole.SetCursorPosition(3, SystemConsole.WindowHeight - 1);
+                    if (!_noConsole && SystemConsole.WindowWidth > 10 && SystemConsole.WindowHeight > 10) 
+                    {
+                        SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 8);
+                        SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
+                        SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 7);
+                        SystemConsole.WriteLine(string.Empty.PadRight(SystemConsole.WindowWidth - 1));
+                        SystemConsole.WriteLine(new string(Enumerable.Repeat('=', SystemConsole.WindowWidth - 1).ToArray()));
+                        SystemConsole.SetCursorPosition(0, SystemConsole.WindowHeight - 1);
+                        SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
+                        SystemConsole.SetCursorPosition(3, SystemConsole.WindowHeight - 1);
+                    }
+                    else SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
+
+                    var (_, top) = SystemConsole.GetCursorPosition();
+                    SystemConsole.SetCursorPosition(2, top);
                 }
-                else SystemConsole.Write("> ".PadRight(SystemConsole.WindowWidth - 1));
                 var line = SystemConsole.ReadLine();
                 
                 if (line == "exit") return;

@@ -11,7 +11,6 @@ using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
 using Nefarius.ViGEm.Client;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 
 namespace DSx.Client
@@ -20,7 +19,6 @@ namespace DSx.Client
     {
         private readonly ViGEmClient _manager;
         private readonly InputCollector _inputCollector;
-        private readonly TiltToStickConverter _converter;
         private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
@@ -33,7 +31,6 @@ namespace DSx.Client
             _inputCollector = options.Port != null
                 ? new RemoteInputCollector(options.Port.Value)
                 : new LocalInputCollector(options.PollingInterval);
-            _converter = new TiltToStickConverter();
             _output = new List<IVirtualGamepad>();
             _console = new Console.Console(_output, options.NoConsole);
             _count = options.Count;
@@ -51,13 +48,14 @@ namespace DSx.Client
                          {
                              return _mapping[(byte)i] switch
                              {
-                                 ControllerType.DualShock => _manager.CreateDualShock4Controller(),
-                                 ControllerType.XBox360 => _manager.CreateXbox360Controller(),
+                                 ControllerType.DualShock => _manager.CreateDualShock4Controller(0x7331, (ushort)i),
+                                 ControllerType.XBox360 => _manager.CreateXbox360Controller(0x7331, (ushort)i),
                              };
                          }))
             {
                 _output.Add(controller);
                 controller.Connect();
+                await Task.Delay(TimeSpan.FromSeconds(1));
             }
 
             _inputCollector.OnInputReceived += OnInputReceived;
