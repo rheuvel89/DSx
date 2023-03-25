@@ -19,8 +19,9 @@ namespace DSx.Mapping
         {
             _timer = Stopwatch.StartNew();
             //_algorithm = new SimpleAHRS();
-            _algorithm = new CombinedAHRS(0.4f, 0.001f, 0.01f);
+            //_algorithm = new CombinedAHRS(0.4f, 0.001f, 0.01f);
             //_algorithm = new MahonyAHRS((float)pollingInterval/1000 , 1f, 0f);
+            _algorithm = new KalmanAHRS();
         }
         
         public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
@@ -41,7 +42,7 @@ namespace DSx.Mapping
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
          
-            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr.Normalize(), _sensitivity.Value, _deadzone.Value, rezero, out var rumble);
+            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr, _sensitivity.Value, _deadzone.Value, rezero, out var rumble);
             feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
             
             return new Vec2 { X = -result.X, Y = result.Y }.Limit1();
