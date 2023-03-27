@@ -251,8 +251,8 @@ Controllers:
           BetaY: 1,0
           GammaX: 0,05
           GammaY: 0,05
-          EpsilonX: 2,0
-          EpsilonY: 2,0
+          EpsilonX: 0,9
+          EpsilonY: 0,9
       - !DualShock
         Inputs:
           Stick: LeftStick

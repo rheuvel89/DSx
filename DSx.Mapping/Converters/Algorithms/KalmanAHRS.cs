@@ -26,7 +26,8 @@ namespace DSx.Mapping
             var dt = (float)(timestamp - _timestamp) / 1000;
             _timestamp = timestamp;
             
-            var pitch  = System.Math.Atan2(rAcc.Y, rAcc.Z) * RAD_TO_DEG;
+            var pitch  = System.Math.Atan2(rAcc.Y, rAcc.Z) * RAD_TO_DEG + 90;
+            if (pitch < 0) pitch += 360;
             var roll = System.Math.Atan(-rAcc.X / System.Math.Sqrt(rAcc.Y * rAcc.Y + rAcc.Z * rAcc.Z)) * RAD_TO_DEG;
 
             var rateX = rGyr.X * GYRO_TO_RATE;
@@ -41,6 +42,7 @@ namespace DSx.Mapping
 
                 _pitch.SetAngle((float)pitch);
                 _roll.SetAngle((float)roll);
+                if (_initializing <= 1) rumble = new Vector<float, float>(1, 1);
                 return new Vector<float, float, float>((float)pitch, (float)roll, 0);
             }
             
@@ -61,9 +63,9 @@ namespace DSx.Mapping
 
     public class Kalman
     {
-        private float _qAngle = 0.001f;
-        private float _qBias = 0.003f;
-        private float _rMeasure = 0.03f;
+        private float _qAngle = 0.01f; // Decrease if slow (trusting angle too much)
+        private float _qBias = 0.8f; // Increase with drift
+        private float _rMeasure = 0.03f; // High = slow, small = overshoot/noisy
         
         private float _angle;
         private float _bias;
