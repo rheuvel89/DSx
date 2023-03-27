@@ -9,11 +9,14 @@ namespace DSx.Mapping
     {
         public static float Limit1(this float f, float c)
         {
-            var x = f * c;
-            return
-                (System.MathF.Pow(System.MathF.E, x) - System.MathF.Pow(System.MathF.E, -x))
-                /
-                (System.MathF.Pow(System.MathF.E, x) + System.MathF.Pow(System.MathF.E, -x));
+            // var x = f * c;
+            // return
+            //     (System.MathF.Pow(System.MathF.E, x) - System.MathF.Pow(System.MathF.E, -x))
+            //     /
+            //     (System.MathF.Pow(System.MathF.E, x) + System.MathF.Pow(System.MathF.E, -x));
+            var x = MathF.Pow(f, c);
+            return x < -1 ? -1 : x > 1 ? 1 : x;
+
         }
         
         public static float Limit1(this float f)

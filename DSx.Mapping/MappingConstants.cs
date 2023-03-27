@@ -15,12 +15,18 @@ namespace DSx.Mapping
             {
                 [MappingConverter.ButtonToButtonConverter] = () => new ButtonToButtonConverter(),
                 [MappingConverter.InverseButtonToButtonConverter] = () => new InverseButtonToButtonConverter(),
+                [MappingConverter.AndButtonToButtonConverter] = () => new AndButtonToButtonConverter(),
+                [MappingConverter.OrButtonToButtonConverter] = () => new OrButtonToButtonConverter(),
                 [MappingConverter.StickToStickConverter] = () => new StickToStickConverter(),
+                [MappingConverter.ButtonAndStickToStickConverter] = () => new ButtonAndStickToStickConverter(),
                 [MappingConverter.TriggerToTriggerConverter] = () => new TriggerToTriggerConverter(),
+                [MappingConverter.ButtonAndTriggerToTriggerConverter] = () => new ButtonAndTriggerToTriggerConverter(),
                 [MappingConverter.TiltToStickConverter] = () => new TiltToStickConverter(),
                 [MappingConverter.TiltAndStickToStickConverter] = () => new TiltAndStickToStickConverter(),
                 [MappingConverter.GyroToStickConverter] = () => new GyroToStickConverter(),
+                [MappingConverter.ButtonAndGyroToStickConverter] = () => new ButtonAndGyroToStickConverter(),
                 [MappingConverter.GyroAndStickToStickConverter] = () => new GyroAndStickToStickConverter(),
+                [MappingConverter.ButtonAndGyroAndStickToStickConverter] = () => new ButtonAndGyroAndStickToStickConverter(),
             };
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>
