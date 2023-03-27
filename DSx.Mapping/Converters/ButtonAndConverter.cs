@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -9,13 +8,11 @@ namespace DSx.Mapping
     where TReturn : struct
     {
         private TInner _innerConverter = new();
-        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
             
-            var button = (bool)inputs[0];
-
-            inputs = inputs.Skip(1).ToArray();
+            var button = (bool)inputs["Button"];
 
             return button
                 ? _innerConverter.Convert(inputs, args, out feedback)
@@ -30,13 +27,11 @@ namespace DSx.Mapping
         private TInnerTrue _innerTrueConverter = new();
         private TInnerTrue _innerFalseConverter = new();
         
-        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
             
-            var button = (bool)inputs[0];
-
-            inputs = inputs.Skip(1).ToArray();
+            var button = (bool)inputs["Button"];
 
             return button
                 ? _innerTrueConverter.Convert(inputs, args, out feedback)

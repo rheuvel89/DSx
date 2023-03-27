@@ -87,19 +87,19 @@ namespace DSx.Mapping
         }
         
         private static DualShockMappingAction MapDualShockAction(
-            IList<InputControl> inputs,
+            IDictionary<string, InputControl> inputs,
             DualShockControl output,
             MappingConverter converter,
             IDictionary<string, string>? arguments)
         {
-            var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
+            var selectors = inputs.ToDictionary(x => x.Key, x => MappingConstants.InputSelector[x.Value]);
             var asigner = MappingConstants.DualShockAsigner[output];
             var selectedConverter = MappingConstants.MappingConveters[converter]();
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new DualShockMappingAction(inputs, output, converter, (i, o) =>
             {
                 object? feedback = null;
-                var values = selectors.Select(x => x(i)).ToArray();
+                var values = selectors.ToDictionary(x => x.Key, x => x.Value(i));
                 var result = selectedConverter.Convert(values, argumentArray, out feedback);
                 asigner(o, result);
                 return feedback;
@@ -107,19 +107,19 @@ namespace DSx.Mapping
         }
         
         private static XBox360MappingAction MapXBox360Action(
-            IList<InputControl> inputs,
+            IDictionary<string, InputControl> inputs,
             XBox360Control output,
             MappingConverter converter,
             IDictionary<string, string>? arguments)
         {
-            var selectors = inputs.Select(x => MappingConstants.InputSelector[x]).ToArray();
+            var selectors = inputs.ToDictionary(x => x.Key, x => MappingConstants.InputSelector[x.Value]);
             var asigner = MappingConstants.XBox360Asigner[output];
             var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new XBox360MappingAction(inputs, output, converter, (i, o) =>
             {
                 object? feedback = null;
-                var values = selectors.Select(x => x(i)).ToArray();
+                var values = selectors.ToDictionary(x => x.Key, x => x.Value(i));
                 var result = selectedConverter.Convert(values, argumentArray, out feedback);
                 asigner(o, result);
                 return feedback;

@@ -24,13 +24,13 @@ namespace DSx.Mapping
             _algorithm = new KalmanAHRS();
         }
         
-        public object Convert(object[] inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
         {
             feedback = null;
 
-            var (acc, gyro) = ((Vec3, Vec3))inputs[0];
-            var rezero = (bool)inputs[1];
-            var toggle = (bool)inputs[2];
+            var (acc, gyro) = ((Vec3, Vec3))inputs["Tilt"];
+            var rezero = (bool)inputs["Zero"];
+            var toggle = (bool)inputs["Toggle"];
             
             if (!_toggled && toggle) _active = !_active;
             _toggled = toggle;

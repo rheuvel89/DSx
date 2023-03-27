@@ -6,7 +6,7 @@ namespace DSx.Mapping
 {
     public interface IMappingAction
     {
-        IList<InputControl> Inputs { get; }
+        IDictionary<string, InputControl> Inputs { get; }
         MappingConverter Converter { get; }
         
         object Map(DualSenseInputState input, IVirtualGamepad output);

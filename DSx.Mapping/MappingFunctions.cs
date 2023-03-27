@@ -14,7 +14,7 @@ namespace DSx.Mapping
             //     (System.MathF.Pow(System.MathF.E, x) - System.MathF.Pow(System.MathF.E, -x))
             //     /
             //     (System.MathF.Pow(System.MathF.E, x) + System.MathF.Pow(System.MathF.E, -x));
-            var x = MathF.Pow(f, c);
+            var x = MathF.Sign(f)*MathF.Pow(MathF.Abs(f), c);
             return x < -1 ? -1 : x > 1 ? 1 : x;
 
         }
