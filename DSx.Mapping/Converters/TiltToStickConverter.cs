@@ -24,9 +24,9 @@ namespace DSx.Mapping
             _algorithm = new KalmanAHRS();
         }
         
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
 
             var (acc, gyro) = ((Vec3, Vec3))inputs["Tilt"];
             var rezero = (bool)inputs["Zero"];
@@ -42,8 +42,7 @@ namespace DSx.Mapping
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
          
-            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr, _sensitivity.Value, _deadzone.Value, rezero, out var rumble);
-            feedback = new Vec2 { X = rumble.X, Y = rumble.Y };
+            var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr, _sensitivity.Value, _deadzone.Value, rezero, out feedback);
             
             return new Vec2 { X = -result.X, Y = result.Y }.Limit1();
         }

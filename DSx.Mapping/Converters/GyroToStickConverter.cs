@@ -27,9 +27,9 @@ namespace DSx.Mapping
             _yQueue = new ConcurrentQueue<float>();
         }
         
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
 
             var (acc, gyro) = ((Vec3, Vec3))inputs["Tilt"];
             var toggle = (bool)inputs["Toggle"];

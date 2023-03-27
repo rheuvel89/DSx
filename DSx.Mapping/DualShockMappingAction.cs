@@ -9,9 +9,9 @@ namespace DSx.Mapping
 {
     public class DualShockMappingAction : IMappingAction
     {
-        private readonly Func<DualSenseInputState, IDualShock4Controller, object> _mappingAction;
+        private readonly Func<DualSenseInputState, IDualShock4Controller, Feedback> _mappingAction;
 
-        public DualShockMappingAction(IDictionary<string, InputControl> inputs, DualShockControl output, MappingConverter converter, Func<DualSenseInputState, IDualShock4Controller, object> mappingAction)
+        public DualShockMappingAction(IDictionary<string, InputControl> inputs, DualShockControl output, MappingConverter converter, Func<DualSenseInputState, IDualShock4Controller, Feedback> mappingAction)
         {
             Inputs = inputs;
             Output = output;
@@ -23,7 +23,7 @@ namespace DSx.Mapping
         public DualShockControl Output { get; }
         public MappingConverter Converter { get; }
 
-        public object Map(DualSenseInputState input, IVirtualGamepad output)
+        public Feedback Map(DualSenseInputState input, IVirtualGamepad output)
         {
             return _mappingAction(input, (IDualShock4Controller)output);
         }

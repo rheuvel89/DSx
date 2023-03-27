@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using DSx.Mapping;
 using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
@@ -68,7 +69,7 @@ namespace DXs.Common
             switch (value)
             {
                 case DualSenseInputState v: reader.Deserialize(v); break;
-                case Vector<float, float> v: reader.Deserialize(v); break;
+                case Feedback v: reader.Deserialize(v); break;
             }
 
             return value;
@@ -149,20 +150,37 @@ namespace DXs.Common
         }
 
 
-        public static byte[] Serialize(this Vector<float, float> source, long order)
+        public static byte[] Serialize(this Feedback feedback, long order)
         {
             using var stream = new MemoryStream();
             var writer = new BinaryWriter(stream);
+            
             writer.Write(order);
-            writer.Write(source.X);
-            writer.Write(source.Y);
+            
+            writer.Write(feedback.Rumble.X);
+            writer.Write(feedback.Rumble.Y);
+            writer.Write(feedback.Color.X);
+            writer.Write(feedback.Color.Y);
+            writer.Write(feedback.Color.Z);
+            writer.Write((int)feedback.MicLed);
             return stream.ToArray();
         }
 
-        public static void Deserialize(this BinaryReader reader, Vector<float, float> value)
+        public static void Deserialize(this BinaryReader reader, Feedback value)
         {
-            value.X = reader.ReadSingle();
-            value.Y = reader.ReadSingle();
+            var rumble = new Vec2();
+            rumble.X = reader.ReadSingle();
+            rumble.Y = reader.ReadSingle();
+            value.Rumble = rumble;
+
+            var color = new Vec3();
+            color.X = reader.ReadSingle();
+            color.Y = reader.ReadSingle();
+            color.Z = reader.ReadSingle();
+            value.Color = color;
+                
+            var mic = reader.ReadInt32();
+            value.MicLed = (MicLed)mic;
         }
 
     }

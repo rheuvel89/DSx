@@ -303,7 +303,7 @@ namespace DSx.Mapping
             else if (_aZero != null) _aZero = null;
         }
         
-        public Vector<float, float, float> Calculate(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, float sensitivity, float deadzone, bool reZero, out Vector<float, float> rumble)
+        public Vector<float, float, float> Calculate(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, float sensitivity, float deadzone, bool reZero, out Feedback feedback)
         {
             Update(rGyr.X, rGyr.Y, rGyr.Z, rAcc.X, rAcc.Y, rAcc.Z);
             
@@ -319,8 +319,8 @@ namespace DSx.Mapping
             );
             
             TryZero(heading, reZero);
-            
-            rumble = Vector<float, float>.Zero;
+
+            feedback = new Feedback();
             return heading.Subtract(_zero);
         }
     }

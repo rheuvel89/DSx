@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DSx.Math\DSx.Math.csproj" />
+      <ProjectReference Include="..\DSx.Shared\DSx.Shared.csproj" />
       <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
     </ItemGroup>
 

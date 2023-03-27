@@ -1,5 +1,6 @@
 using System;
 using DSx.Math;
+using DualSenseAPI;
 
 namespace DSx.Mapping
 {
@@ -19,9 +20,9 @@ namespace DSx.Mapping
         private float _zero = 0;
         
         public Vector<float, float, float> Calculate(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, float sensitivity, float deadzone, bool reZero,
-            out Vector<float, float> rumble)
+            out Feedback feedback)
         {
-            rumble = new Vector<float, float>(0, 0);
+            feedback = new Feedback();
             
             var dt = (float)(timestamp - _timestamp) / 1000;
             _timestamp = timestamp;
@@ -35,6 +36,8 @@ namespace DSx.Mapping
 
             if (_initializing-- > 0)
             {
+                feedback.MicLed = MicLed.Pulse;
+                
                 _driftX = _driftX * 0.99 + rateX * 0.01;
                 _driftY = _driftY * 0.99 + rateY * 0.01;
                 Console.SetCursorPosition(0,0);
@@ -42,7 +45,7 @@ namespace DSx.Mapping
 
                 _pitch.SetAngle((float)pitch);
                 _roll.SetAngle((float)roll);
-                if (_initializing <= 1) rumble = new Vector<float, float>(1, 1);
+                
                 return new Vector<float, float, float>((float)pitch, (float)roll, 0);
             }
             

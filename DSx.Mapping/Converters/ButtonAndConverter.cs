@@ -8,9 +8,9 @@ namespace DSx.Mapping
     where TReturn : struct
     {
         private TInner _innerConverter = new();
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
             
             var button = (bool)inputs["Button"];
 
@@ -27,9 +27,9 @@ namespace DSx.Mapping
         private TInnerTrue _innerTrueConverter = new();
         private TInnerTrue _innerFalseConverter = new();
         
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
             
             var button = (bool)inputs["Button"];
 

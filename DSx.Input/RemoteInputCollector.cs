@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using DSx.Mapping;
 using DSx.Math;
 using DualSenseAPI.State;
 using DXs.Common;
@@ -39,9 +40,9 @@ namespace DSx.Input
 
         public override event InputReceivedHandler? OnInputReceived;
         public override event ButtonChangedHandler? OnButtonChanged;
-        public override void OnStateChanged(Vector<float, float> rumble)
+        public override void OnStateChanged(Feedback feedback)
         {
-            _connectionManager.Send(rumble.Serialize(_timer.ElapsedMilliseconds));
+            _connectionManager.Send(feedback.Serialize(_timer.ElapsedMilliseconds));
         }
     }
 }

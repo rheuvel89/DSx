@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using DSx.Math;
+using DualSenseAPI;
 
 namespace DSx.Mapping
 {
@@ -31,8 +32,10 @@ namespace DSx.Mapping
             float sensitivity,
             float deadzone,
             bool reZero,
-            out Vector<float, float> rumble)
+            out Feedback feedback)
         {
+            feedback = new Feedback();
+
             var delta = timestamp - _previousTimestamp;
             _previousTimestamp = timestamp;
             _zAcc = TryZero(rAcc, _aZero, reZero) ?? _zAcc;
@@ -50,8 +53,7 @@ namespace DSx.Mapping
             _reading.X = (float)(_alpha * gPitch + beta * aRoll);  
             _reading.Y = (float)(_alpha * gRoll + beta * (aPitch - zPitch));  
 
-            rumble = Vector<float, float>.Zero;
-            if (_reading.X > 0.9 || _reading.X < -0.9 || _reading.Y > 0.9 || _reading.Y < -0.9) rumble.X = rumble.Y = 0.01f;
+            if (_reading.X > 0.9 || _reading.X < -0.9 || _reading.Y > 0.9 || _reading.Y < -0.9) feedback.Rumble = new Vec2 { X = 0.01f, Y = 0.01f };
 
             _reading.X *= sensitivity;
             _reading.Y *= sensitivity;

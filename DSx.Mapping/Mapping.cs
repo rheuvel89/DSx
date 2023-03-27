@@ -55,16 +55,16 @@ namespace DSx.Mapping
             }
         }
         
-        public object? Map(DualSenseInputState input, IList<IVirtualGamepad> output)
+        public Feedback Map(DualSenseInputState input, IList<IVirtualGamepad> output)
         {
-            object? feedback = null; 
+            Feedback feedback = new Feedback(); 
             
             var id = _controllerSelectors.FirstOrDefault(kvp => kvp.Value?.Invoke(input) ?? false).Key;
             for (byte i = 0; i < output.Count; i++)
             {
-                if (i == id) foreach (var action in _controllerMapping[i]) feedback = action.Map(input, output[i]) ?? feedback;
+                if (i == id) foreach (var action in _controllerMapping[i]) feedback = action.Map(input, output[i]) + feedback;
                 else output[i].ResetReport();
-                foreach (var action in _globalMapping[i]) feedback = action.Map(input, output[i]) ?? feedback;
+                foreach (var action in _globalMapping[i]) feedback = action.Map(input, output[i]) + feedback;
             }
 
             return feedback;
@@ -98,7 +98,7 @@ namespace DSx.Mapping
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new DualShockMappingAction(inputs, output, converter, (i, o) =>
             {
-                object? feedback = null;
+                Feedback feedback = new Feedback();
                 var values = selectors.ToDictionary(x => x.Key, x => x.Value(i));
                 var result = selectedConverter.Convert(values, argumentArray, out feedback);
                 asigner(o, result);
@@ -118,7 +118,7 @@ namespace DSx.Mapping
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new XBox360MappingAction(inputs, output, converter, (i, o) =>
             {
-                object? feedback = null;
+                Feedback feedback = new Feedback();
                 var values = selectors.ToDictionary(x => x.Key, x => x.Value(i));
                 var result = selectedConverter.Convert(values, argumentArray, out feedback);
                 asigner(o, result);

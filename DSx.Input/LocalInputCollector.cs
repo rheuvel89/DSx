@@ -1,3 +1,4 @@
+using DSx.Mapping;
 using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
@@ -37,10 +38,16 @@ namespace DSx.Input
 
         public override event InputReceivedHandler? OnInputReceived;
         public override event ButtonChangedHandler? OnButtonChanged;
-        public override void OnStateChanged(Vector<float, float> rumble)
+        public override void OnStateChanged(Feedback feedback)
         {
-            _input.OutputState.LeftRumble = rumble.X;
-            _input.OutputState.LeftRumble = rumble.Y;
+            _input.OutputState.LeftRumble = feedback.Rumble.X;
+            _input.OutputState.RightRumble = feedback.Rumble.Y;
+            _input.OutputState.LightbarBehavior =
+                feedback.Color.X == 0 && feedback.Color.Y == 0 && feedback.Color.Z == 0
+                    ? LightbarBehavior.PulseBlue
+                    : LightbarBehavior.CustomColor;
+            _input.OutputState.LightbarColor = new LightbarColor { R = feedback.Color.X, G = feedback.Color.Y, B = feedback.Color.Z };
+            _input.OutputState.MicLed = feedback.MicLed;
         }
     }
 }

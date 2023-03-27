@@ -16,9 +16,9 @@ namespace DSx.Mapping
             _innerConverter = new GyroToStickConverter();
         }
         
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
             
             var stick = (Vec2)inputs["Stick"];
 

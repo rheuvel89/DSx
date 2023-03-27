@@ -18,6 +18,7 @@
       <ProjectReference Include="..\DSx.Console\DSx.Console.csproj" />
       <ProjectReference Include="..\DSx.Input\DSx.Input.csproj" />
       <ProjectReference Include="..\DSx.Mapping\DSx.Mapping.csproj" />
+      <ProjectReference Include="..\DSx.Shared\DSx.Shared.csproj" />
       <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
     </ItemGroup>
 

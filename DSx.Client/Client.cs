@@ -79,8 +79,12 @@ namespace DSx.Client
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
-            var feedback = (Vec2)(_mapping.Map(inputState, _output) ?? new Vec2());
-            _inputCollector.OnStateChanged(new Vector<float, float>(feedback.X, feedback.Y));
+            var feedback = _mapping.Map(inputState, _output);
+
+            feedback.Color = ds.IoMode == IoMode.USB
+                ? new Vec3()
+                : new Vec3 { X = (10 - ds.InputState.BatteryStatus.Level) / 10, Y = ds.InputState.BatteryStatus.Level / 10 };
+            _inputCollector.OnStateChanged(feedback);
 
             foreach (var controller in _output) controller.SubmitReport();
             // var elapsed = _timer.ElapsedMilliseconds - ms;

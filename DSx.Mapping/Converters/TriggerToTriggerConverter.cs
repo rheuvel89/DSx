@@ -4,9 +4,9 @@ namespace DSx.Mapping
 {
     public class TriggerToTriggerConverter : IMappingConverter
     {
-        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out object? feedback)
+        public object Convert(IDictionary<string, object> inputs, IDictionary<string, string> args, out Feedback feedback)
         {
-            feedback = null;
+            feedback = new Feedback();
 
             return inputs["Trigger"];
         }

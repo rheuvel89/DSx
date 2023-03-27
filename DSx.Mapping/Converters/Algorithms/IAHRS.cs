@@ -11,6 +11,6 @@ namespace DSx.Mapping
             float sensitivity,
             float deadzone,
             bool reZero,
-            out Vector<float, float> rumble);
+            out Feedback feedback);
     }
 }

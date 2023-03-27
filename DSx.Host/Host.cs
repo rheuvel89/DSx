@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DSx.Input;
+using DSx.Mapping;
 using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
@@ -57,8 +58,8 @@ namespace DSx.Host
             var order = reader.ReadInt64();
             if (order < _ordering) return;
             Interlocked.Exchange(ref _ordering, order);
-            var state = reader.Deserialize<Vector<float, float>>();
-            _inputCollector.OnStateChanged(state);
+            var feedback = reader.Deserialize<Feedback>();
+            _inputCollector.OnStateChanged(feedback);
         }
 
         private void OnInputReceived(DualSense ds, DualSenseInputState inputState)

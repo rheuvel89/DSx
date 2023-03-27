@@ -9,6 +9,6 @@ namespace DSx.Mapping
         IDictionary<string, InputControl> Inputs { get; }
         MappingConverter Converter { get; }
         
-        object Map(DualSenseInputState input, IVirtualGamepad output);
+        Feedback Map(DualSenseInputState input, IVirtualGamepad output);
     }
 }
