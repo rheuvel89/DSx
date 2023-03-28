@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="DualSenseAPI" Version="1.0.2" />
+        <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
+    </ItemGroup>
+    
 </Project>

@@ -4,6 +4,13 @@ namespace DSx.Mapping
 {
     public struct Feedback
     {
+        public Feedback()
+        {
+            Rumble = new Vec2();
+            MicLed = MicLed.Off;
+            Color = new Vec3();
+        }
+        
         public Vec2 Rumble { get; set; }
         public MicLed MicLed { get; set; }
         public Vec3 Color { get; set; }

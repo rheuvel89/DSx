@@ -9,7 +9,7 @@ namespace DSx.Mapping
         {
             feedback = new Feedback();
 
-            return inputs.Cast<bool>().Any(b => b);
+            return inputs.Values.Cast<bool>().Any(b => b);
         }
     }
 }

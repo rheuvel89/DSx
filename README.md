@@ -22,9 +22,6 @@ Accepts one of two types: **DualShock** or **XBox360**. Controller types should 
     Modifier:
     Mapping:
       - !DualShock              # <-- (tag)
-        Inputs:
-        - LeftStick       
-        Output: LeftStick
 #...
 ```
 
@@ -38,56 +35,46 @@ Accepts a list of input controls of type *Bool* e.g.:
     - LeftShoulder    # <--
     - RightShoulder   # <--
   Mapping:
-    - !XBox360
 #...
 ```
 
 ## Converters
-Converters are required to indicate how to map an input to an output. Converters exists to straight map on input to an output and converters exist to map non similar types (e.g. tilt to stick), combine (tilt and stick to stick) or change (inverse button) input values before mapping to the output. All converters except a list of input controls a single output control and a dictionary of input arguments. Be careful tot supply input arguments in the right format and under the appropriate name. Arguments with incorrect names are silently omitted.
+Converters are required to indicate how to map an input (or multiple inputs) to an output. Converters exists to straight map on input to an output and converters exist to map non similar types (e.g. tilt to stick), combine (tilt and stick to stick) or change (inverse button) input values before mapping to the output. All converters except a dictionary of input controls a single output control and a dictionary of arguments. Be careful tot supply input controls with the correct type and arguments in the right format. Both input controls and arguments must be supplied under the appropriate name. Arguments with incorrect names are silently omitted.
 
-| Converter                      | Type in      | Type out | Input arguments                           | Additional arguments                     | Description                                                                        |
-| ------------------------------ | ------------ | -------- | ----------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
-| ButtonToButtonConverter        | Bool         | Bool     | None                                      | None                                     | This converter does nothing                                                        |
-| InverseButtonToButtonConverter | Bool         | Bool     | None                                      | None                                     | Maps off state to on and vice versa                                                |
-| TiltToStickConverter           | (Vec3, Vec3) | Vec2     | (re)Zero (Bool input) Toggle (Bool input) | Sensitivity (decimal) Deadzone (decimal) | Maps gyroscope and accelerometer input for usage with sticks and other Vec2 output |
+| Converter                             | Inputs        | Output   | Arguments                                | Description                                                                        |
+| ------------------------------------- | ------------- | -------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| ButtonToButtonConverter               | Button: Bool  |          |                                          |                                                                                    |      
+| InverseButtonToButtonConverter        | Button: Bool  |          |                                          |                                                                                    |             
+| AndButtonToButtonConverter            | ButtonX: Bool* |          |                                          |                                                                                    |         
+| OrButtonToButtonConverter             | ButtonX: Bool* |          |                                          |                                                                                    |        
+| StickToStickConverter                 | Stick: Vec2   |          |                                          |                                                                                    |    
+| ButtonAndStickToStickConverter        | Button: Bool <br> Stick: Vec2 |          |                                          |                                                                                    |             
+| TriggerToTriggerConverter             | Trigger: Float |          |                                          |                                                                                    |        
+| ButtonAndTriggerToTriggerConverter    | Button: Bool <br> Trigger: Float |          |                                          |                                                                                    |                 
+| TiltToStickConverter                  | Tilt: (Vec3, Vec3) |          |                                          |                                                                                    |   
+| ButtonAndTiltToStickConverter         |               |          |                                          |                                                                                    |            
+| TiltAndStickToStickConverter          |               |          |                                          |                                                                                    |           
+| ButtonAndTiltAndStickToStickConverter |               |          |                                          |                                                                                    |                    
+| GyroToStickConverter                  |               |          |                                          |                                                                                    |   
+| ButtonAndGyroToStickConverter         |               |          |                                          |                                                                                    |            
+| GyroAndStickToStickConverter          |               |          |                                          |                                                                                    |           
+| ButtonAndGyroAndStickToStickConverter |               |          |                                          |                                                                                    |                    
 
-The following mapping snippet will change nothing:
+The following mapping snippet will simply map the triangle button to the corresponding button on the XBox360 controller:
 ```yaml
 #...
     Mapping:
       - !XBox360
-        Input: TriangleButton
+        Converter: ButtonToButtonConverter   # <--
+        Input:
+          Button: TriangleButton
         Output: YButton
-        Converter: ButtonToButtonConverter   # <-- This converter does nothing
 #...
 ```
 
-```yaml
-#...
-
-  - Id: 1
-    ConrtollerType: XBox360
-    Modifier:
-      - LeftShoulder
-    Mapping:
-      - !XBox360
-        Global: true                      # <-- Map globally to have this always active
-        Input: Tilt                       # <-- Input type (Vec3, Vec3)
-        Output: LeftStick                 # <-- Output type (Vec2)
-        Converter: TiltToStickConverter   # <-- Convert (Vec3, Vec3) to Vec2
-        InputArguments:
-          - TouchButton                   # <-- Input (button) for (re)zeroing the tilt
-          - MicButton                     # <-- Input (button) for toggling tilt input on/off
-        ConverterArguments:
-          - 1,7                           # <-- Sensitivity (default 1,0) in decimal (1,0 or 1.0 depending on system settings)
-          - 0,1                           # <-- Deadzone (default 0,0) in decimal (0,0 or 0.0 depending on system settings)
-#...
-```
-
-
-
-## Controls
-Input, types and their corresponding (default) mapping to DualShock or XBox360 controllers. Mapping multiple input controls to the same output for a given controller can lead to unexpected results. Use the provided converters to achieve combined mappings.
+## Controls (input and output)
+The input property contains a dictionary (list of names and the corresponding input controls) to indicate which input control should be used for a specific funtion in the converter. The output accepts a single output control of the type of controller that is assigned via the ControllerType property and tag. Be sure to match the types of input and output controls to the types required by the converter.
+Input, types and their corresponding (default) mapping to DualShock or XBox360 controllers. Mapping multiple input controls toargy the same output for a given controller can lead to unexpected results. Use the provided converters to achieve combined mappings or map one type to another.
 
 | Input              | Type         | DualShock          | XBox360          |
 |--------------------|--------------|--------------------|------------------|
@@ -123,39 +110,52 @@ Input, types and their corresponding (default) mapping to DualShock or XBox360 c
 | TouchButton        | Bool         |                    |                  |
 | Tilt               | (Vec3, Vec3) |                    |                  |
 
-The following mapping snippet will change nothing:
+One of the most simple converters is the ButtonToButtonConverter, accepting only on input and mapping it directly to the output.
 ```yaml
 #...
     Mapping:
       - !XBox360
-        Inpust:
-        - TriangleButton
+        Converter: ButtonToButtonConverter  
+        Input:
+          Button: TriangleButton            # <-- there is only one input required, the button to map from
         Output: YButton
 #...
 ```
 
-To swap the left and right stick use the following:
+More complex converters often use multiple input controls to conrole different aspects of the converter.
 ```yaml
 #...
-    Mapping:
-      - !DualShock
-        Input: RightStick
-        Output: LeftStick
-      - !DualShock
-        Input: LeftStick
+- !DualShock
+        Global: true
+        Inputs:
+          Tilt: Tilt           # <-- Combined gyro and accelerometer input
+          Stick: RightStick    # <-- The stick to combine with
+          Zero: TouchButton    # <-- Button to reset the zero position
+          Toggle: CreateButton # <-- Button to toggle tilt input on/off (and therefore switch to stick only)
         Output: RightStick
+        Converter: TiltAndStickToStickConverter
 #...
 ```
 
-To unmap a specific input from it's default mapping (in case the input is used for something else) do not specify the output control:
+# Arguments
+The arguments are a list of names and values and can be used to finetune the behaviour of a converter. Some converters accept no arguments (ButtonToButtonConverter) while the more complex converters accept multiple arguments, each with their own effect on the output of the converter. All arguments have a default value (if omitted) which can be found in the converters table.
 ```yaml
-#...
-    Mapping:
-      - !DualShock
-        Input: RightStick
-                            # <-- Leave out or specify: 'Output: '
-    Mapping:                # Next mapping
-#...
+- !DualShock
+        Global: true
+        Inputs:
+          Tilt: Tilt
+          Stick: RightStick
+          Zero: TouchButton
+          Toggle: CreateButton
+        Output: RightStick
+        Converter: TiltAndStickToStickConverter
+        Arguments:
+          AlphaX: 1,0       # <-- Weight of the tilt contribution in the X-axis
+          AlphaY: 1,0       # <-- Weight of the tilt contribution in the Y-axis
+          BetaX: 1,0        # <-- Weight of the stick contribution in the X-axis
+          BetaY: 1,0        # <-- Weight of the stick contribution in the Y-axis
+          Sensitivity: 1,7  # <-- Sensitivity of the tilt input (higher is more sensitive)
+          Deadzone: 0,1     # <-- Deadzone of the tilt input 
 ```
 
 ## Global

@@ -81,9 +81,12 @@ namespace DSx.Client
             // var ms = _timer.ElapsedMilliseconds;
             var feedback = _mapping.Map(inputState, _output);
 
-            feedback.Color = ds.IoMode == IoMode.USB
-                ? new Vec3()
-                : new Vec3 { X = (10 - ds.InputState.BatteryStatus.Level) / 10, Y = ds.InputState.BatteryStatus.Level / 10 };
+            if (ds != null)
+            {
+                feedback.Color = ds.IoMode == IoMode.USB
+                    ? new Vec3()
+                    : new Vec3 { X = (10 - ds.InputState.BatteryStatus.Level) / 10, Y = ds.InputState.BatteryStatus.Level / 10 };
+            }
             _inputCollector.OnStateChanged(feedback);
 
             foreach (var controller in _output) controller.SubmitReport();

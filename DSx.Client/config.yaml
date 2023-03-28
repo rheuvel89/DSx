@@ -8,7 +8,7 @@ Controllers:
           Stick: LeftStick
         Output: LeftStick
         Converter: StickToStickConverter
-        ConverterArguments:
+        Arguments:
           Deadzone: 0,5
       - !DualShock
         Inputs:
@@ -124,7 +124,7 @@ Controllers:
           Toggle: CreateButton
         Output: RightStick
         Converter: TiltAndStickToStickConverter
-        ConverterArguments:
+        Arguments:
           AlphaX: 1,0
           AlphaY: 1,0
           BetaX: 1,0
@@ -244,7 +244,7 @@ Controllers:
           Toggle: MenuButton
         Output: RightStick
         Converter: GyroAndStickToStickConverter
-        ConverterArguments:
+        Arguments:
           AlphaX: 1,0
           AlphaY: 1,0
           BetaX: 1,0

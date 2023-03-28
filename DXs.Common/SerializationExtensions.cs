@@ -64,7 +64,10 @@ namespace DXs.Common
         public static T Deserialize<T>(this BinaryReader reader)
         {
             var type = typeof(T);
-            var value = (T)type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, Type.EmptyTypes).Invoke(Array.Empty<object>());
+            var value = (T)(
+                type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, Type.EmptyTypes)?.Invoke(Array.Empty<object>()) ??
+                type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, Type.EmptyTypes).Invoke(Array.Empty<object>())
+            );
             
             switch (value)
             {
