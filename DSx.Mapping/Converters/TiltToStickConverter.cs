@@ -12,6 +12,7 @@ namespace DSx.Mapping
         private bool _toggled = false;
         private float? _sensitivity;
         private float? _deadzone;
+        private float? _gamma;
         private IAHRS? _algorithm;
         
 
@@ -38,13 +39,14 @@ namespace DSx.Mapping
                 
             _sensitivity ??= args.TryGetValue("Sensitivity", out var ss) && float.TryParse(ss, out var s) ? s : 1f;
             _deadzone ??= args.TryGetValue("Deadzone", out var sd) && float.TryParse(sd, out var d) ? d : 0f;
+            _gamma ??= args.TryGetValue("Gamma", out var sg) && float.TryParse(sg, out var g) ? g : 1f;
             
             var rAcc = new Vector<float, float, float>(acc.X, acc.Y, acc.Z);
             var rGyr = new Vector<float, float, float>(gyro.X, gyro.Y, gyro.Z);
          
             var result = _algorithm.Calculate(_timer.ElapsedMilliseconds, rAcc.Normalize(), rGyr, _sensitivity.Value, _deadzone.Value, rezero, out feedback);
             
-            return new Vec2 { X = -result.X, Y = result.Y }.Limit1();
+            return result.Deadzone(_deadzone.Value, DeadzoneMode.Center).Mutliply(_sensitivity.Value).Limit1(_gamma.Value);
         }
     }
 }

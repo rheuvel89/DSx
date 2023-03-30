@@ -25,7 +25,7 @@ namespace DSx.Mapping
             _gamma = gamma;
         }
 
-        public Vector<float, float, float> Calculate(
+        public Vec2 Calculate(
             long timestamp,
             Vector<float, float, float> rAcc,
             Vector<float, float, float> rGyr,
@@ -64,7 +64,7 @@ namespace DSx.Mapping
             if (_reading.Y > 1) _reading.Y = 1;
             if (_reading.Y < -1) _reading.Y = -1;
 
-            return new Vector<float, float, float>(_reading.X, _reading.Y, 0);
+            return new Vec2 { X = _reading.X, Y = _reading.Y, };
         }
 
         private Vector<float, float, float>? TryZero(Vector<float, float, float> r,

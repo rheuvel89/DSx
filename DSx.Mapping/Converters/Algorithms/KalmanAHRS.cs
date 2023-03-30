@@ -19,7 +19,7 @@ namespace DSx.Mapping
         private double _driftY = 0;
         private float _zero = 0;
         
-        public Vector<float, float, float> Calculate(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, float sensitivity, float deadzone, bool reZero,
+        public Vec2 Calculate(long timestamp, Vector<float, float, float> rAcc, Vector<float, float, float> rGyr, float sensitivity, float deadzone, bool reZero,
             out Feedback feedback)
         {
             feedback = new Feedback();
@@ -45,8 +45,8 @@ namespace DSx.Mapping
 
                 _pitch.SetAngle((float)pitch);
                 _roll.SetAngle((float)roll);
-                
-                return new Vector<float, float, float>((float)pitch, (float)roll, 0);
+
+                return new Vec2 { X = (float)pitch, Y = (float)roll };
             }
             
             var kalmanPitch = _pitch.GetAngle((float)pitch, (float)(rateX-_driftX), dt)/45;
@@ -59,8 +59,8 @@ namespace DSx.Mapping
 
             var x = kalmanRoll.Limit1();
             var y = (kalmanPitch - _zero).Limit1();
-            
-            return new Vector<float, float, float>(x, y, 0);
+
+            return new Vec2 { X = x, Y = y };
         }
     }
 

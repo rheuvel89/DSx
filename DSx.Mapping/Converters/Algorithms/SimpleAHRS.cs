@@ -10,7 +10,7 @@ namespace DSx.Mapping
         private Vector<float, float, float> _zAcc = new Vector<float, float, float>(0, 1, 0);
         private Vector<ConcurrentQueue<float>, ConcurrentQueue<float>, ConcurrentQueue<float>>? _aZero = null;
         
-        public Vector<float, float, float> Calculate(
+        public Vec2 Calculate(
             long timestamp,
             Vector<float, float, float> rAcc,
             Vector<float, float, float> rGyr,
@@ -43,7 +43,7 @@ namespace DSx.Mapping
             if (rRoll > 1) rRoll = 1;
             if (rRoll < -1) rRoll = -1;
 
-            return new Vector<float, float, float>((float)rPitch, (float)rRoll, 0f);
+            return new Vec2 { X = (float)rPitch, Y = (float)rRoll };
         }
 
         private void TryZero(Vector<float, float, float> rAcc, bool reZero)

@@ -52,8 +52,8 @@ namespace DSx.Mapping
             if (_xQueue.Count > 10) _xQueue.TryDequeue(out _);
             if (_yQueue.Count > 10) _yQueue.TryDequeue(out _);
 
-            var x = (_xQueue.ToArray().Average() * _gammaX.Value).Limit1(_epsilonX.Value);
-            var y = (_yQueue.ToArray().Average() * _gammaY.Value).Limit1(_epsilonY.Value);
+            var x = (_xQueue.ToArray().Average() * _epsilonX.Value).Limit1(_gammaX.Value);
+            var y = (_yQueue.ToArray().Average() * _epsilonY.Value).Limit1(_gammaY.Value);
             
             return new Vec2 { X = x, Y = y };
         }
