@@ -18,6 +18,9 @@ namespace DSx.Client
         public bool NoConsole { get; set; }
         
         [Option(longName: "MappingPath", Default = null, HelpText = "Path to mapping file")]
-        public string MappingPath { get; set; }
+        public string? MappingPath { get; set; }
+        
+        [Option(longName: "PluginPath", Default = null, HelpText = "Path to plugin dll's")]
+        public string? PluginPath { get; set; }
     }
 }

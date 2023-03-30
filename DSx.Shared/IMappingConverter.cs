@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using DSx.Shared;
-
-namespace DSx.Mapping
+namespace DSx.Shared
 {
     public interface IMappingConverter
     {

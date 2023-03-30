@@ -8,13 +8,15 @@ namespace DSx.Mapping
 {
     public class Mapping
     {
+        private readonly IDictionary<string, Type> _converters;
         private readonly IDictionary<byte, ControllerType> _controllerTypes;
         private readonly IDictionary<byte, IDictionary<int, IMappingAction>> _globalMapping;
         private readonly IDictionary<byte, IDictionary<int, IMappingAction>> _controllerMapping;
         private readonly IDictionary<byte, Func<DualSenseInputState, bool>> _controllerSelectors;
 
-        public Mapping(MappingConfiguration configuration)
+        public Mapping(MappingConfiguration configuration, IDictionary<string, Type> converters)
         {
+            _converters = converters;
             _controllerTypes = new Dictionary<byte, ControllerType>();
             _globalMapping = new Dictionary<byte, IDictionary<int, IMappingAction>>();
             _controllerMapping = new Dictionary<byte, IDictionary<int, IMappingAction>>();
@@ -70,14 +72,14 @@ namespace DSx.Mapping
             return feedback;
         }
 
-        public void AddOrReplaceMapping(byte controllerId, MappingConverter converter, IDictionary<string, InputControl> inputs,
+        public void AddOrReplaceMapping(byte controllerId, string converter, IDictionary<string, InputControl> inputs,
             DualShockControl output, IDictionary<string, string> arguments, bool global = false)
         {
             var mapping = global ? _globalMapping : _controllerMapping;
             mapping[controllerId][(int)output] = MapDualShockAction(inputs, output, converter, arguments);
         }
 
-        public void AddOrReplaceMapping(byte controllerId, MappingConverter converter, IDictionary<string, InputControl> inputs,
+        public void AddOrReplaceMapping(byte controllerId, string converter, IDictionary<string, InputControl> inputs,
             XBox360Control output, IDictionary<string, string> arguments, bool global = false)
         {
             var mapping = global ? _globalMapping : _controllerMapping;
@@ -96,15 +98,15 @@ namespace DSx.Mapping
             mapping[controllerId].Remove((int)output);
         }
         
-        private static DualShockMappingAction MapDualShockAction(
+        private DualShockMappingAction MapDualShockAction(
             IDictionary<string, InputControl> inputs,
             DualShockControl output,
-            MappingConverter converter,
+            string converter,
             IDictionary<string, string>? arguments)
         {
             var selectors = inputs.ToDictionary(x => x.Key, x => MappingConstants.InputSelector[x.Value]);
             var asigner = MappingConstants.DualShockAsigner[output];
-            var selectedConverter = MappingConstants.MappingConveters[converter]();
+            var selectedConverter = MappingConstants.ConveterInvoker(_converters[converter]);
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new DualShockMappingAction(inputs, output, converter, (i, o) =>
             {
@@ -116,15 +118,15 @@ namespace DSx.Mapping
             });
         }
         
-        private static XBox360MappingAction MapXBox360Action(
+        private XBox360MappingAction MapXBox360Action(
             IDictionary<string, InputControl> inputs,
             XBox360Control output,
-            MappingConverter converter,
+            string converter,
             IDictionary<string, string>? arguments)
         {
             var selectors = inputs.ToDictionary(x => x.Key, x => MappingConstants.InputSelector[x.Value]);
             var asigner = MappingConstants.XBox360Asigner[output];
-            var selectedConverter = converter != null ? MappingConstants.MappingConveters[converter]() : null;
+            var selectedConverter = MappingConstants.ConveterInvoker(_converters[converter]);
             var argumentArray = arguments ?? new Dictionary<string, string>();
             return new XBox360MappingAction(inputs, output, converter, (i, o) =>
             {

@@ -10,26 +10,32 @@ namespace DSx.Mapping
 {
     public static class MappingConstants
     {
-        public static readonly IDictionary<MappingConverter, Func<IMappingConverter>> MappingConveters =
-            new Dictionary<MappingConverter, Func<IMappingConverter>>()
-            {
-                [MappingConverter.ButtonToButtonConverter] = () => new ButtonToButtonConverter(),
-                [MappingConverter.InverseButtonToButtonConverter] = () => new InverseButtonToButtonConverter(),
-                [MappingConverter.AndButtonToButtonConverter] = () => new AndButtonToButtonConverter(),
-                [MappingConverter.OrButtonToButtonConverter] = () => new OrButtonToButtonConverter(),
-                [MappingConverter.StickToStickConverter] = () => new StickToStickConverter(),
-                [MappingConverter.ButtonAndStickToStickConverter] = () => new ButtonAndStickToStickConverter(),
-                [MappingConverter.TriggerToTriggerConverter] = () => new TriggerToTriggerConverter(),
-                [MappingConverter.ButtonAndTriggerToTriggerConverter] = () => new ButtonAndTriggerToTriggerConverter(),
-                [MappingConverter.TiltToStickConverter] = () => new TiltToStickConverter(),
-                [MappingConverter.ButtonAndTiltToStickConverter] = () => new ButtonAndTiltToStickConverter(),
-                [MappingConverter.TiltAndStickToStickConverter] = () => new TiltAndStickToStickConverter(),
-                [MappingConverter.ButtonAndTiltAndStickToStickConverter] = () => new ButtonAndTiltAndStickToStickConverter(),
-                [MappingConverter.GyroToStickConverter] = () => new GyroToStickConverter(),
-                [MappingConverter.ButtonAndGyroToStickConverter] = () => new ButtonAndGyroToStickConverter(),
-                [MappingConverter.GyroAndStickToStickConverter] = () => new GyroAndStickToStickConverter(),
-                [MappingConverter.ButtonAndGyroAndStickToStickConverter] = () => new ButtonAndGyroAndStickToStickConverter(),
-            };
+        // public static readonly IDictionary<MappingConverter, Func<IMappingConverter>> MappingConveters =
+        //     new Dictionary<MappingConverter, Func<IMappingConverter>>()
+        //     {
+        //         [MappingConverter.ButtonToButtonConverter] = () => new ButtonToButtonConverter(),
+        //         [MappingConverter.InverseButtonToButtonConverter] = () => new InverseButtonToButtonConverter(),
+        //         [MappingConverter.AndButtonToButtonConverter] = () => new AndButtonToButtonConverter(),
+        //         [MappingConverter.OrButtonToButtonConverter] = () => new OrButtonToButtonConverter(),
+        //         [MappingConverter.StickToStickConverter] = () => new StickToStickConverter(),
+        //         [MappingConverter.ButtonAndStickToStickConverter] = () => new ButtonAndStickToStickConverter(),
+        //         [MappingConverter.TriggerToTriggerConverter] = () => new TriggerToTriggerConverter(),
+        //         [MappingConverter.ButtonAndTriggerToTriggerConverter] = () => new ButtonAndTriggerToTriggerConverter(),
+        //         [MappingConverter.TiltToStickConverter] = () => new TiltToStickConverter(),
+        //         [MappingConverter.ButtonAndTiltToStickConverter] = () => new ButtonAndTiltToStickConverter(),
+        //         [MappingConverter.TiltAndStickToStickConverter] = () => new TiltAndStickToStickConverter(),
+        //         [MappingConverter.ButtonAndTiltAndStickToStickConverter] = () => new ButtonAndTiltAndStickToStickConverter(),
+        //         [MappingConverter.GyroToStickConverter] = () => new GyroToStickConverter(),
+        //         [MappingConverter.ButtonAndGyroToStickConverter] = () => new ButtonAndGyroToStickConverter(),
+        //         [MappingConverter.GyroAndStickToStickConverter] = () => new GyroAndStickToStickConverter(),
+        //         [MappingConverter.ButtonAndGyroAndStickToStickConverter] = () => new ButtonAndGyroAndStickToStickConverter(),
+        //     };
+
+        public static IMappingConverter ConveterInvoker(Type type)
+        {
+            if (!typeof(IMappingConverter).IsAssignableFrom(type)) throw new ArgumentException($"Type {type.Name} is no IMappingConverter");
+            return (IMappingConverter) type.GetConstructor(Type.EmptyTypes).Invoke(Array.Empty<object>());
+        }
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>
         {

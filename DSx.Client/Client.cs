@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using DSx.Input;
 using DSx.Mapping;
 using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
@@ -25,6 +27,7 @@ namespace DSx.Client
         private readonly Stopwatch _timer;
         private readonly byte _count;
         private Mapping.Mapping _mapping;
+        private IDictionary<string, Type> _converters;
 
         public Client(ClientOptions options)
         {
@@ -39,7 +42,8 @@ namespace DSx.Client
                 throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
             _timer = new Stopwatch();
 
-            _mapping = LoadMapping(options.MappingPath ?? "config.yaml");
+            _converters = LoadConverters(options.PluginPath ?? "plugins");
+            _mapping = LoadMapping(options.MappingPath ?? "config.yaml", _converters);
         }
 
         public async Task Initialize()
@@ -116,7 +120,7 @@ namespace DSx.Client
             var index = 0;
             if (!byte.TryParse(args[index++], out var id)) return $"Could not convert {args[index-1]} to id";
             if (!mapping.TryGetValue(id, out var controllerType)) return $"Id {id} is out of range";
-            if (!Enum.TryParse<MappingConverter>(args[index++], out var converter)) return $"Could not convert {args[index-1]} to input";
+            var converter = args[index++];
             var inputs = args.Skip(index)
                 .Select(x => x.Split(":"))
                 .TakeWhile(x => x.Length == 2 && Enum.TryParse<InputControl>(x[1], out _))
@@ -166,7 +170,8 @@ namespace DSx.Client
             }
         }
 
-        private Mapping.Mapping LoadMapping(string mappingPath)
+        private Mapping.Mapping LoadMapping(string mappingPath,
+            IDictionary<string, Type> converters)
         {
             var yaml = File.ReadAllText(mappingPath);
             var mappingConfiguration =  new DeserializerBuilder()
@@ -175,8 +180,25 @@ namespace DSx.Client
                 .Build()
                 .Deserialize<MappingConfiguration>(yaml);
 
-            var mapping = new Mapping.Mapping(mappingConfiguration);
+            var mapping = new Mapping.Mapping(mappingConfiguration, converters);
             return mapping;
+        }
+
+        private IDictionary<string, Type> LoadConverters(string pluginPath)
+        {
+            if (!Directory.Exists(pluginPath)) Directory.CreateDirectory(pluginPath);
+            var assemblies = Directory.EnumerateFiles(pluginPath)
+                .Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                .Select(Assembly.LoadFrom)
+                .Concat(new [] {typeof(ButtonToButtonConverter).Assembly})
+                .ToList();
+            var types = assemblies
+                .SelectMany(x => x.GetTypes())
+                .Where(typeof(IMappingConverter).IsAssignableFrom)
+                .Where(x => !x.IsAbstract)
+                .Where(x => !x.IsInterface)
+                .ToList();
+            return types.ToDictionary(x => x.Name);
         }
     }
 }

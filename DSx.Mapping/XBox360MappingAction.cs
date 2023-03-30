@@ -12,7 +12,7 @@ namespace DSx.Mapping
     {
         private readonly Func<DualSenseInputState, IXbox360Controller, Feedback> _mappingAction;
 
-        public XBox360MappingAction(IDictionary<string, InputControl> inputs, XBox360Control output, MappingConverter converter, Func<DualSenseInputState, IXbox360Controller, Feedback> mappingAction)
+        public XBox360MappingAction(IDictionary<string, InputControl> inputs, XBox360Control output, string converter, Func<DualSenseInputState, IXbox360Controller, Feedback> mappingAction)
         {
             Inputs = inputs;
             Output = output;
@@ -22,7 +22,7 @@ namespace DSx.Mapping
 
         public IDictionary<string, InputControl> Inputs { get; }
         public XBox360Control Output { get; }
-        public MappingConverter Converter { get; }
+        public string Converter { get; }
 
         public Feedback Map(DualSenseInputState input, IVirtualGamepad output)
         {
