@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.UdpHostTest", "DSx.UdpH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Shared", "DSx.Shared\DSx.Shared.csproj", "{73C8E983-4D6E-471E-8DC7-E5DCD9C39B5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Plugin", "DSx.Plugin\DSx.Plugin.csproj", "{177EFAE6-E3CF-4CC8-8DDC-50559CF719C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,5 +86,9 @@ Global
 		{73C8E983-4D6E-471E-8DC7-E5DCD9C39B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73C8E983-4D6E-471E-8DC7-E5DCD9C39B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73C8E983-4D6E-471E-8DC7-E5DCD9C39B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{177EFAE6-E3CF-4CC8-8DDC-50559CF719C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{177EFAE6-E3CF-4CC8-8DDC-50559CF719C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{177EFAE6-E3CF-4CC8-8DDC-50559CF719C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{177EFAE6-E3CF-4CC8-8DDC-50559CF719C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
