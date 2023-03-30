@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,12 +63,18 @@ namespace DSx.Host
             _inputCollector.OnStateChanged(feedback);
         }
 
-        private void OnInputReceived(DualSense ds, DualSenseInputState inputState)
+        private void OnInputReceived(DualSenseState ds, DualSenseInputState inputState)
         {
-            _ = _connectionManager.Send(inputState.Serialize(_timer.ElapsedMilliseconds));
+            using var stream = new MemoryStream();
+            var writer = new BinaryWriter(stream);
+            writer.Write(_timer.ElapsedMilliseconds);
+            writer.Serialize(ds);
+            writer.Serialize(inputState);
+            var bytes = stream.ToArray();
+            _ = _connectionManager.Send(bytes);
         }
 
-        private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)
+        private void OnButtonChanged(DualSenseState ds, DualSenseInputStateButtonDelta change)
         {
 
         }

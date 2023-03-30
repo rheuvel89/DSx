@@ -10,11 +10,8 @@ namespace DXs.Common
 {
     public static class SerializationExtensions
     {
-        public static byte[] Serialize(this DualSenseInputState source, long order)
+        public static void Serialize(this BinaryWriter writer, DualSenseInputState source)
         {
-            using var stream = new MemoryStream();
-            var writer = new BinaryWriter(stream);
-            writer.Write(order);
             writer.Write(source.Accelerometer.X);
             writer.Write(source.Accelerometer.Y);
             writer.Write(source.Accelerometer.Z);
@@ -58,7 +55,24 @@ namespace DXs.Common
             writer.Write(source.Touchpad2.Y);
             writer.Write(source.TouchpadButton);
             writer.Write(source.TriangleButton);
-            return stream.ToArray();
+        }
+        
+        public static void Serialize(this BinaryWriter writer, DualSenseState source)
+        {
+            writer.Write((int)source.IoMode);
+            writer.Write(source.IsCharging);
+            writer.Write(source.IsFullyCharged);
+            writer.Write(source.BatteryLevel);
+        }
+        
+        public static void Serialize(this BinaryWriter writer, Feedback feedback)
+        {
+            writer.Write(feedback.Rumble.X);
+            writer.Write(feedback.Rumble.Y);
+            writer.Write(feedback.Color.X);
+            writer.Write(feedback.Color.Y);
+            writer.Write(feedback.Color.Z);
+            writer.Write((int)feedback.MicLed);
         }
 
         public static T Deserialize<T>(this BinaryReader reader)
@@ -69,16 +83,15 @@ namespace DXs.Common
                 type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, Type.EmptyTypes).Invoke(Array.Empty<object>())
             );
             
-            switch (value)
+            return (T)(value switch
             {
-                case DualSenseInputState v: reader.Deserialize(v); break;
-                case Feedback v: reader.Deserialize(v); break;
-            }
-
-            return value;
+                DualSenseInputState v => reader.Deserialize(v),
+                DualSenseState v => reader.Deserialize(v),
+                Feedback v => reader.Deserialize(v),
+            });
         }
 
-        public static void Deserialize(this BinaryReader reader, DualSenseInputState value)
+        public static object Deserialize(this BinaryReader reader, DualSenseInputState value)
         {
             var type = typeof(DualSenseInputState);
             
@@ -150,26 +163,28 @@ namespace DXs.Common
             
             type.GetProperty(nameof(value.TouchpadButton)).SetValue(value , reader.ReadBoolean());
             type.GetProperty(nameof(value.TriangleButton)).SetValue(value , reader.ReadBoolean());
+
+            return value;
         }
 
-
-        public static byte[] Serialize(this Feedback feedback, long order)
+        public static object Deserialize(this BinaryReader reader, DualSenseState value)
         {
-            using var stream = new MemoryStream();
-            var writer = new BinaryWriter(stream);
             
-            writer.Write(order);
-            
-            writer.Write(feedback.Rumble.X);
-            writer.Write(feedback.Rumble.Y);
-            writer.Write(feedback.Color.X);
-            writer.Write(feedback.Color.Y);
-            writer.Write(feedback.Color.Z);
-            writer.Write((int)feedback.MicLed);
-            return stream.ToArray();
+            var ioMode = reader.ReadInt32();
+            value.IoMode = (IoMode)ioMode;
+            value.IsCharging = reader.ReadBoolean();
+            value.IsFullyCharged = reader.ReadBoolean();
+            value.BatteryLevel = reader.ReadSingle();
+            return new DualSenseState
+            {
+                IoMode = value.IoMode,
+                IsCharging = value.IsCharging,
+                IsFullyCharged = value.IsFullyCharged,
+                BatteryLevel = value.BatteryLevel
+            };
         }
 
-        public static void Deserialize(this BinaryReader reader, Feedback value)
+        public static object Deserialize(this BinaryReader reader, Feedback value)
         {
             var rumble = new Vec2();
             rumble.X = reader.ReadSingle();
@@ -184,6 +199,13 @@ namespace DXs.Common
                 
             var mic = reader.ReadInt32();
             value.MicLed = (MicLed)mic;
+
+            return new Feedback
+            {
+                Rumble = value.Rumble,
+                Color = value.Color,
+                MicLed = value.MicLed
+            };
         }
 
     }

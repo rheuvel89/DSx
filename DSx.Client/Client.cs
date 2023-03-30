@@ -76,17 +76,15 @@ namespace DSx.Client
 
         // private long _elapsed = 0;
         // private long _average = 1000;
-        private void OnInputReceived(DualSense? ds, DualSenseInputState inputState)
+        private void OnInputReceived(DualSenseState ds, DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
             var feedback = _mapping.Map(inputState, _output);
 
-            if (ds != null)
-            {
-                feedback.Color = ds.IoMode == IoMode.USB
-                    ? new Vec3()
-                    : new Vec3 { X = (10 - ds.InputState.BatteryStatus.Level) / 10, Y = ds.InputState.BatteryStatus.Level / 10 };
-            }
+            feedback.Color = ds.IoMode == IoMode.USB
+                ? new Vec3()
+                : new Vec3 { X = (10 - ds.BatteryLevel) / 10, Y = ds.BatteryLevel / 10 };
+                
             _inputCollector.OnStateChanged(feedback);
 
             foreach (var controller in _output) controller.SubmitReport();
@@ -96,7 +94,7 @@ namespace DSx.Client
             // System.Console.WriteLine($"{_elapsed} | {_average/1000} | {elapsed}");
         }
 
-        private void OnButtonChanged(DualSense ds, DualSenseInputStateButtonDelta change)
+        private void OnButtonChanged(DualSenseState ds, DualSenseInputStateButtonDelta change)
         {
 
         }

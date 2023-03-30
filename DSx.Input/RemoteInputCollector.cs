@@ -2,6 +2,7 @@
 using System.Net;
 using DSx.Mapping;
 using DSx.Math;
+using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
 
@@ -34,15 +35,21 @@ namespace DSx.Input
             var order = reader.ReadInt64();
             if (order < _ordering) return;
             Interlocked.Exchange(ref _ordering, order);
+            var ds = reader.Deserialize<DualSenseState>();
             var state = reader.Deserialize<DualSenseInputState>();
-            OnInputReceived?.Invoke(null, state);
+            OnInputReceived?.Invoke(ds, state);
         }
 
         public override event InputReceivedHandler? OnInputReceived;
         public override event ButtonChangedHandler? OnButtonChanged;
         public override void OnStateChanged(Feedback feedback)
         {
-            _connectionManager.Send(feedback.Serialize(_timer.ElapsedMilliseconds));
+            using var stream = new MemoryStream();
+            var writer = new BinaryWriter(stream);
+            writer.Write(_timer.ElapsedMilliseconds);
+            writer.Serialize(feedback);
+            var bytes = stream.ToArray();
+            _connectionManager.Send(bytes);
         }
     }
 }

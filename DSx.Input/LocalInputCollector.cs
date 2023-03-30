@@ -27,13 +27,27 @@ namespace DSx.Input
             _input.BeginPolling(_pollingInterval);
         }
 
-        private void DelegateInputReceived(DualSense s)
+        private void DelegateInputReceived(DualSense ds)
         {
-            OnInputReceived?.Invoke(s, s.InputState);
+            var state = new DualSenseState
+            {
+                IoMode = ds.IoMode,
+                IsCharging = ds.InputState.BatteryStatus.IsCharging,
+                IsFullyCharged = ds.InputState.BatteryStatus.IsFullyCharged,
+                BatteryLevel = ds.InputState.BatteryStatus.Level,
+            };
+            OnInputReceived?.Invoke(state, ds.InputState);
         }
-        private void DelegateButtonChanged(DualSense s, DualSenseInputStateButtonDelta d)
+        private void DelegateButtonChanged(DualSense ds, DualSenseInputStateButtonDelta d)
         {
-            OnButtonChanged?.Invoke(s, d);
+            var state = new DualSenseState
+            {
+                IoMode = ds.IoMode,
+                IsCharging = ds.InputState.BatteryStatus.IsCharging,
+                IsFullyCharged = ds.InputState.BatteryStatus.IsFullyCharged,
+                BatteryLevel = ds.InputState.BatteryStatus.Level,
+            };
+            OnButtonChanged?.Invoke(state, d);
         }
 
         public override event InputReceivedHandler? OnInputReceived;
