@@ -10,6 +10,7 @@ using DSx.Math;
 using DualSenseAPI;
 using DualSenseAPI.State;
 using DXs.Common;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Host
 {
@@ -59,25 +60,21 @@ namespace DSx.Host
             var order = reader.ReadInt64();
             if (order < _ordering) return;
             Interlocked.Exchange(ref _ordering, order);
-            var feedback = reader.Deserialize<Feedback>();
+            var feedback = reader.DeserializeFeedback();
             _inputCollector.OnStateChanged(feedback);
         }
 
-        private void OnInputReceived(DualSenseState ds, DualSenseInputState inputState)
+        private void OnInputReceived(DualSenseInputState inputState)
         {
             using var stream = new MemoryStream();
             var writer = new BinaryWriter(stream);
             writer.Write(_timer.ElapsedMilliseconds);
-            writer.Serialize(ds);
             writer.Serialize(inputState);
             var bytes = stream.ToArray();
             _ = _connectionManager.Send(bytes);
         }
 
-        private void OnButtonChanged(DualSenseState ds, DualSenseInputStateButtonDelta change)
-        {
-
-        }
+        private void OnButtonChanged(DualSenseInputStateButtonDelta change) { }
 
         private string? OnCommandReceived(string command, string[] arguments)
         {

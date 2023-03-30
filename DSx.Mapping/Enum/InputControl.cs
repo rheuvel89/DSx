@@ -34,10 +34,20 @@ namespace DSx.Mapping
         MenuButton,
         MicButton,
         
+        Touch1Id,
         Touch1,
+        Touch1Position,
+        Touch2Id,
         Touch2,
+        Touch2Position,
         TouchButton,
         
-        Tilt
+        Accelerometer,
+        Gyro,
+        IoMode,
+        IsBatteryCharging,
+        IsBatteryFullyCharged,
+        BatteryLevel,
+        IsHeadPhoneConnected
     }
 }

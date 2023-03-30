@@ -1,5 +1,6 @@
 using System;
 using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
 
 namespace DSx.Mapping

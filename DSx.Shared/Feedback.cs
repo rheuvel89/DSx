@@ -1,6 +1,6 @@
 using DualSenseAPI;
 
-namespace DSx.Mapping
+namespace DSx.Shared
 {
     public struct Feedback
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DSx.Shared;
 using DualSenseAPI;
-using DualSenseAPI.State;
 using Nefarius.ViGEm.Client.Targets;
 using Nefarius.ViGEm.Client.Targets.DualShock4;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
@@ -33,16 +33,16 @@ namespace DSx.Mapping
         
         public static readonly IDictionary<InputControl, Func<DualSenseInputState, object>> InputSelector = new Dictionary<InputControl, Func<DualSenseInputState, object>>
         {
-            [InputControl.LeftStick] = i => i.LeftAnalogStick,
+            [InputControl.LeftStick] = i => i.LeftStick,
             [InputControl.LeftTrigger] = i => i.L2,
             [InputControl.LeftTriggerButton] = i => i.L2Button,
             [InputControl.LeftShoulder] = i => i.L1Button,
-            [InputControl.LeftStickButton] = i => i.L3Button,
-            [InputControl.RightStick] = i => i.RightAnalogStick,
+            [InputControl.LeftStickButton] = i => i.LeftStickButton,
+            [InputControl.RightStick] = i => i.RightStick,
             [InputControl.RightTrigger] = i => i.R2,
             [InputControl.RightTriggerButton] = i => i.R2Button,
             [InputControl.RightShoulder] = i => i.R1Button,
-            [InputControl.RightStickButton] = i => i.R3Button,
+            [InputControl.RightStickButton] = i => i.RightStickButton,
             [InputControl.DPadNorth] = i => i.DPadUpButton && !i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
             [InputControl.DPadNorthEast] = i => i.DPadUpButton && i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
             [InputControl.DPadEast] = i => !i.DPadUpButton && i.DPadRightButton && !i.DPadDownButton && !i.DPadLeftButton,
@@ -61,9 +61,19 @@ namespace DSx.Mapping
             [InputControl.MenuButton] = i => i.MenuButton,
             [InputControl.MicButton] = i => i.MicButton,
             [InputControl.TouchButton] = i => i.TouchpadButton,
-            [InputControl.Touch1] = i => i.Touchpad1,
-            [InputControl.Touch1] = i => i.Touchpad2,
-            [InputControl.Tilt] = i => (i.Accelerometer, i.Gyro),
+            [InputControl.Touch1Id] = i => i.Touch1Id,
+            [InputControl.Touch1] = i => i.Touch1,
+            [InputControl.Touch1Position] = i => i.Touch1Position,
+            [InputControl.Touch2Id] = i => i.Touch2Id,
+            [InputControl.Touch2] = i => i.Touch2,
+            [InputControl.Touch2Position] = i => i.Touch2Position,
+            [InputControl.Accelerometer] = i => i.Accelerometer,
+            [InputControl.Gyro] = i => i.Gyro,
+            [InputControl.IoMode] = i => i.IoMode,
+            [InputControl.IsBatteryCharging] = i => i.BatteryIsCharging,
+            [InputControl.IsBatteryFullyCharged] = i => i.BatteryIsFullyCharged,
+            [InputControl.BatteryLevel] = i => i.BatteryLevel,
+            [InputControl.IsHeadPhoneConnected] = i => i.IsHeadPhoneConnected,
         };
         
         public static readonly IDictionary<DualShockControl, Action<IDualShock4Controller, object>> DualShockAsigner = new Dictionary<DualShockControl, Action<IDualShock4Controller, object>>

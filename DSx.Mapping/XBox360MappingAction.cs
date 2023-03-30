@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using DSx.Shared;
 using DualSenseAPI.State;
 using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Targets;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Mapping
 {

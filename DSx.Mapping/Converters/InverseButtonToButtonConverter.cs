@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DSx.Shared;
 
 namespace DSx.Mapping
 {

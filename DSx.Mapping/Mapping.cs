@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DualSenseAPI.State;
+using DSx.Shared;
 using Nefarius.ViGEm.Client;
 
 namespace DSx.Mapping

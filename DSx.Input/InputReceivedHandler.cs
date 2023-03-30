@@ -1,8 +1,8 @@
-using DSx.Mapping;
 using DualSenseAPI.State;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Input
 {
-    public delegate void InputReceivedHandler(DualSenseState sender, DualSenseInputState state);
-    public delegate void ButtonChangedHandler(DualSenseState sender, DualSenseInputStateButtonDelta delta);
+    public delegate void InputReceivedHandler(DualSenseInputState state);
+    public delegate void ButtonChangedHandler(DualSenseInputStateButtonDelta delta);
 }

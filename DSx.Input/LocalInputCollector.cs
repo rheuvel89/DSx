@@ -1,7 +1,7 @@
-using DSx.Mapping;
-using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
 using DualSenseAPI.State;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Input
 {
@@ -29,25 +29,12 @@ namespace DSx.Input
 
         private void DelegateInputReceived(DualSense ds)
         {
-            var state = new DualSenseState
-            {
-                IoMode = ds.IoMode,
-                IsCharging = ds.InputState.BatteryStatus.IsCharging,
-                IsFullyCharged = ds.InputState.BatteryStatus.IsFullyCharged,
-                BatteryLevel = ds.InputState.BatteryStatus.Level,
-            };
-            OnInputReceived?.Invoke(state, ds.InputState);
+            var state = new DualSenseInputState(ds);
+            OnInputReceived?.Invoke(state);
         }
         private void DelegateButtonChanged(DualSense ds, DualSenseInputStateButtonDelta d)
         {
-            var state = new DualSenseState
-            {
-                IoMode = ds.IoMode,
-                IsCharging = ds.InputState.BatteryStatus.IsCharging,
-                IsFullyCharged = ds.InputState.BatteryStatus.IsFullyCharged,
-                BatteryLevel = ds.InputState.BatteryStatus.Level,
-            };
-            OnButtonChanged?.Invoke(state, d);
+            OnButtonChanged?.Invoke(d);
         }
 
         public override event InputReceivedHandler? OnInputReceived;

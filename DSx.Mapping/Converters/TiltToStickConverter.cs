@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -29,7 +30,8 @@ namespace DSx.Mapping
         {
             feedback = new Feedback();
 
-            var (acc, gyro) = ((Vec3, Vec3))inputs["Tilt"];
+            var acc = (Vec3)inputs["Accelerometer"];
+            var gyro = (Vec3)inputs["Gyro"];
             var rezero = (bool)inputs["Zero"];
             var toggle = (bool)inputs["Toggle"];
             

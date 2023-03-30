@@ -1,9 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
-using DSx.Mapping;
-using DSx.Math;
-using DualSenseAPI;
-using DualSenseAPI.State;
+using DSx.Shared;
 using DXs.Common;
 
 namespace DSx.Input
@@ -35,9 +32,8 @@ namespace DSx.Input
             var order = reader.ReadInt64();
             if (order < _ordering) return;
             Interlocked.Exchange(ref _ordering, order);
-            var ds = reader.Deserialize<DualSenseState>();
-            var state = reader.Deserialize<DualSenseInputState>();
-            OnInputReceived?.Invoke(ds, state);
+            var state = reader.DeserializeInputState();
+            OnInputReceived?.Invoke(state);
         }
 
         public override event InputReceivedHandler? OnInputReceived;

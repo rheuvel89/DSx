@@ -116,7 +116,8 @@ Controllers:
       - !DualShock
         Global: true
         Inputs:
-          Tilt: Tilt
+          Accelerometer: Accelerometer
+          Gyro: Gyro
           Stick: RightStick
           Zero: TouchButton
           Toggle: CreateButton
@@ -237,7 +238,7 @@ Controllers:
       - !DualShock
         Global: true
         Inputs:
-          Tilt: Tilt
+          Gyro: Gyro
           Stick: RightStick
           Toggle: MenuButton
         Output: RightStick

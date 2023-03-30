@@ -1,6 +1,6 @@
 using System.Numerics;
-using DSx.Mapping;
 using DSx.Math;
+using DSx.Shared;
 
 namespace DSx.Input
 {

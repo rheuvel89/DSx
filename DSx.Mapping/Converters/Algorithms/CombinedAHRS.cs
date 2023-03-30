@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
 
 namespace DSx.Mapping

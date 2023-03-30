@@ -1,10 +1,7 @@
-using System;
 using System.IO;
-using System.Reflection;
-using DSx.Mapping;
-using DSx.Math;
+using DSx.Shared;
 using DualSenseAPI;
-using DualSenseAPI.State;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DXs.Common
 {
@@ -15,9 +12,9 @@ namespace DXs.Common
             writer.Write(source.Accelerometer.X);
             writer.Write(source.Accelerometer.Y);
             writer.Write(source.Accelerometer.Z);
-            writer.Write(source.BatteryStatus.IsCharging);
-            writer.Write(source.BatteryStatus.IsFullyCharged);
-            writer.Write(source.BatteryStatus.Level);
+            writer.Write(source.BatteryIsCharging);
+            writer.Write(source.BatteryIsFullyCharged);
+            writer.Write(source.BatteryLevel);
             writer.Write(source.CircleButton);
             writer.Write(source.CreateButton);
             writer.Write(source.CrossButton);
@@ -28,41 +25,34 @@ namespace DXs.Common
             writer.Write(source.Gyro.X);
             writer.Write(source.Gyro.Y);
             writer.Write(source.Gyro.Z);
-            writer.Write(source.IsHeadphoneConnected);
+            writer.Write(source.IsHeadPhoneConnected);
             writer.Write(source.L1Button);
             writer.Write(source.L2);
             writer.Write(source.L2Button);
-            writer.Write(source.L3Button);
-            writer.Write(source.LeftAnalogStick.X);
-            writer.Write(source.LeftAnalogStick.Y);
+            writer.Write(source.LeftStickButton);
+            writer.Write(source.LeftStick.X);
+            writer.Write(source.LeftStick.Y);
             writer.Write(source.LogoButton);
             writer.Write(source.MenuButton);
             writer.Write(source.MicButton);
             writer.Write(source.R1Button);
             writer.Write(source.R2);
             writer.Write(source.R2Button);
-            writer.Write(source.R3Button);
-            writer.Write(source.RightAnalogStick.X);
-            writer.Write(source.RightAnalogStick.Y);
+            writer.Write(source.RightStickButton);
+            writer.Write(source.RightStick.X);
+            writer.Write(source.RightStick.Y);
             writer.Write(source.SquareButton);
-            writer.Write(source.Touchpad1.Id);
-            writer.Write(source.Touchpad1.IsDown);
-            writer.Write(source.Touchpad1.X);
-            writer.Write(source.Touchpad1.Y);
-            writer.Write(source.Touchpad2.Id);
-            writer.Write(source.Touchpad2.IsDown);
-            writer.Write(source.Touchpad2.X);
-            writer.Write(source.Touchpad2.Y);
+            writer.Write(source.Touch1Id);
+            writer.Write(source.Touch1);
+            writer.Write(source.Touch1Position.X);
+            writer.Write(source.Touch1Position.Y);
+            writer.Write(source.Touch2Id);
+            writer.Write(source.Touch2);
+            writer.Write(source.Touch2Position.X);
+            writer.Write(source.Touch2Position.Y);
             writer.Write(source.TouchpadButton);
             writer.Write(source.TriangleButton);
-        }
-        
-        public static void Serialize(this BinaryWriter writer, DualSenseState source)
-        {
             writer.Write((int)source.IoMode);
-            writer.Write(source.IsCharging);
-            writer.Write(source.IsFullyCharged);
-            writer.Write(source.BatteryLevel);
         }
         
         public static void Serialize(this BinaryWriter writer, Feedback feedback)
@@ -75,136 +65,145 @@ namespace DXs.Common
             writer.Write((int)feedback.MicLed);
         }
 
-        public static T Deserialize<T>(this BinaryReader reader)
+        public static DualSenseInputState DeserializeInputState(this BinaryReader reader)
         {
-            var type = typeof(T);
-            var value = (T)(
-                type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, Type.EmptyTypes)?.Invoke(Array.Empty<object>()) ??
-                type.GetConstructor(BindingFlags.Public | BindingFlags.Instance, Type.EmptyTypes).Invoke(Array.Empty<object>())
-            );
-            
-            return (T)(value switch
+            var accelerometerX = reader.ReadSingle();
+            var accelerometerY = reader.ReadSingle();
+            var accelerometerZ = reader.ReadSingle();
+            var batteryIsCharging = reader.ReadBoolean();
+            var batteryIsFullyCharged = reader.ReadBoolean();
+            var batteryLevel = reader.ReadSingle();
+            var circleButton = reader.ReadBoolean();
+            var createButton = reader.ReadBoolean();
+            var crossButton = reader.ReadBoolean();
+            var dPadDownButton = reader.ReadBoolean();
+            var dPadLeftButton = reader.ReadBoolean();
+            var dPadRightButton = reader.ReadBoolean();
+            var dPadUpButton = reader.ReadBoolean();
+            var gyroX = reader.ReadSingle();
+            var gyroY = reader.ReadSingle();
+            var gyroZ = reader.ReadSingle();
+            var isHeadPhoneConnected = reader.ReadBoolean();
+            var l1Button = reader.ReadBoolean();
+            var l2 = reader.ReadSingle();
+            var l2Button = reader.ReadBoolean();
+            var leftStickButton = reader.ReadBoolean();
+            var leftStickX = reader.ReadSingle();
+            var leftStickY = reader.ReadSingle();
+            var logoButton = reader.ReadBoolean();
+            var menuButton = reader.ReadBoolean();
+            var micButton = reader.ReadBoolean();
+            var r1Button = reader.ReadBoolean();
+            var r2 = reader.ReadSingle();
+            var r2Button = reader.ReadBoolean();
+            var rightStickButton = reader.ReadBoolean();
+            var rightStickX = reader.ReadSingle();
+            var rightStickY = reader.ReadSingle();
+            var squareButton = reader.ReadBoolean();
+            var touch1Id = reader.ReadByte();
+            var touch1 = reader.ReadBoolean();
+            var touch1PositionX = reader.ReadSingle();
+            var touch1PositionY = reader.ReadSingle();
+            var touch2Id = reader.ReadByte();
+            var touch2 = reader.ReadBoolean();
+            var touch2PositionX = reader.ReadSingle();
+            var touch2PositionY = reader.ReadSingle();
+            var touchpadButton = reader.ReadBoolean();
+            var triangleButton = reader.ReadBoolean();
+            var ioMode = (IoMode)reader.ReadInt32();
+
+            return new DualSenseInputState
             {
-                DualSenseInputState v => reader.Deserialize(v),
-                DualSenseState v => reader.Deserialize(v),
-                Feedback v => reader.Deserialize(v),
-            });
-        }
-
-        public static object Deserialize(this BinaryReader reader, DualSenseInputState value)
-        {
-            var type = typeof(DualSenseInputState);
-            
-            var accVec = new Vec3();
-            accVec.X = reader.ReadSingle();
-            accVec.Y = reader.ReadSingle();
-            accVec.Z = reader.ReadSingle();
-            type.GetProperty(nameof(value.Accelerometer)).SetValue(value , accVec);
-
-            var batteryStatus = new BatteryStatus();
-            batteryStatus.IsCharging = reader.ReadBoolean(); 
-            batteryStatus.IsFullyCharged = reader.ReadBoolean(); 
-            batteryStatus.Level = reader.ReadSingle(); 
-            type.GetProperty(nameof(value.BatteryStatus)).SetValue(value , batteryStatus);
-
-            type.GetProperty(nameof(value.CircleButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.CreateButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.CrossButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.DPadDownButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.DPadLeftButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.DPadRightButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.DPadUpButton)).SetValue(value , reader.ReadBoolean());
-            
-            var gyrVec = new Vec3();
-            gyrVec.X = reader.ReadSingle();
-            gyrVec.Y = reader.ReadSingle();
-            gyrVec.Z = reader.ReadSingle();
-            type.GetProperty(nameof(value.Gyro)).SetValue(value , gyrVec);
-
-            type.GetProperty(nameof(value.IsHeadphoneConnected)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.L1Button)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.L2)).SetValue(value , reader.ReadSingle());
-            type.GetProperty(nameof(value.L2Button)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.L3Button)).SetValue(value , reader.ReadBoolean());
-
-            var lStickVec = new Vec2();
-            lStickVec.X = reader.ReadSingle();
-            lStickVec.Y = reader.ReadSingle();
-            type.GetProperty(nameof(value.LeftAnalogStick)).SetValue(value , lStickVec);
-
-            type.GetProperty(nameof(value.LogoButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.MenuButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.MicButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.R1Button)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.R2)).SetValue(value , reader.ReadSingle());
-            type.GetProperty(nameof(value.R2Button)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.R3Button)).SetValue(value , reader.ReadBoolean());
-            
-            var rStickVec = new Vec2();
-            rStickVec.X = reader.ReadSingle();
-            rStickVec.Y = reader.ReadSingle();
-            type.GetProperty(nameof(value.RightAnalogStick)).SetValue(value , rStickVec);
-            
-            type.GetProperty(nameof(value.SquareButton)).SetValue(value , reader.ReadBoolean());
-
-            var touchpad1 = new Touch();
-            touchpad1.Id = reader.ReadByte();
-            touchpad1.IsDown = reader.ReadBoolean();
-            touchpad1.X = reader.ReadUInt32();
-            touchpad1.Y = reader.ReadUInt32();
-            type.GetProperty(nameof(value.Touchpad1)).SetValue(value , touchpad1);
-            
-            var touchpad2 = new Touch();
-            touchpad2.Id = reader.ReadByte();
-            touchpad2.IsDown = reader.ReadBoolean();
-            touchpad2.X = reader.ReadUInt32();
-            touchpad2.Y = reader.ReadUInt32();
-            type.GetProperty(nameof(value.Touchpad2)).SetValue(value , touchpad2);
-            
-            type.GetProperty(nameof(value.TouchpadButton)).SetValue(value , reader.ReadBoolean());
-            type.GetProperty(nameof(value.TriangleButton)).SetValue(value , reader.ReadBoolean());
-
-            return value;
-        }
-
-        public static object Deserialize(this BinaryReader reader, DualSenseState value)
-        {
-            
-            var ioMode = reader.ReadInt32();
-            value.IoMode = (IoMode)ioMode;
-            value.IsCharging = reader.ReadBoolean();
-            value.IsFullyCharged = reader.ReadBoolean();
-            value.BatteryLevel = reader.ReadSingle();
-            return new DualSenseState
-            {
-                IoMode = value.IoMode,
-                IsCharging = value.IsCharging,
-                IsFullyCharged = value.IsFullyCharged,
-                BatteryLevel = value.BatteryLevel
+                IoMode = ioMode,
+                BatteryIsCharging = batteryIsCharging,
+                BatteryIsFullyCharged = batteryIsFullyCharged,
+                BatteryLevel = batteryLevel,
+                Accelerometer = new Vec3
+                {
+                    X = accelerometerX,
+                    Y = accelerometerY,
+                    Z = accelerometerZ
+                },
+                IsHeadPhoneConnected = isHeadPhoneConnected,
+                Gyro = new Vec3
+                {
+                    X = gyroX,
+                    Y = gyroY,
+                    Z = gyroZ
+                },
+                CircleButton = circleButton,
+                CrossButton = crossButton,
+                TriangleButton = triangleButton,
+                SquareButton = squareButton,
+                CreateButton = createButton,
+                MenuButton = menuButton,
+                LogoButton = logoButton,
+                MicButton = micButton,
+                DPadUpButton = dPadUpButton,
+                DPadRightButton = dPadRightButton,
+                DPadDownButton = dPadDownButton,
+                DPadLeftButton = dPadLeftButton,
+                L1Button = l1Button,
+                L2 = l2,
+                L2Button = l2Button,
+                LeftStick = new Vec2
+                {
+                    X = leftStickX,
+                    Y = leftStickY
+                },
+                LeftStickButton = leftStickButton,
+                R1Button = r1Button,
+                R2 = r2,
+                R2Button = r2Button,
+                RightStick = new Vec2
+                {
+                    X = rightStickX,
+                    Y = rightStickY
+                },
+                RightStickButton = rightStickButton,
+                Touch1Id = touch1Id,
+                Touch1 = touch1,
+                Touch1Position = new Vec2
+                {
+                    X = touch1PositionX,
+                    Y = touch1PositionY
+                },
+                Touch2Id = touch2Id,
+                Touch2 = touch2,
+                Touch2Position = new Vec2
+                {
+                    X = touch2PositionX,
+                    Y = touch2PositionY
+                },
+                TouchpadButton = touchpadButton,
             };
         }
-
-        public static object Deserialize(this BinaryReader reader, Feedback value)
+        
+        public static Feedback DeserializeFeedback(this BinaryReader reader)
         {
-            var rumble = new Vec2();
-            rumble.X = reader.ReadSingle();
-            rumble.Y = reader.ReadSingle();
-            value.Rumble = rumble;
+            var rumbleX = reader.ReadSingle();
+            var rumbleY = reader.ReadSingle();
 
-            var color = new Vec3();
-            color.X = reader.ReadSingle();
-            color.Y = reader.ReadSingle();
-            color.Z = reader.ReadSingle();
-            value.Color = color;
+            var colorX = reader.ReadSingle();
+            var colorY = reader.ReadSingle();
+            var colorZ = reader.ReadSingle();
                 
-            var mic = reader.ReadInt32();
-            value.MicLed = (MicLed)mic;
+            var mic = (MicLed)reader.ReadInt32();
 
             return new Feedback
             {
-                Rumble = value.Rumble,
-                Color = value.Color,
-                MicLed = value.MicLed
+                Rumble = new Vec2
+                {
+                    X = rumbleX,
+                    Y = rumbleY
+                },
+                Color = new Vec3
+                {
+                    X = colorX,
+                    Y = colorY,
+                    Z = colorZ
+                },
+                MicLed = mic
             };
         }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using DualSenseAPI;
-using DualSenseAPI.State;
+using DSx.Shared;
 using Nefarius.ViGEm.Client;
 using Nefarius.ViGEm.Client.Targets;
 

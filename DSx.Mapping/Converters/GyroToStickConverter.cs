@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DSx.Shared;
 using DualSenseAPI;
 
 namespace DSx.Mapping
@@ -31,7 +32,7 @@ namespace DSx.Mapping
         {
             feedback = new Feedback();
 
-            var (acc, gyro) = ((Vec3, Vec3))inputs["Tilt"];
+            var gyro = (Vec3)inputs["Gyro"];
             var toggle = (bool)inputs["Toggle"];
             
             if (!_toggled && toggle) _active = !_active;

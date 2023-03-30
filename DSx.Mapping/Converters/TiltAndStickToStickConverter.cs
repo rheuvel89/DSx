@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DSx.Shared;
 using DualSenseAPI;
 
 namespace DSx.Mapping

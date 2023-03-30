@@ -12,6 +12,7 @@ using DualSenseAPI.State;
 using DXs.Common;
 using Nefarius.ViGEm.Client;
 using YamlDotNet.Serialization;
+using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Client
 {
@@ -43,15 +44,16 @@ namespace DSx.Client
 
         public async Task Initialize()
         {
-            foreach (var controller in Enumerable.Range(0, _mapping.Count)
-                         .Select<int, IVirtualGamepad>(i =>
-                         {
-                             return _mapping[(byte)i] switch
-                             {
-                                 ControllerType.DualShock => _manager.CreateDualShock4Controller(0x7331, (ushort)i),
-                                 ControllerType.XBox360 => _manager.CreateXbox360Controller(0x7331, (ushort)i),
-                             };
-                         }))
+            var controllers = Enumerable.Range(0, _mapping.Count).Select<int, IVirtualGamepad>(i =>
+            {
+                return _mapping[(byte)i] switch
+                {
+                    ControllerType.DualShock => _manager.CreateDualShock4Controller(0x7331, (ushort)i),
+                    ControllerType.XBox360 => _manager.CreateXbox360Controller(0x7331, (ushort)i),
+                };
+            });
+            
+            foreach (var controller in controllers)
             {
                 _output.Add(controller);
                 controller.Connect();
@@ -76,14 +78,14 @@ namespace DSx.Client
 
         // private long _elapsed = 0;
         // private long _average = 1000;
-        private void OnInputReceived(DualSenseState ds, DualSenseInputState inputState)
+        private void OnInputReceived(DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
             var feedback = _mapping.Map(inputState, _output);
 
-            feedback.Color = ds.IoMode == IoMode.USB
+            feedback.Color = inputState.IoMode == IoMode.USB
                 ? new Vec3()
-                : new Vec3 { X = (10 - ds.BatteryLevel) / 10, Y = ds.BatteryLevel / 10 };
+                : new Vec3 { X = (10 - inputState.BatteryLevel) / 10, Y = inputState.BatteryLevel / 10 };
                 
             _inputCollector.OnStateChanged(feedback);
 
@@ -94,18 +96,13 @@ namespace DSx.Client
             // System.Console.WriteLine($"{_elapsed} | {_average/1000} | {elapsed}");
         }
 
-        private void OnButtonChanged(DualSenseState ds, DualSenseInputStateButtonDelta change)
-        {
-
-        }
+        private void OnButtonChanged(DualSenseInputStateButtonDelta change) { }
 
         private string? OnCommandReceived(string command, string[] arguments)
         {
             command = command.ToLower();
             return command switch
             {
-                // "sense" => Sense(_converter, arguments),
-                // "deadzone" => Deadzone(_converter, arguments),
                 "map" => Map(_mapping, arguments),
                 "remove" => Remove(_mapping, arguments),
                 _ => $"Command {command} not recognized"
