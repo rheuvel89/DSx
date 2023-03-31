@@ -10,6 +10,7 @@ namespace DSx.Mapping
     public class GyroToStickConverter : IMappingConverter
     {
         private Stopwatch _timer;
+        private int _initializing = 500;
         private long _timestamp = 0;
         private bool _active = true;
         private bool _toggled = false;
@@ -17,6 +18,9 @@ namespace DSx.Mapping
         private float? _gammaY;
         private float? _epsilonX;
         private float? _epsilonY;
+        
+        private float _driftX = 0;
+        private float _driftY = 0;
 
         private ConcurrentQueue<float> _xQueue;
         private ConcurrentQueue<float> _yQueue;
@@ -56,7 +60,16 @@ namespace DSx.Mapping
             var x = (_xQueue.ToArray().Average() * _epsilonX.Value).Limit1(_gammaX.Value);
             var y = (_yQueue.ToArray().Average() * _epsilonY.Value).Limit1(_gammaY.Value);
             
-            return new Vec2 { X = x, Y = y };
+            
+            if (_initializing-- > 0)
+            {
+                feedback.MicLed = MicLed.Pulse;
+                
+                _driftX = _driftX * 0.99f + x * 0.01f;
+                _driftY = _driftY * 0.99f + y * 0.01f;
+            }
+            
+            return new Vec2 { X = x - _driftX, Y = y - _driftY };
         }
     }
 }
