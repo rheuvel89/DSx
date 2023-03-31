@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DSx.Input;
 using DSx.Mapping;
-using DSx.Math;
 using DSx.Shared;
 using DualSenseAPI;
 using DualSenseAPI.State;
@@ -42,7 +41,7 @@ namespace DSx.Client
                 throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
             _timer = new Stopwatch();
 
-            _converters = LoadConverters(options.PluginPath ?? "plugins");
+            _converters = LoadConverters(options.PluginPath);
             _mapping = LoadMapping(options.MappingPath ?? "config.yaml", _converters);
         }
 
@@ -184,14 +183,17 @@ namespace DSx.Client
             return mapping;
         }
 
-        private IDictionary<string, Type> LoadConverters(string pluginPath)
+        private IDictionary<string, Type> LoadConverters(string? pluginPath)
         {
-            if (!Directory.Exists(pluginPath)) Directory.CreateDirectory(pluginPath);
-            var assemblies = Directory.EnumerateFiles(pluginPath)
-                .Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-                .Select(Assembly.LoadFrom)
-                .Concat(new [] {typeof(ButtonToButtonConverter).Assembly})
-                .ToList();
+            var assemblies = new[] { typeof(ButtonToButtonConverter).Assembly }.AsEnumerable();
+            if (pluginPath != null)
+            {
+                if (!Directory.Exists(pluginPath)) Directory.CreateDirectory(pluginPath);
+                assemblies = assemblies.Concat(Directory.EnumerateFiles(pluginPath)
+                    .Where(x => x.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    .Select(Assembly.LoadFrom));
+                
+            }
             var types = assemblies
                 .SelectMany(x => x.GetTypes())
                 .Where(typeof(IMappingConverter).IsAssignableFrom)

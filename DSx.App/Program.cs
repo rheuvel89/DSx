@@ -7,7 +7,19 @@ var parserResult = Parser.Default.ParseArguments<ClientOptions, HostOptions>(arg
 try
 {
     await (parserResult.MapResult<ClientOptions, HostOptions, IApplication?>(
-        opts => new Client(opts),
+        opts =>
+        {
+            if (opts.PluginPath == null) return new Client(opts);
+            Console.Clear();
+            Console.Write($"Loading converter plugins from external dll files can pose a security risk. Load only files that you know the source of and trust.{Environment.NewLine}If you understand and accept the risks press 'Y': ");
+            var c = Console.ReadKey();
+            Console.WriteLine();
+            return c.KeyChar switch
+            {
+                'y' or 'Y' => new Client(opts),
+                _ => null
+            };
+        },
         opts => new Host(opts),
         _ => null
     )?.Start() ?? Task.FromResult(1));
