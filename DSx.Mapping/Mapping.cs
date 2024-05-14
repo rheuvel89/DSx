@@ -34,8 +34,8 @@ namespace DSx.Mapping
                 {
                     (int, IMappingAction) config = controlConfiguration switch
                     {
-                        DualShockControlConfiguration d => ((int)d.Output, MapDualShockAction(d.Inputs, d.Output, d.Converter, d.Arguments)),
-                        Xbox360ControlConfiguration x => ((int)x.Output ,MapXBox360Action(x.Inputs, x.Output, x.Converter, x.Arguments))
+                        DualShockControlConfiguration d => ((int)d.Output, MapDualShockAction(d.Inputs ?? new Dictionary<string, InputControl>(), d.Output, d.Converter, d.Arguments)),
+                        Xbox360ControlConfiguration x => ((int)x.Output ,MapXBox360Action(x.Inputs ?? new Dictionary<string, InputControl>(), x.Output, x.Converter, x.Arguments))
                     };
                     if (controlConfiguration.Global == true) globalMapping.Add(config.Item1, config.Item2);
                     else controllerMapping.Add(config.Item1, config.Item2);
