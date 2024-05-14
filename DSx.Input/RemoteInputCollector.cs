@@ -45,7 +45,7 @@ namespace DSx.Input
             writer.Write(_timer.ElapsedMilliseconds);
             writer.Serialize(feedback);
             var bytes = stream.ToArray();
-            _connectionManager.Send(bytes);
+            _ = _connectionManager.Send(bytes);
         }
     }
 }
