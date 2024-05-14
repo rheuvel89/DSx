@@ -75,7 +75,7 @@ namespace DSx.Console
             {
                 var cursorVisible = SystemConsole.CursorVisible;
                 SystemConsole.CursorVisible = false;
-                if (_output != null) ConsoleFunctions.PrintState(_output[1]);
+                if (_output != null) ConsoleFunctions.PrintState(_output[0]);
                 SystemConsole.CursorVisible = cursorVisible;
             }
         }

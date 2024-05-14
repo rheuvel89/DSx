@@ -8,7 +8,7 @@ namespace DSx.Input
     public class LocalInputCollector : InputCollector
     {
         private readonly ushort _pollingInterval;
-        private DualSense _input;
+        private IDualSense _input;
 
         public LocalInputCollector(ushort pollingInterval)
         {
@@ -18,8 +18,14 @@ namespace DSx.Input
         public override async Task Start()
         {
             var controllers = DualSense.EnumerateControllers().ToList();
-            _input = controllers.FirstOrDefault();
-            if (_input == null) throw new Exception("No DualSense controllers connected");
+            var input = controllers.FirstOrDefault();
+            if (input == null)
+            {
+                Console.WriteLine("Warning: No DualSense controllers connected");
+                _input = new FakeDualSense();
+            }
+            else _input = new DualSenseWrapper(input);
+            
             
             _input.Acquire();
             _input.OnStatePolled += DelegateInputReceived;
@@ -27,12 +33,12 @@ namespace DSx.Input
             _input.BeginPolling(_pollingInterval);
         }
 
-        private void DelegateInputReceived(DualSense ds)
+        private void DelegateInputReceived(IDualSense ds)
         {
             var state = new DualSenseInputState(ds);
             OnInputReceived?.Invoke(state);
         }
-        private void DelegateButtonChanged(DualSense ds, DualSenseInputStateButtonDelta d)
+        private void DelegateButtonChanged(IDualSense ds, DualSenseInputStateButtonDelta d)
         {
             OnButtonChanged?.Invoke(d);
         }

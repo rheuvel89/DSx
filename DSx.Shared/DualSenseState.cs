@@ -4,7 +4,7 @@ namespace DSx.Shared
 {
     public struct DualSenseInputState
     {
-        public DualSenseInputState(DualSense ds)
+        public DualSenseInputState(IDualSense ds)
         {
             IoMode = ds.IoMode;
             BatteryIsCharging = ds.InputState.BatteryStatus.IsCharging;
