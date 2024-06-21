@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\DSx.Collector\DSx.Collector.csproj" />
       <ProjectReference Include="..\DSx.Host\DSx.Host.csproj" />
-      <ProjectReference Include="..\DSx.Client\DSx.Client.csproj" />
       <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
     </ItemGroup>
 

@@ -1,26 +1,26 @@
 ﻿using CommandLine;
-using DSx.Client;
+using DSx.Collector;
 using DSx.Host;
 using DXs.Common;
 
-var parserResult = Parser.Default.ParseArguments<ClientOptions, HostOptions>(args);
+var parserResult = Parser.Default.ParseArguments<HostOptions, CollectorOptions>(args);
 try
 {
-    await (parserResult.MapResult<ClientOptions, HostOptions, IApplication?>(
+    await (parserResult.MapResult<HostOptions, CollectorOptions, IApplication?>(
         opts =>
         {
-            if (opts.PluginPath == null) return new Client(opts);
+            if (opts.PluginPath == null) return new Host(opts);
             Console.Clear();
             Console.Write($"Loading converter plugins from external dll files can pose a security risk. Load only files that you know the source of and trust.{Environment.NewLine}If you understand and accept the risks press 'Y': ");
             var c = Console.ReadKey();
             Console.WriteLine();
             return c.KeyChar switch
             {
-                'y' or 'Y' => new Client(opts),
+                'y' or 'Y' => new Host(opts),
                 _ => null
             };
         },
-        opts => new Host(opts),
+        opts => new Collector(opts),
         _ => null
     )?.Start() ?? Task.FromResult(1));
 
