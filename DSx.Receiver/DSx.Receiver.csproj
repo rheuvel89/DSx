@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DSx.Console\DSx.Console.csproj" />
+      <ProjectReference Include="..\DSx.Output.Shared\DSx.Output.Shared.csproj" />
+      <ProjectReference Include="..\DSx.Output\DSx.Output.csproj" />
+      <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    </ItemGroup>
+
 </Project>

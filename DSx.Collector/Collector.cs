@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using DSx.Input;
+using DSx.Input.Shared;
 using DualSenseAPI.State;
 using DXs.Common;
 using DualSenseInputState = DSx.Shared.DualSenseInputState;
@@ -27,7 +28,7 @@ namespace DSx.Collector
             _timer = new Stopwatch();
         }
 
-        public async Task Initialize(object mapping)
+        public async Task Initialize()
         {
             _inputCollector.OnInputReceived += OnInputReceived;
             _inputCollector.OnButtonChanged += OnButtonChanged;
@@ -37,7 +38,7 @@ namespace DSx.Collector
 
         public async Task Start()
         {
-            await Initialize(null);
+            await Initialize();
 
             _timer.Start();
 

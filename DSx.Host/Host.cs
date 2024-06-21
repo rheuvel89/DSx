@@ -22,33 +22,29 @@ namespace DSx.Host
     {
         private readonly IInputCollector _inputCollector;
         private readonly IOutputProcessor _outputProcessor;
-        private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
-        private readonly byte _count;
-        private Mapping.Mapping _mapping;
-        private IDictionary<string, Type> _converters;
+        private readonly Mapping.Mapping _mapping;
 
         public Host(HostOptions options)
         {
-            _inputCollector = options.Port != null
-                ? new RemoteInputCollector(options.Port.Value)
+            _inputCollector = options.CollectorPort != null
+                ? new RemoteInputCollector(options.CollectorPort.Value)
                 : new LocalInputCollector(options.PollingInterval);
-            _outputProcessor = new LocalOutputProcessor();
-            _output = new List<IVirtualGamepad>();
-            _console = new Console.Console(_output, options.NoConsole);
-            _count = options.Count;
-            if (_count < 1 || _count > 4)
-                throw new Exception("Invalid number of controllers to connect (must be between 1 and 4)");
+            _outputProcessor = options.Receiver != null && options.ReceiverPort != null
+                ? new RemoteOutputProcessor(options.Receiver, options.ReceiverPort.Value)
+                : new LocalOutputProcessor();
+            IList<IVirtualGamepad> output = new List<IVirtualGamepad>();
+            _console = new Console.Console(output, options.NoConsole);
             _timer = new Stopwatch();
 
-            _converters = LoadConverters(options.PluginPath);
-            _mapping = LoadMapping(options.MappingPath ?? "config.yaml", _converters);
+            IDictionary<string, Type> converters = LoadConverters(options.PluginPath);
+            _mapping = LoadMapping(options.MappingPath ?? "config.yaml", converters);
         }
 
-        public async Task Initialize()
+        private async Task Initialize()
         {
-            if (_outputProcessor is LocalOutputProcessor lop) await lop.Initialize(_mapping);
+            await _outputProcessor.Initialize(_mapping);
             
             _inputCollector.OnInputReceived += OnInputReceived;
             _inputCollector.OnButtonChanged += OnButtonChanged;
@@ -71,13 +67,15 @@ namespace DSx.Host
         private void OnInputReceived(DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
-            var feedback = _outputProcessor.Map(_mapping, inputState);
+            var feedback = _mapping.Map(inputState, _outputProcessor.Output);
 
             feedback.Color = inputState.IoMode == IoMode.USB
                 ? new Vec3()
                 : new Vec3 { X = (10 - inputState.BatteryLevel) / 10, Y = inputState.BatteryLevel / 10 };
                 
             _inputCollector.OnStateChanged(feedback);
+            
+            _outputProcessor.ProcessOutput();
 
             // var elapsed = _timer.ElapsedMilliseconds - ms;
             // _elapsed = elapsed > _elapsed ? elapsed : _elapsed;

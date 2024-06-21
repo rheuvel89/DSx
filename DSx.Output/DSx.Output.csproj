@@ -8,6 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DSx.Mapping\DSx.Mapping.csproj" />
+      <ProjectReference Include="..\DSx.Output.Shared\DSx.Output.Shared.csproj" />
+      <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
     </ItemGroup>
 
 </Project>

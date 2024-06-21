@@ -1,12 +1,13 @@
 ﻿using CommandLine;
 using DSx.Collector;
 using DSx.Host;
+using DSx.Receiver;
 using DXs.Common;
 
-var parserResult = Parser.Default.ParseArguments<HostOptions, CollectorOptions>(args);
+var parserResult = Parser.Default.ParseArguments<HostOptions, CollectorOptions, ReceiverOptions>(args);
 try
 {
-    await (parserResult.MapResult<HostOptions, CollectorOptions, IApplication?>(
+    await (parserResult.MapResult<HostOptions, CollectorOptions, ReceiverOptions, IApplication?>(
         opts =>
         {
             if (opts.PluginPath == null) return new Host(opts);
@@ -21,6 +22,7 @@ try
             };
         },
         opts => new Collector(opts),
+        opts => new Receiver(opts),
         _ => null
     )?.Start() ?? Task.FromResult(1));
 
@@ -36,7 +38,7 @@ return 0;
 static IList<string> GetExeptions(Exception e, IList<string>? list = null)
 {
     list ??= new List<string>();
-    list.Add(e.Message);
+    list.Add(e.Message + Environment.NewLine + e.StackTrace);
     if (e is AggregateException a) foreach (var ie in a.InnerExceptions) GetExeptions(ie, list);
     else if (e.InnerException != null) GetExeptions(e.InnerException, list);
     return list;

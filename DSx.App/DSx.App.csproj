@@ -16,6 +16,7 @@
     <ItemGroup>
       <ProjectReference Include="..\DSx.Collector\DSx.Collector.csproj" />
       <ProjectReference Include="..\DSx.Host\DSx.Host.csproj" />
+      <ProjectReference Include="..\DSx.Receiver\DSx.Receiver.csproj" />
       <ProjectReference Include="..\DXs.Common\DXs.Common.csproj" />
     </ItemGroup>
 
