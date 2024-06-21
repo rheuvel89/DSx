@@ -5,7 +5,7 @@ using DXs.Common;
 
 namespace DSx.Input
 {
-    public class RemoteInputCollector : InputCollector
+    public class RemoteInputCollector : IInputCollector
     {
         private readonly ConnectionManager _connectionManager;
         private readonly Stopwatch _timer;
@@ -18,7 +18,7 @@ namespace DSx.Input
             _timer = new Stopwatch();
         }
         
-        public override async Task Start()
+        public async Task Start()
         {
             _connectionManager.OnPacketReceived += OnPackedReceived;
             _timer.Start();
@@ -36,9 +36,9 @@ namespace DSx.Input
             OnInputReceived?.Invoke(state);
         }
 
-        public override event InputReceivedHandler? OnInputReceived;
-        public override event ButtonChangedHandler? OnButtonChanged;
-        public override void OnStateChanged(Feedback feedback)
+        public event InputReceivedHandler? OnInputReceived;
+        public event ButtonChangedHandler? OnButtonChanged;
+        public void OnStateChanged(Feedback feedback)
         {
             using var stream = new MemoryStream();
             var writer = new BinaryWriter(stream);

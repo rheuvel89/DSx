@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using DSx.Input;
 using DSx.Mapping;
+using DSx.Output;
 using DSx.Shared;
 using DualSenseAPI;
 using DualSenseAPI.State;
@@ -19,8 +20,8 @@ namespace DSx.Host
 {
     public class Host : IApplication
     {
-        private readonly ViGEmClient _manager;
-        private readonly InputCollector _inputCollector;
+        private readonly IInputCollector _inputCollector;
+        private readonly IOutputProcessor _outputProcessor;
         private readonly IList<IVirtualGamepad> _output;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;
@@ -30,10 +31,10 @@ namespace DSx.Host
 
         public Host(HostOptions options)
         {
-            _manager = new ViGEmClient();
             _inputCollector = options.Port != null
                 ? new RemoteInputCollector(options.Port.Value)
                 : new LocalInputCollector(options.PollingInterval);
+            _outputProcessor = new LocalOutputProcessor();
             _output = new List<IVirtualGamepad>();
             _console = new Console.Console(_output, options.NoConsole);
             _count = options.Count;
@@ -47,22 +48,8 @@ namespace DSx.Host
 
         public async Task Initialize()
         {
-            var controllers = Enumerable.Range(0, _mapping.Count).Select<int, IVirtualGamepad>(i =>
-            {
-                return _mapping[(byte)i] switch
-                {
-                    ControllerType.DualShock => _manager.CreateDualShock4Controller(0x7331, (ushort)i),
-                    ControllerType.XBox360 => _manager.CreateXbox360Controller(0x7331, (ushort)i),
-                };
-            });
+            if (_outputProcessor is LocalOutputProcessor lop) await lop.Initialize(_mapping);
             
-            foreach (var controller in controllers)
-            {
-                _output.Add(controller);
-                controller.Connect();
-                await Task.Delay(TimeSpan.FromSeconds(1));
-            }
-
             _inputCollector.OnInputReceived += OnInputReceived;
             _inputCollector.OnButtonChanged += OnButtonChanged;
 
@@ -84,7 +71,7 @@ namespace DSx.Host
         private void OnInputReceived(DualSenseInputState inputState)
         {
             // var ms = _timer.ElapsedMilliseconds;
-            var feedback = _mapping.Map(inputState, _output);
+            var feedback = _outputProcessor.Map(_mapping, inputState);
 
             feedback.Color = inputState.IoMode == IoMode.USB
                 ? new Vec3()
@@ -92,7 +79,6 @@ namespace DSx.Host
                 
             _inputCollector.OnStateChanged(feedback);
 
-            foreach (var controller in _output) controller.SubmitReport();
             // var elapsed = _timer.ElapsedMilliseconds - ms;
             // _elapsed = elapsed > _elapsed ? elapsed : _elapsed;
             // _average = (_average*900 + elapsed*1000*100) / 1000;

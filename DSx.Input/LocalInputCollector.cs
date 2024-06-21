@@ -5,7 +5,7 @@ using DualSenseInputState = DSx.Shared.DualSenseInputState;
 
 namespace DSx.Input
 {
-    public class LocalInputCollector : InputCollector
+    public class LocalInputCollector : IInputCollector
     {
         private readonly ushort _pollingInterval;
         private IDualSense _input;
@@ -15,7 +15,7 @@ namespace DSx.Input
             _pollingInterval = pollingInterval;
         }
         
-        public override async Task Start()
+        public async Task Start()
         {
             var controllers = DualSense.EnumerateControllers().ToList();
             var input = controllers.FirstOrDefault();
@@ -43,9 +43,9 @@ namespace DSx.Input
             OnButtonChanged?.Invoke(d);
         }
 
-        public override event InputReceivedHandler? OnInputReceived;
-        public override event ButtonChangedHandler? OnButtonChanged;
-        public override void OnStateChanged(Feedback feedback)
+        public event InputReceivedHandler? OnInputReceived;
+        public event ButtonChangedHandler? OnButtonChanged;
+        public void OnStateChanged(Feedback feedback)
         {
             _input.OutputState.LeftRumble = feedback.Rumble.X;
             _input.OutputState.RightRumble = feedback.Rumble.Y;

@@ -12,7 +12,7 @@ namespace DSx.Collector
 {
     public class Collector : IApplication
     {
-        private readonly InputCollector _inputCollector;
+        private readonly IInputCollector _inputCollector;
         private readonly ConnectionManager _connectionManager;
         private readonly DSx.Console.Console _console;
         private readonly Stopwatch _timer;

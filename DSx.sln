@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Plugin", "DSx.Plugin\DS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Plugin.KBM", "DSx.Plugin.KBM\DSx.Plugin.KBM.csproj", "{0A20547E-FEBC-4DB7-8617-3B91E350F85A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Receiver", "DSx.Receiver\DSx.Receiver.csproj", "{7A312771-126A-47D3-8361-2B1740D02366}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSx.Output", "DSx.Output\DSx.Output.csproj", "{47970180-613F-4082-88C1-CAD262646E82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,5 +100,13 @@ Global
 		{0A20547E-FEBC-4DB7-8617-3B91E350F85A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A20547E-FEBC-4DB7-8617-3B91E350F85A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A20547E-FEBC-4DB7-8617-3B91E350F85A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A312771-126A-47D3-8361-2B1740D02366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A312771-126A-47D3-8361-2B1740D02366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A312771-126A-47D3-8361-2B1740D02366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A312771-126A-47D3-8361-2B1740D02366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47970180-613F-4082-88C1-CAD262646E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47970180-613F-4082-88C1-CAD262646E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47970180-613F-4082-88C1-CAD262646E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47970180-613F-4082-88C1-CAD262646E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
